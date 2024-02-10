@@ -36,11 +36,10 @@ MVPリリース
 カレンダー機能　gem simple_calendar
 タスク管理: タスクを追加、編集、削除できる基本的な機能
 リマインダー機能
-LINEと連携
+LINEと連携　LINE Messaging API
 
 本リリース
 現在地から目的地までの到達時間の表示　Google Maps API
-自然言語処理　Google Cloud Natural Languagenn
 
 ■ 機能の実装方針予定
 LINE Messaging API
