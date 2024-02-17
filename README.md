@@ -37,6 +37,8 @@ MVPリリース
 タスク管理: タスクを追加、編集、削除できる基本的な機能
 リマインダー機能
 LINEと連携　LINE Messaging API
+ログイン機能
+
 
 本リリース
 現在地から目的地までの到達時間の表示　Google Maps API
@@ -45,3 +47,23 @@ LINEと連携　LINE Messaging API
 LINE Messaging API
 Google Cloud Natural Language
 Google Maps API
+
+### 画面遷移図
+Figma：https://www.figma.com/file/bR1yZqLeyg3SwVKvqXT0fE/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?type=whiteboard&node-id=0%3A1&t=0GGiLJsDNv6MKn8l-1
+
+### READMEに記載した機能
+- [x] カレンダー機能
+- [x] イベント追加
+- [x] イベント編集
+- [x] イベント削除
+- [x] リマインダー機能
+- [x] LINE連携
+- [x] ログイン機能
+
+### 未ログインでも閲覧または利用できるページ
+- [x] ログインページ
+- [x] アプリ説明
+
+### メールアドレス・パスワード変更確認項目
+- [x] メールアドレス
+- [x] パスワード
