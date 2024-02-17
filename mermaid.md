@@ -7,47 +7,47 @@ erDiagram
   LINEUsers ||--o{ LINENotifications : "1対多"
 
     Users {
-      index id PK
-      string email
-      string password
+      index id PK "ユーザーID"
+      string email "メールアドレス"
+      string password "パスワード"
     }
 
     Calendars {
-      index id PK
-      integer user_id　FK
-      string name
-      string description
+      index id PK "カレンダーID"
+      integer user_id　FK "ユーザーID"
+      string name "カレンダー名"
+      string description "説明"
     }
 
     Events {
-      index id PK
-      integer calendar_id FK
-      string title
-      datetime start_datetime
-      datetime end_datetime
-      datetime created_at
-      datetime updated_at
+      index id PK "イベントID"
+      integer calendar_id FK "カレンダーID"
+      string title "タイトル"
+      datetime start_datetime "開始日時"
+      datetime end_datetime "終了日時"
+      datetime created_at "作成日"
+      datetime updated_at "更新日"
   }
 
     EventReminders {
-      index id PK
-      integer event_id FK
-      datetime reminder_datetime
+      index id PK "リマインダーID"
+      integer event_id FK "イベントID"
+      datetime reminder_datetime "リマインダー日時"
     }
 
     LINEUsers{
-      string line_user_id
-      datetime created_at
-      datetime updated_at
+      string line_user_id "LINEユーザーID"
+      datetime created_at "作成日"
+      datetime updated_at "更新日"
     }
 
     LINENotifications {
-      index id PK
-      string line_user_id FK
-      string message
-      string status
-      datetime sent_datetime
-      datetime created_at
-      datetime updated_at
+      index id PK "通知ID"
+      string line_user_id FK "LINEユーザーID"
+      string message "メッセージ"
+      string status "ステータス"
+      datetime sent_datetime "送信日時"
+      datetime created_at "作成日"
+      datetime updated_at "更新日"
     }
 ```
