@@ -39,6 +39,7 @@ MVPリリース
 LINEと連携　LINE Messaging API
 ログイン機能
 
+
 本リリース
 現在地から目的地までの到達時間の表示　Google Maps API
 
