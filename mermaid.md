@@ -1,15 +1,15 @@
 ```mermaid
 erDiagram
   Users ||--o{ Calendars : "1対多"
-   Users ||--o{ LINEUsers : "1対多"
   Calendars ||--o{ Events : "1対多"
   Events ||--o{ EventReminders : "1対多"
-  LINEUsers ||--o{ LINENotifications : "1対多"
+  Users ||--o{ LINENotifications : "1対多"
 
     Users {
       index id PK "ユーザーID"
       string email "メールアドレス"
       string password "パスワード"
+      string line_user_id "LINEユーザーID"
     }
 
     Calendars {
@@ -32,12 +32,6 @@ erDiagram
       index id PK "リマインダーID"
       integer event_id FK "イベントID"
       datetime reminder_datetime "リマインダー日時"
-    }
-
-    LINEUsers{
-      string line_user_id "LINEユーザーID"
-      datetime created_at "作成日"
-      datetime updated_at "更新日"
     }
 
     LINENotifications {
