@@ -16,7 +16,6 @@ erDiagram
       index id PK "カレンダーID"
       integer user_id　FK "ユーザーID"
       string name "カレンダー名"
-      string description "説明"
     }
 
     Events {
