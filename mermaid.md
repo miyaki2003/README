@@ -2,7 +2,6 @@
 erDiagram
   Users ||--o{ Calendars : "1対多"
   Calendars ||--o{ Events : "1対多"
-  Events ||--o{ EventReminders : "1対多"
   Users ||--o{ LINENotifications : "1対多"
 
     Users {
@@ -27,12 +26,6 @@ erDiagram
       datetime created_at "作成日"
       datetime updated_at "更新日"
   }
-
-    EventReminders {
-      index id PK "リマインダーID"
-      integer event_id FK "イベントID"
-      datetime remind_at "リマインダー日時"
-    }
 
     LINENotifications {
       index id PK "通知ID"
