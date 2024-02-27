@@ -1,14 +1,12 @@
 ```mermaid
 erDiagram
-  Users ||--o{ Calendars : "1対多"
+  LineUsers ||--o{ Calendars : "1対多"
   Calendars ||--o{ Events : "1対多"
-  Users ||--o{ LINENotifications : "1対多"
+  LineUsers ||--o{ LineNotifications : "1対多"
 
-    Users {
+    LineUsers {
       index id PK "ユーザーID"
-      string email "メールアドレス"
-      string password "パスワード"
-      string line_user_id "LINEユーザーID"
+      string line_user_id "LineユーザーID"
     }
 
     Calendars {
@@ -27,7 +25,7 @@ erDiagram
       datetime updated_at "更新日"
   }
 
-    LINENotifications {
+    LineNotifications {
       index id PK "通知ID"
       integer user_id FK "ユーザーID"
       string message "メッセージ"
