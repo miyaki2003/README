@@ -1,10 +1,9 @@
-class OmniauthCallbacksController < ApplicationController
+class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def line
     basic_action
   end
 
   def failure
-
     flash[:alert] = "外部サービスでの認証に失敗しました。"
     redirect_to root_path
   end
@@ -24,7 +23,7 @@ class OmniauthCallbacksController < ApplicationController
     end
     
     flash[:notice] = "ログインしました"
-    redirect_to expendable_items_path
+    redirect_to root_path
   end
 
   def fake_email(uid, provider)
