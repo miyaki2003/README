@@ -1,10 +1,6 @@
 source "https://rubygems.org"
 
-<<<<<<< HEAD
-ruby "3.1.2"
-=======
 ruby "3.1.4"
->>>>>>> Minimum-Viable-Product
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3"
