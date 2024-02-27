@@ -4,9 +4,9 @@ class OmniauthCallbacksController < ApplicationController
   end
 
   def failure
-    # 認証が失敗した時の処理
+
     flash[:alert] = "外部サービスでの認証に失敗しました。"
-    redirect_to root_path # または、失敗時にユーザーをリダイレクトしたい任意のパス
+    redirect_to root_path
   end
 
   private
@@ -22,7 +22,7 @@ class OmniauthCallbacksController < ApplicationController
       @profile.set_values(@omniauth)
       sign_in(:line_user, @profile)
     end
-    #ログイン後のflash messageとリダイレクト先を設定
+    
     flash[:notice] = "ログインしました"
     redirect_to expendable_items_path
   end
