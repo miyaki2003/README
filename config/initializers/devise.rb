@@ -29,6 +29,8 @@ Devise.setup do |config|
 
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
-
-  config.omniauth :line, ENV['LINE_KEY'], ENV['LINE_SECRET']
+  
+  Devise.setup do |config|
+      config.omniauth :line, Rails.application.credentials.line[:line_api_key], Rails.application.credentials.line[:line_api_secret]
+  end
 end
