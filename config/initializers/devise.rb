@@ -31,6 +31,7 @@ Devise.setup do |config|
   config.responder.redirect_status = :see_other
   
   Devise.setup do |config|
-      config.omniauth :line, Rails.application.credentials.line[:line_api_key], Rails.application.credentials.line[:line_api_secret]
+    config.omniauth :line, ENV['LINE_KEY'], ENV['LINE_SECRET']
   end
+  
 end
