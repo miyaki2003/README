@@ -1,24 +1,14 @@
 class LineUser < ApplicationRecord
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: %i[line]
-  def social_profile(provider)
-    social_profiles.select { |sp| sp.provider == provider.to_s }.first
-  end
-      
-  def set_values(omniauth)
-    return if provider.to_s != omniauth["provider"].to_s || uid != omniauth["uid"]
-    credentials = omniauth["credentials"]
-    info = omniauth["info"]
-      
-    access_token = credentials["refresh_token"]
-    access_secret = credentials["secret"]
-    credentials = credentials.to_json
-    name = info["name"]
-  end
-      
-  def set_values_by_raw_info(raw_info)
-    self.raw_info = raw_info.to_json
-    self.save!
+   validates :provider, presence: true
+   validates :uid, presence: true, uniqueness: { scope: :provider }
+   validates :name, presence: true
+  def self.find_or_create_from_auth_hash(auth_hash)
+    provider = auth_hash[:provider]
+    uid = auth_hash[:uid]
+    name = auth_hash[:info][:name]
+
+    self.find_or_create_by(provider: provider, uid: uid) do |user|
+    user.name = name
+    end
   end
 end
