@@ -5,7 +5,5 @@ Rails.application.routes.draw do
   
   resources :calendars, only: %i[index]
 
-  devise_for :line_users, controllers: {
-  omniauth_callbacks: "omniauth_callbacks"
-  }
+  get '/auth/:provider/callback', to: 'sessions#create'
 end
