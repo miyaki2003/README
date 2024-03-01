@@ -13,7 +13,6 @@ class OauthsController < ApplicationController
       redirect_to root_path, alert: "ログインに失敗しました。"
     end
   end
-  
   private
 
     def auth_params
