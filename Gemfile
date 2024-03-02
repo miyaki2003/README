@@ -24,15 +24,13 @@ gem "bootsnap", require: false
 
 gem "simple_calendar"
 
-gem 'omniauth'
+gem "sorcery"
 
-gem 'omniauth-line'
+gem "config"
 
-gem 'omniauth-rails_csrf_protection'
+gem "bootstrap"
 
-gem 'sorcery'
-
-gem 'config'
+gem "sassc-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
