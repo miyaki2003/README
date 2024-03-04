@@ -335,7 +335,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
-  bootstrap
+  bootstrap (~> 5)
   capybara
   config
   debug

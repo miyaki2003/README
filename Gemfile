@@ -28,7 +28,7 @@ gem "sorcery"
 
 gem "config"
 
-gem "bootstrap"
+gem 'bootstrap', '~> 5'
 
 gem "sassc-rails"
 
