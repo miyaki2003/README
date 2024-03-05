@@ -4,18 +4,18 @@ class EventsController < ApplicationController
   before_action :set_event, only: %i[edit update destroy]
 
   def index
+    @start_date = Date.today
     @events = Event.all
   end
 
   def new
     @event = Event.new
-    @default_date = params[:default_date].to_date
+    @default_date = params[:default_date].to_d
   end
 
   def create
-    event = Event.new(event_params)
-
-    if event.save!
+    @event = Event.new(event_params)
+    if @event.save
       redirect_to events_path, success: "イベントの登録に成功しました"
     else
       render :new
@@ -25,7 +25,7 @@ class EventsController < ApplicationController
   def edit; end
 
   def update
-    if @event.update!(event_params)
+    if @event.update(event_params)
       redirect_to events_path, success: "イベントの更新に成功しました"
     else
       render :edit

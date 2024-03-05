@@ -1,42 +1,11 @@
-<% flash.each do |type, message| %>
-  <div class="alert alert-<%= type %> alert-dismissible rounded-0 fade show" role="alert">
-    <button class="btn-close" aria-label="Close" data-bs-dismiss="alert" type="button"></button>
-    <h5 class="m-0">
-      <%= message %>
-    </h5>
-  </div>
-<% end %>
-
-<div class="container">
-  <div class="row p-3">
-    <%= month_calendar(events: @events) do |date, events| %>
-      <div class="d-flex align-items-center mb-3">
-        <%= date.day %>
-        <div class="ms-auto">
-          <%= link_to new_event_path(default_date: date), { class: "btn btn-sm btn-outline-primary fs10", "data-bs-target": "#eventModal", "data-bs-toggle": "modal", remote: true } do %>
-            <i class="fas fa-plus"></i>
-          <% end %>
-        </div>
-      </div>
-      <% events&.each do |event| %>
-        <div class="my-1">
-          <%= link_to "#{event.title}（#{event.start_time.strftime("%R")} ~ #{event.end_time.strftime("%R")}）", edit_event_path(event), { class: "btn btn-sm btn-success", "data-bs-target": "#eventModal", "data-bs-toggle": "modal", remote: true } %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-</div>
-
-<!-- モーダル画面 -->
-<div id="eventModal" class="modal fade" aria-hidden="true" aria-labelledby="eventModalLabel" tabindex="-1">
-  <div class="modal-dialog" style="max-width:32%;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button class="btn-close" id="modalClose" aria-label="Close" data-bs-dismiss="modal" type="button"></button>
-      </div>
-      <div class="modal-body">
-        <div id="form"></div>
-      </div>
+<h1>カレンダー</h1>
+<%= month_calendar events: @events do |date, events| %>
+  <%= date.day %>
+  
+  <% events.each do |event| %>
+    <div>
+      <%= event.title %>
     </div>
-  </div>
-</div>
+  <% end %>
+<% end %>
+<%= link_to '新規作成', new_event_path, class: 'btn btn-primary' %>
