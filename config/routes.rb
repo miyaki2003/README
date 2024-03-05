@@ -3,11 +3,11 @@ Rails.application.routes.draw do
 
   root "staticpages#top"
   
-  resources :calendars, only: %i[index]
+  resources :calendars, only: %i[index new]
 
   get 'oauth/callback', to: 'oauths#callback'
 
   get "oauth/:provider" => "oauths#oauth", :as => :auth_at_provider
 
-  resources :events, except: %i[show]
+  resources :events
 end
