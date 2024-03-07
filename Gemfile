@@ -30,6 +30,8 @@ gem "config"
 
 gem 'bootstrap', '~> 5'
 
+gem 'line-bot-api'
+
 gem "sassc-rails"
 
 group :development, :test do
