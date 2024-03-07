@@ -1,5 +1,6 @@
 class LineBotController < ApplicationController
   require 'line/bot'
+  skip_before_action :verify_authenticity_token, only: [:callback]
 
   def callback
     body = request.body.read
