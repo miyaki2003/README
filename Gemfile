@@ -22,8 +22,6 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 gem "bootsnap", require: false
 
-gem "simple_calendar"
-
 gem "sorcery"
 
 gem "config"
@@ -34,9 +32,12 @@ gem 'line-bot-api'
 
 gem "sassc-rails"
 
+gem "simple_calendar"
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem 'dotenv-rails'
+  gem 'pry-rails'
 end
 
 group :development do
