@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   root "staticpages#top"
 
-  get '/auth/line/callback', to: 'oauth#callback'  
+  get '/auth/line/callback', to: 'oauths#callback'  
 
   get "oauth/:provider" => "oauths#oauth", :as => :auth_at_provider
 
