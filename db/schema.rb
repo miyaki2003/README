@@ -32,15 +32,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_01_142245) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "line_users", force: :cascade do |t|
-    t.string "provider"
-    t.string "uid"
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["uid", "provider"], name: "index_line_users_on_uid_and_provider", unique: true
-  end
-
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
