@@ -17,19 +17,18 @@ class LineBotController < ApplicationController
         user_message = event.message['text']
         reply_text = ""
     
-        Rails.logger.info "Received message: #{user_message}" # ログに受信したメッセージを出力
+        Rails.logger.info "Received message: #{user_message}"
     
         if user_message == "会議"
           reply_text = "いつリマインドしますか？"
-          Rails.logger.info "Replying with: #{reply_text}" # 応答メッセージをログに出力
-        elsif user_message.match?(/^\d+時$/) # 正規表現で時刻を表すメッセージ（例：「17時」）をチェック
-          # 時刻を指定するメッセージに対する応答
+          Rails.logger.info "Replying with: #{reply_text}" 
+        elsif user_message.match?(/^\d+時$/)
           reply_text = "#{user_message}に会議のリマインドを設定しました"
-          Rails.logger.info "Replying with: #{reply_text}" # 応答メッセージをログに出力
+          Rails.logger.info "Replying with: #{reply_text}" 
         else
-          # その他のメッセージに対するデフォルトの応答
+          
           reply_text = "ごめんなさい、理解できませんでした。"
-          Rails.logger.info "Replying with: #{reply_text}" # 応答メッセージをログに出力
+          Rails.logger.info "Replying with: #{reply_text}"
         end
     
         message = {
