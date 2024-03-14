@@ -13,20 +13,7 @@ class LineBotController < ApplicationController
 
     events.each do |event|
       if event.type == Line::Bot::Event::MessageType::Text
-        user_message = event.message['text']
-        reply_text = ""
-
-        if user_message == "会議"
-          reply_text = "いつリマインドしますか？"
-        else
-          reply_text = "理解できませんでした"
-        end
-
-        message = {
-          type: 'text',
-          text: reply_text
-        }
-        client.reply_message(event['replyToken'], message)
+        handle_text_message(event)
       end
     end
 
@@ -36,25 +23,13 @@ class LineBotController < ApplicationController
   private
 
   def handle_text_message(line_event)
-    user_id = line_event['source']['userId']
     user_message = line_event.message['text']
-    reply_text = parse_message(user_message)
-
-  if reply_text
-    LineEvent.create(user_id: user_id, message: reply_text[:message], reminder_time: reply_text[:time])
-    response_message = "リマインドを設定しました: #{reply_text[:message]} - #{reply_text[:time].strftime('%Y-%m-%d %H:%M')}"
-  else
-    response_message = "メッセージを理解できませんでした。"
-  end
-
-  message = {
-    type: 'text',
-    text: response_message
-  }
-  client.reply_message(line_event['replyToken'], message)
-end
-  
-  def parse_time(time_str)
+    response_message = "リマインドを設定します。内容と時間を入力してください"
+    message = {
+      type: 'text',
+      text: response_message
+    }
+    client.reply_message(line_event['replyToken'], message)
   end
   
   def client
