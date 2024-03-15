@@ -6,7 +6,7 @@ class LineBotController < ApplicationController
     body = request.body.read
     signature = request.env['HTTP_X_LINE_SIGNATURE']
     unless client.validate_signature(body, signature)
-      return head :bad_request
+      return head :bad_request and return
     end
 
     events = client.parse_events_from(body)
@@ -23,15 +23,104 @@ class LineBotController < ApplicationController
   private
 
   def handle_text_message(line_event)
+    user_id = line_event['source']['userId']
+    user = User.find_or_create_by(line_user_id: user_id)
     user_message = line_event.message['text']
-    response_message = "リマインドを設定します。内容と時間を入力してください"
-    message = {
-      type: 'text',
-      text: response_message
-    }
-    client.reply_message(line_event['replyToken'], message)
+
+    if user_message.downcase == 'キャンセル'
+      clear_user_status(user)
+      cancel_operation(line_event['replyToken'])
+      return
+    end
+
+    case get_user_status(user)
+
+    when 'awaiting_title'
+      set_user_status(user, 'awaiting_time', user_message)
+      ask_for_time(line_event['replyToken'])
+    when 'awaiting_time'
+      title = get_temporary_data(user)
+      set_reminder(user, title, user_message, line_event)
+      confirm_reminder_set(line_event['replyToken'], title, user_message)
+      clear_user_status(user)
+    else
+      prompt_for_title(line_event['replyToken'])
+      set_user_status(user, 'awaiting_title')
+    end
   end
   
+  def get_user_status(user)
+    user.status
+  end
+
+  def set_user_status(user, status, temporary_data = nil)
+    user.update(status: status, temporary_data: temporary_data)
+  end
+
+  def get_temporary_data(user)
+    user.temporary_data
+  end
+
+  def set_reminder(user, title,  time_text, line_event)
+
+  parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(time_text)
+
+  if parsed_datetime_str.present?
+    parsed_datetime = Time.zone.parse(parsed_datetime_str)
+
+    user.line_events.create(title: title, reminder_time: parsed_datetime)
+
+    confirm_reminder_set(line_event['replyToken'], title, parsed_datetime)
+  else
+    send_error_message(line_event['replyToken'], "日時情報を正しく認識できませんでした。もう一度入力してください")
+  end
+end
+
+  def clear_user_status(user)
+    user.update(status: nil, temporary_data: nil)
+  end
+
+  def ask_for_time(reply_token)
+    message = {
+      type: 'text',
+      text: 'いつリマインドしますか？'
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def confirm_reminder_set(reply_token, title, parsed_datetime)
+    message = {
+      type: 'text',
+      text: "#{datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def prompt_for_title(reply_token)
+    message = {
+      type: 'text',
+      text: 'タイトルを入力してください'
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def cancel_operation(reply_token)
+    message = {
+      type: 'text',
+      text: '操作をキャンセルしました。'
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def send_error_message(reply_token, message_text)
+    message = {
+      type: 'text',
+      text: message_text
+    }
+    client.reply_message(reply_token, message)
+  end
+
+
   def client
     @client ||= Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_MESSAGING_CHANNEL_SECRET"]
