@@ -33,21 +33,14 @@ class LineBotController < ApplicationController
       return
     end
 
-    case get_user_status(user)
-
-    when 'awaiting_title'
-      set_user_status(user, 'awaiting_time', user_message)
-      ask_for_time(line_event['replyToken'])
-    when 'awaiting_time'
-      title = get_temporary_data(user)
-      set_reminder(user, title, user_message, line_event)
-      confirm_reminder_set(line_event['replyToken'], title, user_message)
-      clear_user_status(user)
-    else
-      prompt_for_title(line_event['replyToken'])
-      set_user_status(user, 'awaiting_title')
-    end
+  case get_user_status(user)
+  when nil, '', 'awaiting_title'
+    set_user_status(user, 'awaiting_time', user_message)
+    ask_for_time(line_event['replyToken'])
+  when 'awaiting_time'
+    process_datetime_input(user, user_message, line_event)
   end
+end
   
   def get_user_status(user)
     user.status
@@ -61,20 +54,19 @@ class LineBotController < ApplicationController
     user.temporary_data
   end
 
-  def set_reminder(user, title,  time_text, line_event)
-
-  parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(time_text)
-
-  if parsed_datetime_str.present?
-    parsed_datetime = Time.zone.parse(parsed_datetime_str)
-
-    user.line_events.create(title: title, reminder_time: parsed_datetime)
-
-    confirm_reminder_set(line_event['replyToken'], title, parsed_datetime)
-  else
-    send_error_message(line_event['replyToken'], "日時情報を正しく認識できませんでした。もう一度入力してください")
+  def process_datetime_input(user, time_text, line_event)
+    parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(time_text)
+  
+    if parsed_datetime_str.present?
+      parsed_datetime = Time.zone.parse(parsed_datetime_str)
+      user.line_events.create(title: get_temporary_data(user), reminder_time: parsed_datetime)
+      confirm_reminder_set(line_event['replyToken'], get_temporary_data(user), parsed_datetime)
+      clear_user_status(user)
+    else
+      send_error_message(line_event['replyToken'], "日時情報を正しく認識できませんでした。もう一度入力してください。")
+    end
   end
-end
+
 
   def clear_user_status(user)
     user.update(status: nil, temporary_data: nil)
@@ -91,15 +83,7 @@ end
   def confirm_reminder_set(reply_token, title, parsed_datetime)
     message = {
       type: 'text',
-      text: "#{datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
-    }
-    client.reply_message(reply_token, message)
-  end
-
-  def prompt_for_title(reply_token)
-    message = {
-      type: 'text',
-      text: 'タイトルを入力してください'
+      text: "#{parsed_datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
     }
     client.reply_message(reply_token, message)
   end
