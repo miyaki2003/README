@@ -3,7 +3,8 @@ require 'googleauth'
 
 class NaturalLanguageProcessor
   def self.parse_time_from_text(text)
-    language_service = Google::Cloud::Language.language_service
+    credentials = Google::Auth::Credentials.new(JSON.parse(ENV['GOOGLE_CREDENTIALS']))
+    language_service = Google::Cloud::Language.language_service(credentials: credentials)
 
     document = { content: text, type: :PLAIN_TEXT }
     response = language_service.analyze_entities document: document
