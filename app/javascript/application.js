@@ -3,3 +3,4 @@ window.jQuery = $;
 window.$ = $;
 
 import "bootstrap";
+import 'fullcalendar';
