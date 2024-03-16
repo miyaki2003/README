@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'fullcalendar/index'
   get 'liff/index'
   get 'staticpages/top'
 
@@ -13,4 +14,6 @@ Rails.application.routes.draw do
   post '/callback', to: 'line_bot#callback'
 
   get 'liff', to: 'liff#index'
+
+  get 'fullcalendar', to: 'fullcalendar#index'
 end
