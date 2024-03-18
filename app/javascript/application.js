@@ -3,4 +3,5 @@ window.jQuery = $;
 window.$ = $;
 
 import "bootstrap";
-import 'fullcalendar';
+import './fullcalendar';
+import './liff_init';
