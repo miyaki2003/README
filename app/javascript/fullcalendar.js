@@ -1,14 +1,19 @@
+console.log("DOM is ready!");
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap-icons/font/bootstrap-icons.css';
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("DOM is ready!");
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
-      plugins: [ dayGridPlugin, timeGridPlugin, listPlugin ],
+      plugins: [ dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
+      themeSystem: 'bootstrap5',
       initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'prev,next today',

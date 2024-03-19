@@ -1,3 +1,6 @@
+<%= render 'shared/header' %>
 <h1>Staticpages#top</h1>
 <%= link_to 'Login with Line', auth_at_provider_path(provider: :line) %>
 <%= link_to 'fullcalendar', fullcalendar_path %>
+<%= link_to 'calendar', events_path %>
+<%= render 'shared/footer' %>
