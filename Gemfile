@@ -30,8 +30,6 @@ gem 'cssbundling-rails'
 
 gem 'jsbundling-rails'
 
-gem "simple_calendar"
-
 gem "google-cloud-language"
 
 group :development, :test do
