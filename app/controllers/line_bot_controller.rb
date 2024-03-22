@@ -66,40 +66,6 @@ class LineBotController < ApplicationController
     client.reply_message(reply_token, message)
   end
   
-
-
-
-
-
-  
-
-  def process_datetime_input(user, time_text, line_event)
-    parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(time_text)
-  
-    if parsed_datetime_str.present?
-      parsed_datetime = Time.zone.parse(parsed_datetime_str)
-
-      create_and_confirm_reminder(user, get_temporary_data(user), parsed_datetime, line_event['replyToken'])
-    else
-      send_error_message(line_event['replyToken'], "日時情報を正しく認識できませんでした。もう一度入力してください。")
-    end
-  end
-
-  if parsed_datetime_str.present?
-    parsed_datetime = Time.zone.parse(parsed_datetime_str)
-    title = "リマインダーのタイトル"
-    return [title, parsed_datetime]
-  else
-    return [nil, nil]
-  end
-
-
-  
-
-
-
-
-
   def ask_for_time(reply_token)
     message = {
       type: 'text',
