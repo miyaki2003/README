@@ -28,31 +28,50 @@ class LineBotController < ApplicationController
     user_message = line_event.message['text']
 
     if user_message.downcase == 'キャンセル'
-      clear_user_status(user)
-      cancel_operation(line_event['replyToken'])
-      return
+      cancel_operation(user, line_event['replyToken'])
+    else
+      process_user_message(user, text, line_event['replyToken'])
     end
-
-  case get_user_status(user)
-  when nil, '', 'awaiting_title'
-    set_user_status(user, 'awaiting_time', user_message)
-    ask_for_time(line_event['replyToken'])
-  when 'awaiting_time'
-    process_datetime_input(user, user_message, line_event)
   end
-end
+
+  def process_user_message(user, text, reply_token)
+    case user.status
+    when nil, '', 'awaiting_title'
+      #ユーザーがタイトルを送信
+      set_user_status(user, 'awaiting_time', text)
+      ask_for_time(reply_token)
+    when 'awaiting_time'
+      #ユーザーが時間を送信
+      set_and_confirm_reminder(user, text, reply_token)
+    end
+  end
+
+  def set_and_confirm_reminder(user, time_text, reply_token)
+    reminder_time = parse_datetime(time_text)
+
+    if reminder_time
+      user.reminders.create(title: user.temporary_data, reminder_time: reminder_time)
+      confirm_reminder_set(reply_token, user.temporary_data, reminder_time)
+      clear_user_status(user)
+    else
+      send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+    end
+  end
+
+  def cancel_operation(reply_token)
+    message = {
+      type: 'text',
+      text: '操作をキャンセルしました。'
+    }
+    client.reply_message(reply_token, message)
+  end
   
-  def get_user_status(user)
-    user.status
-  end
 
-  def set_user_status(user, status, temporary_data = nil)
-    user.update(status: status, temporary_data: temporary_data)
-  end
 
-  def get_temporary_data(user)
-    user.temporary_data
-  end
+
+
+
+  
 
   def process_datetime_input(user, time_text, line_event)
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(time_text)
@@ -60,18 +79,26 @@ end
     if parsed_datetime_str.present?
       parsed_datetime = Time.zone.parse(parsed_datetime_str)
 
-      user.line_events.create(title: get_temporary_data(user), reminder_time: parsed_datetime)
-      confirm_reminder_set(line_event['replyToken'], get_temporary_data(user), parsed_datetime)
-      clear_user_status(user)
+      create_and_confirm_reminder(user, get_temporary_data(user), parsed_datetime, line_event['replyToken'])
     else
       send_error_message(line_event['replyToken'], "日時情報を正しく認識できませんでした。もう一度入力してください。")
     end
   end
 
-
-  def clear_user_status(user)
-    user.update(status: nil, temporary_data: nil)
+  if parsed_datetime_str.present?
+    parsed_datetime = Time.zone.parse(parsed_datetime_str)
+    title = "リマインダーのタイトル"
+    return [title, parsed_datetime]
+  else
+    return [nil, nil]
   end
+
+
+  
+
+
+
+
 
   def ask_for_time(reply_token)
     message = {
@@ -89,20 +116,28 @@ end
     client.reply_message(reply_token, message)
   end
 
-  def cancel_operation(reply_token)
-    message = {
-      type: 'text',
-      text: '操作をキャンセルしました。'
-    }
-    client.reply_message(reply_token, message)
-  end
-
   def send_error_message(reply_token, message_text)
     message = {
       type: 'text',
       text: message_text
     }
     client.reply_message(reply_token, message)
+  end
+
+  def parse_message(message)
+    parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(message)
+    if parsed_datetime_str.present?
+      parsed_datetime = Time.zone.parse(parsed_datetime_str)
+
+      title = extract_title_from_message(message)
+      return [title, parsed_datetime]
+    else
+      return [nil, nil]
+    end
+  end
+
+  def extract_title_from_message(message)
+    message
   end
 
 
