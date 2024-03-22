@@ -32,6 +32,8 @@ gem 'jsbundling-rails'
 
 gem "google-cloud-language"
 
+gem 'sassc-rails'
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem 'dotenv-rails'
