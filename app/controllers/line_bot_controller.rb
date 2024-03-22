@@ -55,10 +55,16 @@ end
   end
 
   def process_datetime_input(user, time_text, line_event)
+    binding.pry
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(time_text)
+
+    Rails.logger.debug "解析された日時文字列: #{parsed_datetime_str}"
   
     if parsed_datetime_str.present?
       parsed_datetime = Time.zone.parse(parsed_datetime_str)
+
+      Rails.logger.debug "生成されたDateTimeオブジェクト: #{parsed_datetime}"
+
       user.line_events.create(title: get_temporary_data(user), reminder_time: parsed_datetime)
       confirm_reminder_set(line_event['replyToken'], get_temporary_data(user), parsed_datetime)
       clear_user_status(user)
