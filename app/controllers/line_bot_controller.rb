@@ -30,31 +30,33 @@ class LineBotController < ApplicationController
     if user_message.downcase == 'キャンセル'
       cancel_operation(user, line_event['replyToken'])
     else
-      process_user_message(user, text, line_event['replyToken'])
+      process_user_message(user, user_message, line_event['replyToken'])
     end
   end
 
   def process_user_message(user, text, reply_token)
     case user.status
-    when nil, '', 'awaiting_title'
-      #ユーザーがタイトルを送信
-      set_user_status(user, 'awaiting_time', text)
+    when 'awaiting_title'
+      user.update(status: 'awaiting_time', temporary_data: text)
       ask_for_time(reply_token)
     when 'awaiting_time'
-      #ユーザーが時間を送信
-      set_and_confirm_reminder(user, text, reply_token)
+      parsed_datetime = parse_message(text)
+      if parsed_datetime
+        set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
+        user.update(status: nil, temporary_data: nil)
+      else
+        send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+      end
     end
   end
 
-  def set_and_confirm_reminder(user, time_text, reply_token)
-    reminder_time = parse_datetime(time_text)
-
-    if reminder_time
-      user.reminders.create(title: user.temporary_data, reminder_time: reminder_time)
-      confirm_reminder_set(reply_token, user.temporary_data, reminder_time)
-      clear_user_status(user)
+  def set_and_confirm_reminder(user, title, reminder_time, reply_token)
+    reminder = ReminderService.create(user: user, title: title, reminder_time: reminder_time)
+    
+    if reminder.persisted?
+      confirm_reminder_set(reply_token, title, reminder.reminder_time)
     else
-      send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+      send_error_message(reply_token, "リマインダーを設定できませんでした。")
     end
   end
 
@@ -94,18 +96,11 @@ class LineBotController < ApplicationController
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(message)
     if parsed_datetime_str.present?
       parsed_datetime = Time.zone.parse(parsed_datetime_str)
-
-      title = extract_title_from_message(message)
-      return [title, parsed_datetime]
+      return parsed_datetime
     else
-      return [nil, nil]
+      return nil
     end
   end
-
-  def extract_title_from_message(message)
-    message
-  end
-
 
   def client
     @client ||= Line::Bot::Client.new { |config|
