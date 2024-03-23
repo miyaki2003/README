@@ -28,7 +28,7 @@ class LineBotController < ApplicationController
     user_message = line_event.message['text']
 
     if user_message.downcase == 'キャンセル'
-      cancel_operation(user, line_event['replyToken'])
+      cancel_operation(line_event['replyToken'])
     else
       process_user_message(user, user_message, line_event['replyToken'])
     end
