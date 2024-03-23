@@ -2,7 +2,7 @@ require "google/cloud/language"
 
 class NaturalLanguageProcessor
   def self.parse_time_from_text(text)
-    project_id = "instant-subset-417305"
+    credentials = JSON.parse(ENV["GOOGLE_APPLICATION_CREDENTIALS_JSON"], symbolize_names: true)
     language = Google::Cloud::Language.language_service
     document = { content: text, type: :PLAIN_TEXT }
     response = language.analyze_entities document: document
