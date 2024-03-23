@@ -37,9 +37,11 @@ class LineBotController < ApplicationController
   def process_user_message(user, text, reply_token)
     case user.status
     when 'awaiting_title'
+      #タイトルを受け取る
       user.update(status: 'awaiting_time', temporary_data: text)
       ask_for_time(reply_token)
     when 'awaiting_time'
+      #時間を受け取る
       parsed_datetime = parse_message(text)
       if parsed_datetime
         set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
