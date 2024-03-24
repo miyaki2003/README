@@ -1,7 +1,7 @@
 require "google/cloud/language"
 class NaturalLanguageProcessor
   def self.parse_time_from_text(text)
-    credentials = JSON.parse(ENV['GOOGLE_APPLICATION_CREDENTIALS'], symbolize_names: true)
+    credentials = JSON.parse(ENV['GOOGLE_CREDENTIALS'], symbolize_names: true)
     language_service = Google::Cloud::Language.language_service(credentials: credentials)
 
     document = { content: text, type: :PLAIN_TEXT }
