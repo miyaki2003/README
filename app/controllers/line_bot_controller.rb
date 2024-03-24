@@ -58,7 +58,7 @@ class LineBotController < ApplicationController
     if reminder.persisted?
       confirm_reminder_set(reply_token, title, reminder.reminder_time)
     else
-      send_error_message(reply_token, "リマインダーを設定できませんでした。")
+      send_error_message(reply_token, "リマインダーを設定できませんでした")
     end
   end
 
