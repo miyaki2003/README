@@ -36,7 +36,9 @@ class LineBotController < ApplicationController
   end
   
   def start_reminder_setting(user, text, reply_token)
+    Rails.logger.info "Updating user status. Current status: #{user.status}"
     user.update(status: 'awaiting_time', temporary_data: text)
+    Rails.logger.info "Updated user status. New status: #{user.status}"
     ask_for_time(reply_token)
   end
 
@@ -66,7 +68,7 @@ class LineBotController < ApplicationController
   def cancel_operation(reply_token)
     message = {
       type: 'text',
-      text: '操作をキャンセルしました。'
+      text: '操作をキャンセルしました'
     }
     client.reply_message(reply_token, message)
   end
