@@ -25,10 +25,14 @@ class LineBotController < ApplicationController
   def handle_text_message(line_event)
     user_id = line_event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
-    user_message = line_event.message['text']
-
-    if user_message.downcase == 'キャンセル'
+    user_message = line_event.message['text'].downcase
+    case user_message
+    when 'キャンセル'
+      user.update(status: nil)
       cancel_operation(line_event['replyToken'])
+    when 'リマインダーを設定'
+      user.update(status: 'awaiting_title')
+      ask_for_title(line_event['replyToken'])
     else
       process_user_message(user, user_message, line_event['replyToken'])
     end
@@ -37,11 +41,9 @@ class LineBotController < ApplicationController
   def process_user_message(user, text, reply_token)
     case user.status
     when 'awaiting_title'
-      #タイトルを受け取る
       user.update(status: 'awaiting_time', temporary_data: text)
       ask_for_time(reply_token)
     when 'awaiting_time'
-      #時間を受け取る
       parsed_datetime = parse_message(text)
       if parsed_datetime
         set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
