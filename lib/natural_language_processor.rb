@@ -26,6 +26,10 @@ class NaturalLanguageProcessor
 
     response_body = JSON.parse(response.body, symbolize_names: true)
     datetime_entity = response_body[:entities].find { |entity| entity[:type] == "DATE" || entity[:type] == "TIME" }
-    datetime_entity&.metadata['value']
+    if datetime_entity
+      datetime_entity[:name]
+    else
+      nil
+    end
   end
 end
