@@ -1,33 +1,50 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'chronic'
 
 class NaturalLanguageProcessor
-  def self.parse_time_from_text(text)
-    api_key = ENV['GOOGLE_API_KEY']
-
-    uri = URI.parse("https://language.googleapis.com/v1/documents:analyzeEntities?key=#{api_key}")
-
-    request_body = {
-      document: {
-        type: "PLAIN_TEXT",
-        content: text
-      },
-      encodingType: "UTF8"
-    }.to_json
-
-    request = Net::HTTP::Post.new(uri)
-    request.content_type = "application/json"
-    request.body = request_body
-
-    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
-      http.request(request)
+  
+  def self.translate_japanese_to_english(text)
+    if text =~ /今日の(\d+)時(\d*)分?/
+      hour = $1.to_i
+      minutes = $2.empty? ? 0 : $2.to_i
+      "today at #{hour}:#{format('%02d', minutes)}"
+    elsif text =~ /明日の(\d+)時(\d*)分?/
+      hour = $1.to_i
+      minutes = $2.empty? ? 0 : $2.to_i
+      "tomorrow at #{hour}:#{format('%02d', minutes)}"
+    elsif text =~ /午前(\d+)時(\d*)分?/
+      hour = $1.to_i
+      minutes = $2.empty? ? 0 : $2.to_i
+      "today at #{hour}am:#{format('%02d', minutes)}"
+    elsif text =~ /午後(\d+)時(\d*)分?/
+      hour = $1.to_i
+      minutes = $2.empty? ? 0 : $2.to_i
+      hour = hour % 12 + 12
+      "today at #{hour}:#{format('%02d', minutes)}"
+    else
+      case text
+      when "今日"
+        "today"
+      when "明日"
+        "tomorrow"
+      else
+        text
+      end
     end
+  end
 
-    response_body = JSON.parse(response.body, symbolize_names: true)
-    datetime_entity = response_body[:entities].find { |entity| entity[:type] == "DATE" || entity[:type] == "TIME" }
-    if datetime_entity
-      datetime_entity[:name]
+  
+  def self.parse_time_from_text(text)
+    
+    translated_text = translate_japanese_to_english(text)
+    
+    
+    datetime = Chronic.parse(translated_text)
+    
+    if datetime
+      datetime.strftime('%Y-%m-%d %H:%M:%S')
     else
       nil
     end

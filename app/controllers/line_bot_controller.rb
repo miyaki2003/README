@@ -98,7 +98,7 @@ class LineBotController < ApplicationController
   def parse_message(message)
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(message)
     if parsed_datetime_str.present?
-      parsed_datetime = Time.zone.parse(parsed_datetime_str)
+      parsed_datetime = DateTime.parse(parsed_datetime_str)
       return parsed_datetime
     else
       return nil
