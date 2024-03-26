@@ -5,8 +5,6 @@ class ReminderJob < ApplicationJob
     reminder = Reminder.find_by(id: reminder_id)
     return unless reminder
 
-    Rails.logger.info("Current Time: #{Time.current}, Time Zone: #{Time.zone.name}")
-
     message = {
       type: 'text',
       text: "#{reminder.title}の時間です"
