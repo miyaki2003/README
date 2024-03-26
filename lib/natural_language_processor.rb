@@ -39,7 +39,8 @@ class NaturalLanguageProcessor
   def self.parse_time_from_text(text)
     
     translated_text = translate_japanese_to_english(text)
-    
+
+    Chronic.time_class = Time.zone
     
     datetime = Chronic.parse(translated_text)
     
