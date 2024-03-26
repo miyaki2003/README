@@ -30,8 +30,6 @@ class LineBotController < ApplicationController
     if user_message.downcase == 'キャンセル'
       user.update(status: nil, temporary_data: nil)
       cancel_operation(event['replyToken'])
-    elsif user.status == 'awaiting_time'
-      process_user_message(user, user_message, event['replyToken'])
     else
       start_reminder_setting(user, user_message, event['replyToken'])
     end
@@ -43,6 +41,8 @@ class LineBotController < ApplicationController
   end
 
   def process_user_message(user, text, reply_token)
+    case user.status
+    when 'awaiting_time'
       parsed_datetime = parse_message(text)
       if parsed_datetime
         set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
