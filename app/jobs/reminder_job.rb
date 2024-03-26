@@ -5,6 +5,8 @@ class ReminderJob < ApplicationJob
     reminder = Reminder.find_by(id: reminder_id)
     return unless reminder
 
+    Rails.logger.info("Current Time: #{Time.current}, Time Zone: #{Time.zone.name}")
+
     message = {
       type: 'text',
       text: "#{reminder.title}の時間です"
@@ -14,6 +16,5 @@ class ReminderJob < ApplicationJob
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
     response = client.push_message(reminder.user.line_user_id, message)
-    Rails.logger.info("Sent reminder: #{response}")
   end
 end

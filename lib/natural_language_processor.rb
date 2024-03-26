@@ -14,7 +14,6 @@ class NaturalLanguageProcessor
 
   def self.parse_time_from_text(text)
     translated_text = translate_japanese_to_english(text)
-    datetime = Chronic.parse(translated_text)
     Rails.logger.debug "Parsed Time: #{datetime}, Time Zone: #{datetime.zone}"
     if datetime
       datetime.strftime('%Y-%m-%d %H:%M')
