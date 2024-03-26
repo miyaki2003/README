@@ -45,6 +45,12 @@ class LineBotController < ApplicationController
   def process_user_message(user, text, reply_token)
     parsed_datetime = parse_message(text)
     if parsed_datetime
+      scheduled_time_jst = parsed_datetime
+      scheduled_time_utc = scheduled_time_jst.in_time_zone('Tokyo').utc
+
+      reminder = Reminder.create(user_id: user.id, reminder_time: scheduled_time_utc, title: user.temporary_data)
+      ReminderJob.set(wait_until: scheduled_time_utc).perform_later(reminder.id)
+      
       set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
       user.update(status: nil, temporary_data: nil)
     else
