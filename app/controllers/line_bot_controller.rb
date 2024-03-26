@@ -22,16 +22,16 @@ class LineBotController < ApplicationController
 
   private
 
-  def handle_text_message(line_event)
-    user_id = line_event['source']['userId']
+  def handle_text_message(event)
+    user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
-    user_message = line_event.message['text']
+    user_message = event.message['text']
   
     if user_message.downcase == 'キャンセル'
       user.update(status: nil, temporary_data: nil)
-      cancel_operation(line_event['replyToken'])
+      cancel_operation(event['replyToken'])
     else
-      start_reminder_setting(user, user_message, line_event['replyToken'])
+      start_reminder_setting(user, user_message, event['replyToken'])
     end
   end
   
@@ -54,14 +54,11 @@ class LineBotController < ApplicationController
   end
 
   def set_and_confirm_reminder(user, title, reminder_time, reply_token)
-    Rails.logger.info "Setting reminder: #{title} at #{reminder_time} for user #{user.id}"
     reminder = ReminderService.create(user: user, title: title, reminder_time: reminder_time)
     
     if reminder.persisted?
-      Rails.logger.info "Reminder set successfully: #{reminder.id}"
       confirm_reminder_set(reply_token, title, reminder.reminder_time)
     else
-      Rails.logger.info "Failed to set reminder"
       send_error_message(reply_token, "リマインダーを設定できませんでした")
     end
   end
@@ -69,7 +66,7 @@ class LineBotController < ApplicationController
   def cancel_operation(reply_token)
     message = {
       type: 'text',
-      text: '操作をキャンセルしました。'
+      text: '操作をキャンセルしました'
     }
     client.reply_message(reply_token, message)
   end
@@ -87,9 +84,7 @@ class LineBotController < ApplicationController
       type: 'text',
       text: "#{parsed_datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
     }
-    Rails.logger.info "Sending confirmation message: #{message[:text]}"
     client.reply_message(reply_token, message)
-    Rails.logger.info "Attempted to send message."
   end
 
   def send_error_message(reply_token, message_text)
@@ -104,10 +99,8 @@ class LineBotController < ApplicationController
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(message)
     if parsed_datetime_str.present?
       parsed_datetime = Time.zone.parse(parsed_datetime_str)
-      Rails.logger.info "parse_message success: #{parsed_datetime}"
       return parsed_datetime
     else
-      Rails.logger.info "parse_message failed: No datetime found in message"
       return nil
     end
   end
