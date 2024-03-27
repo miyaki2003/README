@@ -43,28 +43,19 @@ class LineBotController < ApplicationController
   end
 
   def process_user_message(user, text, reply_token)
-    parsed_datetime = parse_message(text)
-    if parsed_datetime
-      scheduled_time_jst = parsed_datetime
-      reminder = Reminder.create(user_id: user.id, reminder_time: scheduled_time_jst, title: user.temporary_data)
-      ReminderJob.set(wait_until: scheduled_time_jst).perform_later(reminder.id)
-      
-      set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
-      user.update(status: nil, temporary_data: nil)
-    else
-      send_error_message(reply_token, "日時情報を正しく認識できませんでした")
-    end
-  end
-
-  def set_and_confirm_reminder(user, title, reminder_time, reply_token)
-    reminder = ReminderService.create(user: user, title: title, reminder_time: reminder_time)
-    
-    if reminder.persisted?
-      confirm_reminder_set(reply_token, title, reminder.reminder_time)
+    parsed_datetime_jst = parse_message(text)
+    if parsed_datetime_jst
+      reminder = ReminderService.create(user: user, title: user.temporary_data, reminder_time: parsed_datetime_jst)
+      if reminder.persisted?
+        confirm_reminder_set(reply_token, user.temporary_data, parsed_datetime_jst)
+        user.update(status: nil, temporary_data: nil)
     else
       send_error_message(reply_token, "リマインダーを設定できませんでした")
     end
+  else
+    send_error_message(reply_token, "日時情報を正しく認識できませんでした")
   end
+end
 
   def cancel_operation(reply_token)
     message = {
@@ -82,10 +73,10 @@ class LineBotController < ApplicationController
     client.reply_message(reply_token, message)
   end
 
-  def confirm_reminder_set(reply_token, title, parsed_datetime)
+  def confirm_reminder_set(reply_token, title, reminder_time_jst)
     message = {
       type: 'text',
-      text: "#{parsed_datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
+      text: "#{reminder_time_jst.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
     }
     client.reply_message(reply_token, message)
   end
@@ -101,7 +92,7 @@ class LineBotController < ApplicationController
   def parse_message(message)
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(message)
     if parsed_datetime_str.present?
-      parsed_datetime = DateTime.parse(parsed_datetime_str)
+      parsed_datetime = DateTime.parse(parsed_datetime_str).in_time_zone('Tokyo')
       return parsed_datetime
     else
       return nil
