@@ -45,8 +45,13 @@ class LineBotController < ApplicationController
   def process_user_message(user, text, reply_token)
     parsed_datetime = parse_message(text)
     if parsed_datetime
-      set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
-      user.update(status: nil, temporary_data: nil)
+      if parsed_datetime > Time.now
+        set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
+        user.update(status: nil, temporary_data: nil)
+      else
+        send_error_message(reply_token, "過去の時間はリマインドできません")
+        user.update(status: nil, temporary_data: nil)
+      end
     else
       send_error_message(reply_token, "日時情報を正しく認識できませんでした")
       user.update(status: nil, temporary_data: nil)
