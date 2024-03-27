@@ -7,7 +7,7 @@ class ReminderJob < ApplicationJob
 
     message = {
       type: 'text',
-      text: "#{reminder.title}の時間です"
+      text: "「#{reminder.title}」の時間です"
     }
     client = Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
