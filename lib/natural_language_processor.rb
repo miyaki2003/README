@@ -1,11 +1,25 @@
-require 'net/http'
-require 'uri'
-require 'json'
 require 'chronic'
 require 'date'
 require 'time'
 
 class NaturalLanguageProcessor
+  DATE_MAPPING = {
+    '今日' => 'today',
+    '明日' => 'tomorrow',
+    '明後日' => 'day after tomorrow',
+    '来週' => 'next week',
+    '来月' => 'next month',
+  }
+
+  TIME_OF_DAY_MAPPING = {
+    '午後' => 'PM',
+    '夕方' => 'evening',
+    '夜' => 'night',
+    '深夜' => 'late night',
+    '午前' => 'AM',
+    '朝' => 'morning',
+  }
+
   WEEKDAYS_MAPPING = {
     "日曜日" => "Sunday",
     "月曜日" => "Monday",
@@ -13,121 +27,66 @@ class NaturalLanguageProcessor
     "水曜日" => "Wednesday",
     "木曜日" => "Thursday",
     "金曜日" => "Friday",
-    "土曜日" => "Saturday",
-    "日曜" => "Sunday",
-    "月曜" => "Monday",
-    "火曜" => "Tuesday",
-    "水曜" => "Wednesday",
-    "木曜" => "Thursday",
-    "金曜" => "Friday",
-    "土曜" => "Saturday",
+    "土曜日" => "Saturday"
   }
+
+  def self.apply_relative_time(text, base_time = DateTime.now)
+    if match = text.match(/(\d+)(分後|時間後|日後|週間後|ヶ月後)/)
+      amount = match[1].to_i
+      case match[2]
+      when "分後"
+        base_time += Rational(amount, 1440)
+      when "時間後"
+        base_time += Rational(amount, 24)
+      when "日後"
+        base_time += amount
+      when "週間後"
+        base_time += amount * 7
+      when "ヶ月後"
+        base_time = (base_time.to_date >> amount).to_datetime
+      end
+    end
+    base_time
+  end
+
+  def self.parse_datetime_with_defaults(input)
+    now = DateTime.now
+    month_match = input.match(/(\d+)月/)
+    day_match = input.match(/(\d+)日/)
+    hour_match = input.match(/(\d+)時/)
+    minute_match = input.match(/(\d+)分/)
+
+    month = month_match ? month_match[1].to_i : now.month
+    day = if day_match
+            day_match[1].to_i
+          else
+            
+            month == now.month ? now.day : 1
+          end
+    hour = hour_match ? hour_match[1].to_i : 6 
+    minute = minute_match ? minute_match[1].to_i : 0
+
+    year = now.year
+    if month < now.month
+      year += 1
+    end
+    DateTime.new(year, month, day, hour, minute)
+  end
+
   def self.parse_and_format_datetime(text)
-    case text
-    when /(今日|明日|明後日)の?(\d+)(?:時|:)(\d*)分?/
-      translate_relative_day_time($1, $2, $3)
-    when /(\d+)月(\d+)日の?(\d+)(?:時|:)(\d*)分?/
-      translate_specific_date_time($1, $2, $3, $4)
-    when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
-      translate_relative_time(text)
+    translated_text = translate_to_english(text)
+    parsed_datetime = Chronic.parse(translated_text)
+    datetime_with_defaults = parsed_datetime || parse_datetime_with_defaults(translated_text)
+    final_datetime = apply_relative_time(text, datetime_with_defaults)
+    final_datetime.strftime('%Y-%m-%d %H:%M')
+  end
 
-
-
-
-
-    when /(今週の?)(日曜日|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日)/
-      date = find_weekday(WEEKDAYS_MAPPING[$2], 0)
-    when /(来週の?)(日曜日|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日)/
-      date = find_weekday(WEEKDAYS_MAPPING[$2], 7)
-    when /(次の)(日曜日|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日)/
-      date = find_next_weekday(WEEKDAYS_MAPPING[$2])
-
-
-
-
-
-
-
-    
-    else
-      "Unrecognized format"
+  def self.translate_to_english(text)
+    [DATE_MAPPING, TIME_OF_DAY_MAPPING, WEEKDAYS_MAPPING].each do |mapping|
+      text = mapping.reduce(text) do |t, (jp, en)|
+        t.gsub(jp, en)
+      end
     end
-  end
-  
-  private
-
-  def self.translate_relative_day_time(day, hour, minutes)
-    date = case day
-           when "今日" then Date.today
-           when "明日" then Date.today + 1
-           when "明後日" then Date.today + 2
-           else Date.today
-           end
-    "#{date} at #{format('%02d', hour.to_i)}:#{format('%02d', minutes.to_i)}"
-  end
-
-  def self.translate_specific_date_time(month, day, hour, minutes)
-    year = Date.today.year
-    "#{year}-#{format('%02d', month)}-#{format('%02d', day)} at #{format('%02d', hour.to_i)}:#{format('%02d', minutes.to_i)}"
-  end
-
-  def self.translate_relative_time(text)
-    case text
-    when /(\d+)分後/
-      minutes = $1.to_i
-      time = Time.now + (minutes * 60)
-    when /(\d+)時間後/
-      time = Time.now + (60 * 60)
-    when /(\d+)日後/
-      time = Time.now + (24 * 60 * 60)
-    when /(\d+)週間後/
-      time = Time.now + (7 * 24 * 60 * 60)
-    when /(\d+)ヶ月後/
-      time = Time.now + (30 * 24 * 60 * 60)
-    else
-      return "Unrecognized format"
-    end
-    time.strftime('%Y-%m-%d %H:%M:%S')
-  end
-
-
-
-
-
-
-
-
-  def self.find_weekday(weekday_name, offset)
-    target_wday = Date::DAYNAMES.index(weekday_name)
-    today = Date.today
-    days_until_target = (target_wday - today.wday + 7) % 7
-    days_until_target += offset
-    today + days_until_target
-  end
-  def self.find_next_weekday(weekday_name)
-    target_wday = Date::DAYNAMES.index(weekday_name)
-    today = Date.today
-    days_until_target = (target_wday - today.wday + 7) % 7
-    days_until_target = 7 if days_until_target == 0
-    today + days_until_target
-  end
-
-
-
-
-
-
-
-
-
-
-  def self.parse_time_from_text(text)
-    translated_text = parse_and_format_datetime(text)
-    datetime = Chronic.parse(translated_text)
-    if datetime
-      datetime.strftime('%Y-%m-%d %H:%M')
-    else
-      nil
-    end
+    text
   end
 end
