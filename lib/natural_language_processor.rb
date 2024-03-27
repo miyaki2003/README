@@ -2,8 +2,26 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'chronic'
+require 'date'
+require 'time'
 
 class NaturalLanguageProcessor
+  WEEKDAYS_MAPPING = {
+    "日曜日" => "Sunday",
+    "月曜日" => "Monday",
+    "火曜日" => "Tuesday",
+    "水曜日" => "Wednesday",
+    "木曜日" => "Thursday",
+    "金曜日" => "Friday",
+    "土曜日" => "Saturday",
+    "日曜" => "Sunday",
+    "月曜" => "Monday",
+    "火曜" => "Tuesday",
+    "水曜" => "Wednesday",
+    "木曜" => "Thursday",
+    "金曜" => "Friday",
+    "土曜" => "Saturday",
+  }
   def self.parse_and_format_datetime(text)
     case text
     when /(今日|明日|明後日)の?(\d+)(?:時|:)(\d*)分?/
@@ -12,6 +30,25 @@ class NaturalLanguageProcessor
       translate_specific_date_time($1, $2, $3, $4)
     when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
       translate_relative_time(text)
+
+
+
+
+
+    when /(今週の?)(日曜日|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日)/
+      date = find_weekday(WEEKDAYS_MAPPING[$2], 0)
+    when /(来週の?)(日曜日|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日)/
+      date = find_weekday(WEEKDAYS_MAPPING[$2], 7)
+    when /(次の)(日曜日|月曜日|火曜日|水曜日|木曜日|金曜日|土曜日)/
+      date = find_next_weekday(WEEKDAYS_MAPPING[$2])
+
+
+
+
+
+
+
+    
     else
       "Unrecognized format"
     end
@@ -52,6 +89,37 @@ class NaturalLanguageProcessor
     end
     time.strftime('%Y-%m-%d %H:%M:%S')
   end
+
+
+
+
+
+
+
+
+  def self.find_weekday(weekday_name, offset)
+    target_wday = Date::DAYNAMES.index(weekday_name)
+    today = Date.today
+    days_until_target = (target_wday - today.wday + 7) % 7
+    days_until_target += offset
+    today + days_until_target
+  end
+  def self.find_next_weekday(weekday_name)
+    target_wday = Date::DAYNAMES.index(weekday_name)
+    today = Date.today
+    days_until_target = (target_wday - today.wday + 7) % 7
+    days_until_target = 7 if days_until_target == 0
+    today + days_until_target
+  end
+
+
+
+
+
+
+
+
+
 
   def self.parse_time_from_text(text)
     translated_text = parse_and_format_datetime(text)
