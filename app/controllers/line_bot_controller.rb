@@ -49,6 +49,7 @@ class LineBotController < ApplicationController
       user.update(status: nil, temporary_data: nil)
     else
       send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+      user.update(status: nil, temporary_data: nil)
     end
   end
 
