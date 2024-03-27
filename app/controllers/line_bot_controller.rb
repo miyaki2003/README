@@ -43,19 +43,24 @@ class LineBotController < ApplicationController
   end
 
   def process_user_message(user, text, reply_token)
-    parsed_datetime_jst = parse_message(text)
-    if parsed_datetime_jst
-      reminder = ReminderService.create(user: user, title: user.temporary_data, reminder_time: parsed_datetime_jst)
-      if reminder.persisted?
-        confirm_reminder_set(reply_token, user.temporary_data, parsed_datetime_jst)
-        user.update(status: nil, temporary_data: nil)
+    parsed_datetime = parse_message(text)
+    if parsed_datetime
+      set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
+      user.update(status: nil, temporary_data: nil)
+    else
+      send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+    end
+  end
+
+  def set_and_confirm_reminder(user, title, reminder_time, reply_token)
+    reminder = ReminderService.create(user: user, title: title, reminder_time: reminder_time)
+    
+    if reminder.persisted?
+      confirm_reminder_set(reply_token, title, reminder.reminder_time)
     else
       send_error_message(reply_token, "リマインダーを設定できませんでした")
     end
-  else
-    send_error_message(reply_token, "日時情報を正しく認識できませんでした")
   end
-end
 
   def cancel_operation(reply_token)
     message = {
@@ -73,10 +78,10 @@ end
     client.reply_message(reply_token, message)
   end
 
-  def confirm_reminder_set(reply_token, title, reminder_time_jst)
+  def confirm_reminder_set(reply_token, title, parsed_datetime)
     message = {
       type: 'text',
-      text: "#{reminder_time_jst.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
+      text: "#{parsed_datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
     }
     client.reply_message(reply_token, message)
   end
@@ -92,7 +97,7 @@ end
   def parse_message(message)
     parsed_datetime_str = NaturalLanguageProcessor.parse_time_from_text(message)
     if parsed_datetime_str.present?
-      parsed_datetime = DateTime.parse(parsed_datetime_str).in_time_zone('Tokyo')
+      parsed_datetime = DateTime.parse(parsed_datetime_str)
       return parsed_datetime
     else
       return nil
