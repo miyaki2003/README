@@ -3,31 +3,19 @@ require 'date'
 require 'time'
 
 class NaturalLanguageProcessor
-  DATE_MAPPING = {
+  DATE_TIME_MAPPINGS = {
     '今日' => 'today',
     '明日' => 'tomorrow',
     '明後日' => 'day after tomorrow',
     '来週' => 'next week',
     '来月' => 'next month',
-  }
-
-  TIME_OF_DAY_MAPPING = {
-    '午後' => 'PM',
-    '夕方' => 'evening',
-    '夜' => 'night',
-    '深夜' => 'late night',
-    '午前' => 'AM',
-    '朝' => 'morning',
-  }
-
-  WEEKDAYS_MAPPING = {
-    "日曜日" => "Sunday",
-    "月曜日" => "Monday",
-    "火曜日" => "Tuesday",
-    "水曜日" => "Wednesday",
-    "木曜日" => "Thursday",
-    "金曜日" => "Friday",
-    "土曜日" => "Saturday"
+    '日曜日' => 'Sunday',
+    '月曜日' => 'Monday',
+    '火曜日' => 'Tuesday',
+    '水曜日' => 'Wednesday',
+    '木曜日' => 'Thursday',
+    '金曜日' => 'Friday',
+    '土曜日' => 'Saturday',
   }
 
   def self.apply_relative_time(text, base_time = DateTime.now)
@@ -73,20 +61,28 @@ class NaturalLanguageProcessor
     DateTime.new(year, month, day, hour, minute)
   end
 
-  def self.parse_and_format_datetime(text)
-    translated_text = translate_to_english(text)
-    parsed_datetime = Chronic.parse(translated_text)
-    datetime_with_defaults = parsed_datetime || parse_datetime_with_defaults(translated_text)
-    final_datetime = apply_relative_time(text, datetime_with_defaults)
-    final_datetime.strftime('%Y-%m-%d %H:%M')
+
+  def self.handle_missing_information(input)
+    month = input.match(/(\d+)月/)&.captures&.first.to_i || base_datetime.month
+    day = input.match(/(\d+)日/)&.captures&.first.to_i || base_datetime.day
+    hour = input.match(/(\d+)時/)&.captures&.first.to_i || 12
+    minute = input.match(/(\d+)分/)&.captures&.first.to_i || 0
+
+    year = base_datetime.year
+    year += 1 if month < base_datetime.month
+
+    DateTime.new(year, month, day, hour, minute)
   end
 
-  def self.translate_to_english(text)
-    [DATE_MAPPING, TIME_OF_DAY_MAPPING, WEEKDAYS_MAPPING].each do |mapping|
-      text = mapping.reduce(text) do |t, (jp, en)|
-        t.gsub(jp, en)
-      end
-    end
-    text
+  def self.parse_and_format_datetime(input)
+    input.gsub!(/午後|夕方|夜|深夜/, 'PM')
+    input.gsub!(/午前|朝/, 'AM')
+    input.gsub!(/(\d+)月(\d+)日/, '\1/\2')
+    input.gsub!(/(\d+)時/, '\1:')
+    input.gsub!(/(\d+)分/, '\1')
+    DATE_TIME_MAPPINGS.each { |jp, en| input.gsub!(jp, en) }
+    parsed_datetime = Chronic.parse(input)
+    datetime_with_defaults = handle_missing_information(input, parsed_datetime || DateTime.now)
+    datetime_with_defaults.strftime('%Y-%m-%d %H:%M')
   end
 end
