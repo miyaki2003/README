@@ -26,8 +26,8 @@ class NaturalLanguageProcessor
     parsed_datetime = Chronic.parse(formatted_text)
 
     if parsed_datetime
-      datetime_with_defaults = apply_defaults(parsed_datetime, now)
-      datetime_with_defaults.strftime('%Y-%m-%d %H:%M')
+      final_datetime = apply_defaults(parsed_datetime, now)
+      final_datetime.strftime('%Y-%m-%d %H:%M')
     else
       nil
     end
@@ -47,14 +47,22 @@ class NaturalLanguageProcessor
   end
 
   def self.apply_defaults(parsed_datetime, now)
-   
-    year = parsed_datetime.year
-    month = parsed_datetime.month
-    day = parsed_datetime.day
-    hour = parsed_datetime.hour || 9
-    minute = parsed_datetime.min || 0
+    default_hour = 9
+    default_minute = 0
 
-  
+    year = parsed_datetime ? parsed_datetime.year : now.year
+    month = parsed_datetime ? parsed_datetime.month : now.month
+    day = if parsed_datetime
+      parsed_datetime.day
+    else
+      if month == now.month
+        now.day
+      else
+        1
+      end
+    end
+    hour = parsed_datetime.hour || default_hour
+    minute = parsed_datetime.min || default_minute
     Time.zone.local(year, month, day, hour, minute)
   end
 end
