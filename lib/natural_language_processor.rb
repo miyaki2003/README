@@ -1,53 +1,67 @@
+require 'net/http'
+require 'uri'
+require 'json'
 require 'chronic'
 require 'date'
 require 'time'
 
 class NaturalLanguageProcessor
-  DATE_TIME_MAPPINGS = {
-    '今日' => 'today',
-    '明日' => 'tomorrow',
-    '明後日' => 'day after tomorrow',
-    '来週' => 'next week',
-    '来月' => 'next month',
-    '日曜日' => 'Sunday',
-    '月曜日' => 'Monday',
-    '火曜日' => 'Tuesday',
-    '水曜日' => 'Wednesday',
-    '木曜日' => 'Thursday',
-    '金曜日' => 'Friday',
-    '土曜日' => 'Saturday',
-  }
-  def self.parse_time_from_text(text)
-    now = Time.zone.now
-    text.gsub!(/午後|夕方|夜|深夜/, 'PM')
-    text.gsub!(/午前|朝/, 'AM')
-    DATE_TIME_MAPPINGS.each { |jp, en| text.gsub!(jp, en) }
-    text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
-    text.gsub!(/(\d+)時/, '\1:')
-    text.gsub!(/(\d+)分/, '\1')
-
-    parsed_datetime = Chronic.parse(text)
-    month, day, hour, minute = self.apply_defaults(parsed_datetime, now)
-    final_datetime = Time.zone.local(now.year, month, day, hour, minute)
-    if final_datetime
-      final_datetime.strftime('%Y-%m-%d %H:%M')
+  def self.parse_and_format_datetime(text)
+    case text
+    when /(今日|明日|明後日)の?(\d+)(?:時|:)(\d*)分?/
+      translate_relative_day_time($1, $2, $3)
+    when /(\d+)月(\d+)日の?(\d+)(?:時|:)(\d*)分?/
+      translate_specific_date_time($1, $2, $3, $4)
+    when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
+      translate_relative_time(text)
     else
-      "日時情報を認識できませんでした"
+      "Unrecognized format"
     end
   end
-
+  
   private
 
-  def self.apply_defaults(parsed_datetime, now)
-    month = parsed_datetime ? parsed_datetime.month : now.month
-    day = if parsed_datetime
-            parsed_datetime.day
-          else
-            now.day
-          end
-    hour = parsed_datetime&.hour || 9
-    minute = parsed_datetime&.min || 0
+  def self.translate_relative_day_time(day, hour, minutes)
+    date = case day
+           when "今日" then Date.today
+           when "明日" then Date.today + 1
+           when "明後日" then Date.today + 2
+           else Date.today
+           end
+    "#{date} at #{format('%02d', hour.to_i)}:#{format('%02d', minutes.to_i)}"
+  end
 
-    [month, day, hour, minute]
+  def self.translate_specific_date_time(month, day, hour, minutes)
+    year = Date.today.year
+    "#{year}-#{format('%02d', month)}-#{format('%02d', day)} at #{format('%02d', hour.to_i)}:#{format('%02d', minutes.to_i)}"
+  end
+
+  def self.translate_relative_time(text)
+    case text
+    when /(\d+)分後/
+      minutes = $1.to_i
+      time = Time.now + (minutes * 60)
+    when /(\d+)時間後/
+      time = Time.now + (60 * 60)
+    when /(\d+)日後/
+      time = Time.now + (24 * 60 * 60)
+    when /(\d+)週間後/
+      time = Time.now + (7 * 24 * 60 * 60)
+    when /(\d+)ヶ月後/
+      time = Time.now + (30 * 24 * 60 * 60)
+    else
+      return "Unrecognized format"
+    end
+    time.strftime('%Y-%m-%d %H:%M:%S')
+  end
+
+  def self.parse_time_from_text(text)
+    translated_text = parse_and_format_datetime(text)
+    datetime = Chronic.parse(translated_text)
+    if datetime
+      datetime.strftime('%Y-%m-%d %H:%M')
+    else
+      nil
+    end
   end
 end
