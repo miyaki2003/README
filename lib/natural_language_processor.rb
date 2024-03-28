@@ -39,7 +39,7 @@ class NaturalLanguageProcessor
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
-    formatted_text.gsub!(/の/, ' ')
+    formatted_text.gsub!(/の/, nil)
     formatted_text
   end
 
