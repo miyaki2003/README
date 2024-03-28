@@ -70,17 +70,17 @@ class NaturalLanguageProcessor
 
   def self.translate_weekday_and_relative_week(text)
     day_english = {
-      "日" => "Sunday",
-      "月" => "Monday",
-      "火" => "Tuesday",
-      "水" => "Wednesday",
-      "木" => "Thursday",
-      "金" => "Friday",
-      "土" => "Saturday"
+      /日曜?日?/ => "Sunday",
+      /月曜?日?/ => "Monday",
+      /火曜?日?/ => "Tuesday",
+      /水曜?日?/ => "Wednesday",
+      /木曜?日?/ => "Thursday",
+      /金曜?日?/ => "Friday",
+      /土曜?日?/ => "Saturday"
     }
     
     case text
-    when /今週の(.+)/
+    when /(今週)の(.+)/
       day = day_english[$1]
       "this #{day}"
     when /来週の(.+)/
