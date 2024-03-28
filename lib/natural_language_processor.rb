@@ -34,12 +34,12 @@ class NaturalLanguageProcessor
   def self.format_text_for_chronic(text)
     formatted_text = text.dup
     DATE_TIME_MAPPINGS.each { |jp, en| formatted_text.gsub!(jp, en) }
-    formatted_text.gsub!(/の/, ' ')
+    formatted_text.gsub!(/午後|夕方|夜|深夜/, 'PM')
+    formatted_text.gsub!(/午前|朝/, 'AM')
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
-    formatted_text.gsub!(/午後|夕方|夜/, 'pm')
-    formatted_text.gsub!(/午前|朝/, 'am')
+    formatted_text.gsub!(/の/, ' ')
     formatted_text
   end
 
