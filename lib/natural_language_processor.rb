@@ -18,6 +18,14 @@ class NaturalLanguageProcessor
     '土曜日' => 'Saturday',
   }
 
+  def self.parse_and_format_datetime(text)
+  case text
+  when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
+    translate_relative_time(text)
+  else
+    "Unrecognized format"
+  end
+
   def self.translate_relative_time(text)
     case text
     when /(\d+)分後/
@@ -40,7 +48,7 @@ class NaturalLanguageProcessor
   def self.format_text_for_chronic(text)
     formatted_text = text.dup
     DATE_TIME_MAPPINGS.each { |jp, en| formatted_text.gsub!(jp, en) }
-    formatted_text.gsub!(/の/, '')
+    formatted_text.gsub!(/の/, ' ')
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
