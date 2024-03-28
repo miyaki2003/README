@@ -20,8 +20,7 @@ class NaturalLanguageProcessor
 
   def self.parse_time_from_text(text)
     now = Time.zone.now
-    datetime_str = extract_datetime_info(text)
-    formatted_text = format_text_for_chronic(datetime_str)
+    formatted_text = format_text_for_chronic(text)
     parsed_datetime = Chronic.parse(formatted_text)
     if parsed_datetime
       final_datetime = apply_defaults(parsed_datetime, now)
@@ -41,6 +40,7 @@ class NaturalLanguageProcessor
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
+    formatted_text.gsub!(/の/, ' ')
     formatted_text
   end
 
@@ -62,23 +62,5 @@ class NaturalLanguageProcessor
     hour = parsed_datetime.hour || default_hour
     minute = parsed_datetime.min || default_minute
     Time.zone.local(year, month, day, hour, minute)
-  end
-
-  def self.extract_datetime_info(text)
-    datetime_info = nil
-  
-    datetime_patterns = [
-      /今日.*?(\d{1,2})時.*?(\d{1,2})分/,
-      /(\d{1,2})月.*?(\d{1,2})日.*?(\d{1,2})時.*?(\d{1,2})分/
-    ]
-  
-    datetime_patterns.each do |pattern|
-      match = text.match(pattern)
-      if match
-        datetime_info = match[0]
-        break
-      end
-    end
-    datetime_info
   end
 end
