@@ -78,20 +78,6 @@ class NaturalLanguageProcessor
       /金曜?日?/ => "Friday",
       /土曜?日?/ => "Saturday"
     }
-    
-    #case text
-    #when /(今週)の?(.+)/
-    #  day = day_english[$1]
-    #  "this #{day}"
-    #when /来週の?(.+)/
-    #  day = day_english[$1]
-    #  "next #{day}"
-    #when /再来週の?(.+)/
-    #  day = day_english[$1]
-    #  "#{day} in two weeks"
-    #else
-    #  "Unrecognized format"
-    #end
 
     time_match = text.match(/(\d+)(?:時|:)(\d*)分?/)
     hour = time_match ? time_match[1].to_i : 6
@@ -100,11 +86,7 @@ class NaturalLanguageProcessor
     period_match = text.match(/(朝|午前|午後)/)
     period = period_match ? period_match[1] : nil
 
-    if period == "午後" && hour < 12
-      hour += 12
-    elsif (period == "朝" || period == "午前") && hour == 12
-      hour = 0
-    end
+    adjusted_hour = adjust_hour_for_period(hour, period)
 
     text.gsub!(/(今週|来週|再来週)の?(朝|午前|午後)?(.+)/) do |match|
       period_keyword, time_of_day, day_japanese = $1, $2, $3
