@@ -65,20 +65,20 @@ class NaturalLanguageProcessor
   end
 
   def self.extract_datetime_info(text)
+    datetime_info = nil
+  
     datetime_patterns = [
-      /(\d{1,2})月(\d{1,2})日\s*(\d{1,2})時(\d{1,2})分/,
-      /今日\s*(\d{1,2})時(\d{1,2})分/,
-      /明日\s*(\d{1,2})時(\d{1,2})分/,
+      /今日.*?(\d{1,2})時.*?(\d{1,2})分/,
+      /(\d{1,2})月.*?(\d{1,2})日.*?(\d{1,2})時.*?(\d{1,2})分/
     ]
-    extracted_info = nil
   
     datetime_patterns.each do |pattern|
       match = text.match(pattern)
       if match
-        extracted_info = match[0]
+        datetime_info = match[0]
         break
       end
     end
-    extracted_info
+    datetime_info
   end
 end
