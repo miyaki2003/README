@@ -19,11 +19,10 @@ class NaturalLanguageProcessor
   }
 
   def self.parse_time_from_text(text)
-    now = Time.zone.now
     formatted_text = format_text_for_chronic(text)
     parsed_datetime = Chronic.parse(formatted_text)
     if parsed_datetime
-      final_datetime = apply_defaults(parsed_datetime, now)
+      final_datetime = apply_defaults(parsed_datetime)
       final_datetime.strftime('%Y-%m-%d %H:%M')
     else
       nil
@@ -34,9 +33,9 @@ class NaturalLanguageProcessor
 
   def self.format_text_for_chronic(text)
     formatted_text = text.dup
+    DATE_TIME_MAPPINGS.each { |jp, en| formatted_text.gsub!(jp, en) }
     formatted_text.gsub!(/午後|夕方|夜|深夜/, 'PM')
     formatted_text.gsub!(/午前|朝/, 'AM')
-    DATE_TIME_MAPPINGS.each { |jp, en| formatted_text.gsub!(jp, en) }
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
@@ -44,7 +43,7 @@ class NaturalLanguageProcessor
     formatted_text
   end
 
-  def self.apply_defaults(parsed_datetime, now)
+  def self.apply_defaults(parsed_datetime)
     default_hour = 9
     default_minute = 0
 
