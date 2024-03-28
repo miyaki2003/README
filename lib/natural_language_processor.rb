@@ -18,28 +18,34 @@ class NaturalLanguageProcessor
     '土曜日' => 'Saturday',
   }
 
-  def self.parse_time_from_text(text)
-    formatted_text = format_text_for_chronic(text)
-    parsed_datetime = Chronic.parse(formatted_text)
-    if parsed_datetime
-      final_datetime = apply_defaults(parsed_datetime)
-      final_datetime.strftime('%Y-%m-%d %H:%M')
+  def self.translate_relative_time(text)
+    case text
+    when /(\d+)分後/
+      minutes = $1.to_i
+      time = Time.now + (minutes * 60)
+    when /(\d+)時間後/
+      time = Time.now + (60 * 60)
+    when /(\d+)日後/
+      time = Time.now + (24 * 60 * 60)
+    when /(\d+)週間後/
+      time = Time.now + (7 * 24 * 60 * 60)
+    when /(\d+)ヶ月後/
+      time = Time.now + (30 * 24 * 60 * 60)
     else
-      nil
+      return "Unrecognized format"
     end
+    time.strftime('%Y-%m-%d %H:%M:%S')
   end
-
-  private
 
   def self.format_text_for_chronic(text)
     formatted_text = text.dup
     DATE_TIME_MAPPINGS.each { |jp, en| formatted_text.gsub!(jp, en) }
-    formatted_text.gsub!(/午後|夕方|夜|深夜/, 'PM')
-    formatted_text.gsub!(/午前|朝/, 'AM')
+    formatted_text.gsub!(/の/, '')
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
-    formatted_text.gsub!(/の/, nil)
+    formatted_text.gsub!(/午後|夕方|夜/, 'pm')
+    formatted_text.gsub!(/午前|朝/, 'am')
     formatted_text
   end
 
@@ -61,5 +67,16 @@ class NaturalLanguageProcessor
     hour = parsed_datetime.hour || default_hour
     minute = parsed_datetime.min || default_minute
     Time.zone.local(year, month, day, hour, minute)
+  end
+
+  def self.parse_time_from_text(text)
+    formatted_text = format_text_for_chronic(text)
+    parsed_datetime = Chronic.parse(formatted_text)
+    if parsed_datetime
+      final_datetime = apply_defaults(parsed_datetime)
+      final_datetime.strftime('%Y-%m-%d %H:%M')
+    else
+      nil
+    end
   end
 end
