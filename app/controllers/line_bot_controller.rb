@@ -45,7 +45,7 @@ class LineBotController < ApplicationController
   def process_user_message(user, text, reply_token)
     parsed_datetime = parse_message(text)
     if parsed_datetime
-      if parsed_datetime > Time.zone.now
+      if parsed_datetime > Time.now
         set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
         user.update(status: nil, temporary_data: nil)
       else
