@@ -18,7 +18,7 @@ class NaturalLanguageProcessor
     '土曜日' => 'Saturday',
   }
   def self.parse_time_from_text(text)
-    now = Time.now
+    now = Time.zone.now
     text.gsub!(/午後|夕方|夜|深夜/, 'PM')
     text.gsub!(/午前|朝/, 'AM')
     DATE_TIME_MAPPINGS.each { |jp, en| text.gsub!(jp, en) }
@@ -28,7 +28,7 @@ class NaturalLanguageProcessor
 
     parsed_datetime = Chronic.parse(text)
     month, day, hour, minute = self.apply_defaults(parsed_datetime, now)
-    final_datetime = Time.new(now.year, month, day, hour, minute)
+    final_datetime = Time.zone.local(now.year, month, day, hour, minute)
     if final_datetime
       final_datetime.strftime('%Y-%m-%d %H:%M')
     else
