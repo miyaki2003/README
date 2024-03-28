@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'reminders/index'
   root "staticpages#top"
 
   get '/auth/line/callback', to: 'oauths#callback'
@@ -10,4 +11,6 @@ Rails.application.routes.draw do
   get 'liff', to: 'liff#index'
 
   get 'fullcalendar', to: 'fullcalendar#index'
+
+  resources :reminders, only: [:index, :destroy]
 end
