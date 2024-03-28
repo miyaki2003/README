@@ -8,14 +8,14 @@ require 'time'
 class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     case text
-    when /(今日|明日|明後日)の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*)分?/
+    when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*)分?/
       translate_relative_day_time($1, $2, $3, $4)
     when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*)分?/
       translate_specific_date_time($1, $2, $3, $4, $5)
     when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
       translate_relative_time(text)
     else
-      "Unrecognized format"
+      translate_weekday_and_relative_week(text)
     end
   end
   
@@ -40,7 +40,7 @@ class NaturalLanguageProcessor
 
   def self.adjust_hour_for_period(hour, period)
     return hour if period.nil?
-    if (period == "午後" || period == "夜") && hour < 12
+    if period == "午後" && hour < 12
       hour + 12
     elsif (period == "午前" || period == "朝") && hour == 12
       0
@@ -66,6 +66,32 @@ class NaturalLanguageProcessor
       return "Unrecognized format"
     end
     time.strftime('%Y-%m-%d %H:%M:%S')
+  end
+
+  def self.translate_weekday_and_relative_week(text)
+    day_english = {
+      "日" => "Sunday",
+      "月" => "Monday",
+      "火" => "Tuesday",
+      "水" => "Wednesday",
+      "木" => "Thursday",
+      "金" => "Friday",
+      "土" => "Saturday"
+    }
+    
+    case text
+    when /今週の(.+)/
+      day = day_english[$1]
+      "this #{day}"
+    when /来週の(.+)/
+      day = day_english[$1]
+      "next #{day}"
+    when /再来週の(.+)/
+      day = day_english[$1]
+      "#{day} in two weeks"
+    else
+      "Unrecognized format"
+    end
   end
 
   def self.parse_time_from_text(text)
