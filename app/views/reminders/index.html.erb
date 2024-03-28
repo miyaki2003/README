@@ -1,0 +1,21 @@
+<h1>リマインド一覧</h1>
+<table>
+  <thead>
+    <tr>
+      <th>タイトル</th>
+      <th>メッセージ</th>
+      <th>リマインド時刻</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @reminders.each do |reminder| %>
+      <tr>
+        <td><%= reminder.title %></td>
+        <td><%= reminder.message %></td>
+        <td><%= reminder.reminder_time %></td>
+        <td><%= link_to '削除', reminder, method: :delete, data: { confirm: '本当に削除しますか？' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
