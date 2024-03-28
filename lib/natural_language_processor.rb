@@ -22,13 +22,14 @@ class NaturalLanguageProcessor
     now = Time.zone.now
     
     formatted_text = format_text_for_chronic(text)
-    
+    puts "Text to be parsed by Chronic: #{formatted_text}" 
     parsed_datetime = Chronic.parse(formatted_text)
-
+    puts "Chronic parsed datetime: #{parsed_datetime}"
     if parsed_datetime
       final_datetime = apply_defaults(parsed_datetime, now)
       final_datetime.strftime('%Y-%m-%d %H:%M')
     else
+      puts "Failed to parse datetime"
       nil
     end
   end
@@ -43,6 +44,7 @@ class NaturalLanguageProcessor
     formatted_text.gsub!(/(\d+)月(\d+)日/, '\1/\2')
     formatted_text.gsub!(/(\d+)時/, '\1:')
     formatted_text.gsub!(/(\d+)分/, '\1')
+    puts "Formatted text for Chronic: #{formatted_text}"
     formatted_text
   end
 
