@@ -32,7 +32,7 @@ class NaturalLanguageProcessor
     "#{date} at #{format('%02d', hour)}:#{format('%02d', minutes.to_i)}"
   end
 
-  def self.translate_specific_date_time(month, day, hour, minutes)
+  def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Date.today.year
     hour = adjust_hour_for_period(hour.to_i, period)
     "#{year}-#{format('%02d', month)}-#{format('%02d', day)} at #{format('%02d', hour)}:#{format('%02d', minutes.to_i)}"
@@ -79,18 +79,44 @@ class NaturalLanguageProcessor
       /土曜?日?/ => "Saturday"
     }
     
-    case text
-    when /(今週)の(.+)/
-      day = day_english[$1]
-      "this #{day}"
-    when /来週の(.+)/
-      day = day_english[$1]
-      "next #{day}"
-    when /再来週の(.+)/
-      day = day_english[$1]
-      "#{day} in two weeks"
-    else
-      "Unrecognized format"
+    #case text
+    #when /(今週)の?(.+)/
+    #  day = day_english[$1]
+    #  "this #{day}"
+    #when /来週の?(.+)/
+    #  day = day_english[$1]
+    #  "next #{day}"
+    #when /再来週の?(.+)/
+    #  day = day_english[$1]
+    #  "#{day} in two weeks"
+    #else
+    #  "Unrecognized format"
+    #end
+
+    time_match = text.match(/(\d+)(?:時|:)(\d*)分?/)
+    hour = time_match ? time_match[1].to_i : 6
+    minute = time_match && !time_match[2].empty? ? time_match[2].to_i : 0
+
+    period_match = text.match(/(朝|午前|午後)/)
+    period = period_match ? period_match[1] : nil
+
+    if period == "午後" && hour < 12
+      hour += 12
+    elsif (period == "朝" || period == "午前") && hour == 12
+      hour = 0
+    end
+
+    text.gsub!(/(今週|来週|再来週)の?(朝|午前|午後)?(.+)/) do |match|
+      period_keyword, time_of_day, day_japanese = $1, $2, $3
+      day_english_value = day_english.find { |k, _| day_japanese =~ k }.last
+      period_english = case period_keyword
+                        when "今週" then "this"
+                        when "来週" then "next"
+                        when "再来週" then "in two weeks"
+                        end
+      formatted_hour = format('%02d', hour)
+      formatted_minute = format('%02d', minute)
+      "#{period_english} #{day_english_value} #{formatted_hour}:#{formatted_minute}"
     end
   end
 
