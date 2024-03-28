@@ -12,5 +12,5 @@ Rails.application.routes.draw do
 
   get 'fullcalendar', to: 'fullcalendar#index'
 
-  resources :reminders, only: [:index, :destroy]
+  resources :reminders, only: %i[index destroy]
 end
