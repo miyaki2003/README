@@ -1,14 +1,9 @@
 require 'active_support/all'
 class NaturalLanguageProcessor
   DAY_MAPPINGS = {
-      /日曜?日?/ => 0,
-      /月曜?日?/ => 1,
-      /火曜?日?/ => 2,
-      /水曜?日?/ => 3,
-      /木曜?日?/ => 4,
-      /金曜?日?/ => 5,
-      /土曜?日?/ => 6
-    }.freeze
+    "日" => 0, "月" => 1, "火" => 2, "水" => 3,
+    "木" => 4, "金" => 5, "土" => 6
+  }.freeze
 
   def self.parse_and_format_datetime(text)
     case text
@@ -20,7 +15,7 @@ class NaturalLanguageProcessor
       translate_relative_time(text)
     else
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
-      time_match = text.match(/(\d+)(?:時|:)(\d*)分?/)
+      time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?/)
       period_match = text.match(/(朝|午前|午後)/)
       translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
     end
@@ -75,15 +70,12 @@ class NaturalLanguageProcessor
                     when "来週" then 1.week
                     when "再来週" then 2.weeks
                     end
-    wday_key = day_match[2]
-    DAY_MAPPINGS.each do |pattern, value|
-      if wday_key.match(pattern)
-        wday = value
-        break
-      end
-    end
-    target_date = Time.current.beginning_of_week(:sunday) + wday.days + week_modifier
+    wday_key = day_match[2].gsub(/曜日?/, "")
+    wday = DAY_MAPPINGS[wday_key]
+
+    target_date = Time.current.beginning_of_week(:monday) + wday.days + week_modifier
     hour = time_match ? time_match[1].to_i : 6
+
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
     
