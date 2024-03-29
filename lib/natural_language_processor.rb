@@ -87,8 +87,10 @@ class NaturalLanguageProcessor
     puts "Target date before adjustment: #{target_date}"
     puts "Hour: #{hour}, Minute: #{minute}"
     
-    target_date.change(hour: hour, min: minute)
+    target_date = target_date.change(hour: hour, min: minute)
     puts "Final target datetime: #{target_date}"
+    target_date_str = target_date.strftime('%Y-%m-%d %H:%M:%S')
+    target_date_str
   end
 
   def self.adjust_hour_for_period(hour, period)
@@ -100,11 +102,11 @@ class NaturalLanguageProcessor
       hour
     end
   end
+
   def self.parse_time_from_text(text)
     translated_text = parse_and_format_datetime(text)
-    return translated_text if translated_text.is_a?(DateTime) || translated_text.is_a?(ActiveSupport::TimeWithZone)
     begin
-      return DateTime.parse(translated_text)
+      DateTime.parse(translated_text)
     rescue ArgumentError
       nil
     end
