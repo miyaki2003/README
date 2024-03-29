@@ -103,23 +103,15 @@ class NaturalLanguageProcessor
 
   def self.parse_time_from_text(text)
     translated_text = parse_and_format_datetime(text)
-    begin
-      DateTime.parse(translated_text)
-    rescue ArgumentError
-      nil
-    end
-  end
-end
-def self.parse_time_from_text(text)
-  translated_text = parse_and_format_datetime(text)
-  if translated_text.is_a?(Time) || translated_text.is_a?(ActiveSupport::TimeWithZone)
-    translated_text.strftime('%Y-%m-%d %H:%M')
-  else
-    begin
-      datetime = DateTime.parse(translated_text)
-      datetime.strftime('%Y-%m-%d %H:%M')
-    rescue ArgumentError
-      nil
+    if translated_text.is_a?(Time) || translated_text.is_a?(ActiveSupport::TimeWithZone)
+      translated_text.strftime('%Y-%m-%d %H:%M')
+    else
+      begin
+        datetime = DateTime.parse(translated_text)
+        datetime.strftime('%Y-%m-%d %H:%M')
+      rescue ArgumentError
+        nil
+      end
     end
   end
 end
