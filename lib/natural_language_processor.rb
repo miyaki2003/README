@@ -89,8 +89,7 @@ class NaturalLanguageProcessor
     
     target_date = target_date.change(hour: hour, min: minute)
     puts "Final target datetime: #{target_date}"
-    target_date_str = target_date.strftime('%Y-%m-%d %H:%M:%S')
-    target_date_str
+    target_date.strftime('%Y-%m-%d %H:%M:%S')
   end
 
   def self.adjust_hour_for_period(hour, period)
