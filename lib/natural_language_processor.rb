@@ -17,6 +17,9 @@ class NaturalLanguageProcessor
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
       time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?/)
       period_match = text.match(/(朝|午前|午後)/)
+      puts "Day match: #{day_match.inspect}"
+      puts "Time match: #{time_match.inspect}"
+      puts "Period match: #{period_match.inspect}"
       translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
     end
   end
@@ -73,13 +76,19 @@ class NaturalLanguageProcessor
     wday_key = day_match[2].gsub(/曜日?/, "")
     wday = DAY_MAPPINGS[wday_key]
 
+    puts "wday_key: #{wday_key}, wday: #{wday}"
+
     target_date = Time.current.beginning_of_week(:monday) + wday.days + week_modifier
     hour = time_match ? time_match[1].to_i : 6
 
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
+
+    puts "Target date before adjustment: #{target_date}"
+    puts "Hour: #{hour}, Minute: #{minute}"
     
     target_date.change(hour: hour, min: minute)
+    puts "Final target datetime: #{target_date}"
   end
 
   def self.adjust_hour_for_period(hour, period)
