@@ -74,6 +74,11 @@ class NaturalLanguageProcessor
     wday = DAY_MAPPINGS[wday_key]
 
     target_date = Time.current.beginning_of_week(:sunday) + wday.days + week_modifier
+
+    if day_match[1] == "今週" && target_date <= Time.current
+      target_date += 1.week
+    end
+    
     hour = time_match ? time_match[1].to_i : 6
 
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
