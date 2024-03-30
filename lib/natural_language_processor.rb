@@ -8,16 +8,16 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     case text
     when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*|半)?分?/
-      minute = $4 == "半" ? "30" : $4
-      translate_relative_day_time($1, $2, $3, minute)
+      minutes = $4 == "半" ? "30" : $4
+      translate_relative_day_time($1, $2, $3, minutes)
     when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*|半)?分?/
-      minute = $5 == "半" ? "30" : $5
-      translate_specific_date_time($1, $2, $3, $4, minute)
+      minutes = $5 == "半" ? "30" : $5
+      translate_specific_date_time($1, $2, $3, $4, minutes)
     when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
       translate_relative_time(text)
     else
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
-      time_match = text.match(/の?(\d+)(?:時|:)(\d*|半)?分?/)
+      time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?/)
       if time_match && time_match[2] == "半"
         time_match[2] = "30"
       end
@@ -28,23 +28,21 @@ class NaturalLanguageProcessor
 
   private
 
-  def self.translate_relative_day_time(day, period, hour, minute)
+  def self.translate_relative_day_time(day, period, hour, minutes)
     date = case day
            when "今日" then Time.current
            when "明日" then 1.day.since
            when "明後日" then 2.days.since
            else Time.current
            end
-    minute = "30" if minute == "半"
     hour = adjust_hour_for_period(hour.to_i, period)
-    "#{date.strftime('%Y-%m-%d')} at #{format('%02d', hour)}:#{format('%02d', minute.to_i)}"
+    "#{date.strftime('%Y-%m-%d')} at #{format('%02d', hour)}:#{format('%02d', minutes)}"
   end
 
-  def self.translate_specific_date_time(month, day, period, hour, minut)
+  def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
-    minute = "30" if minute == "半"
     hour = adjust_hour_for_period(hour.to_i, period)
-    date = Time.new(year, month, day, hour, minute.to_i)
+    date = Time.new(year, month.to_i, day.to_i, hour, minutes)
     date.strftime('%Y-%m-%d at %H:%M')
   end
 
@@ -89,10 +87,10 @@ class NaturalLanguageProcessor
     hour = time_match ? time_match[1].to_i : 6
 
     minute = if time_match && time_match[2] == "半"
-      30
-    else
-      time_match && time_match[2] ? time_match[2].to_i : 0
-    end
+                "30"
+              else
+                time_match && time_match[2] ? time_match[2] : "0"
+              end
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
 
     target_date = target_date.change(hour: hour, min: minute)
