@@ -93,13 +93,14 @@ class NaturalLanguageProcessor
   end
 
   def self.adjust_hour_for_period(hour, period)
-    if period == "午後" && hour < 12
-      hour + 12
-    elsif (period == "午前" || period == "朝") && hour == 12
-      0
-    else
-      hour
+    hour = hour.to_i
+    case period
+    when "午後"
+      hour += 12 unless hour == 12
+    when "午前", "朝"
+      hour = 0 if hour == 12
     end
+    hour
   end
 
   def self.parse_time_from_text(text)
