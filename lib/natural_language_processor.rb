@@ -15,7 +15,7 @@ class NaturalLanguageProcessor
       translate_relative_time(text)
     else
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
-      time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?半?/
+      time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?半?/)
       period_match = text.match(/(朝|午前|午後)/)
       translate_weekday_and_relative_week(day_match, time_match, period_match, text.include?("半")) if day_match
     end
