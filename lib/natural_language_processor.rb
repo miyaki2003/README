@@ -35,14 +35,14 @@ class NaturalLanguageProcessor
            when "明後日" then 2.days.since
            else Time.current
            end
-    hour = adjust_hour_for_period(hour.to_i, period)
+    hour = adjust_hour_for_period(hour, period)
     "#{date.strftime('%Y-%m-%d')} at #{format('%02d', hour)}:#{format('%02d', minutes)}"
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
-    hour = adjust_hour_for_period(hour.to_i, period)
-    date = Time.new(year, month.to_i, day.to_i, hour, minutes)
+    hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, hour, minutes)
     date.strftime('%Y-%m-%d at %H:%M')
   end
 
