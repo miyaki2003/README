@@ -8,10 +8,10 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     case text
     when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*|半)?分?/
-      minutes = $4 == "半" ? "30" : $4
+      minutes = $4 == "半" ? 30 : $4
       translate_relative_day_time($1, $2, $3, minutes)
     when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*|半)?分?/
-      minutes = $5 == "半" ? "30" : $5
+      minutes = $5 == "半" ? 30 : $5
       translate_specific_date_time($1, $2, $3, $4, minutes)
     when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
       translate_relative_time(text)
@@ -19,7 +19,7 @@ class NaturalLanguageProcessor
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
       time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?/)
       if time_match && time_match[2] == "半"
-        time_match[2] = "30"
+        time_match[2] = 30
       end
       period_match = text.match(/(朝|午前|午後)/)
       translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
@@ -87,9 +87,9 @@ class NaturalLanguageProcessor
     hour = time_match ? time_match[1].to_i : 6
 
     minute = if time_match && time_match[2] == "半"
-                "30"
+                30
               else
-                time_match && time_match[2] ? time_match[2] : "0"
+                time_match && time_match[2] ? time_match[2] : 0
               end
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
 
