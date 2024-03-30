@@ -7,37 +7,39 @@ class NaturalLanguageProcessor
 
   def self.parse_and_format_datetime(text)
     case text
-    when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*|半)?分?/
-      translate_relative_day_time($1, $2, $3, $4 == "半" ? 30 : $4)
-    when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*|半)?分?/
-      translate_specific_date_time($1, $2, $3, $4, $5 == "半" ? 30 : $5)
+    when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*)分?半?/
+      translate_relative_day_time($1, $2, $3, $4, text.include?("半"))
+    when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*)分?半?/
+      translate_specific_date_time($1, $2, $3, $4, $5, text.include?("半"))
     when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
       translate_relative_time(text)
     else
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
-      time_match = text.match(/の?(\d+)(?:時|:)(\d*|半)?分?/)
+      time_match = text.match(/の?(\d+)(?:時|:)(\d*)分?半?/
       period_match = text.match(/(朝|午前|午後)/)
-      translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
+      translate_weekday_and_relative_week(day_match, time_match, period_match, text.include?("半")) if day_match
     end
   end
 
   private
 
-  def self.translate_relative_day_time(day, period, hour, minutes)
+  def self.translate_relative_day_time(day, period, hour, minutes, half)
     date = case day
            when "今日" then Time.current
            when "明日" then 1.day.since
            when "明後日" then 2.days.since
            else Time.current
            end
+    minutes = half ? 30 : minutes.to_i
     hour = adjust_hour_for_period(hour.to_i, period)
-    "#{date.strftime('%Y-%m-%d')} at #{format('%02d', hour)}:#{format('%02d', minutes.to_i)}"
+    "#{date.strftime('%Y-%m-%d')} at #{format('%02d', hour)}:#{format('%02d', minutes)}"
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
+    minutes = half ? 30 : minutes.to_i
     hour = adjust_hour_for_period(hour.to_i, period)
-    date = Time.new(year, month.to_i, day.to_i, hour, minutes.to_i)
+    date = Time.new(year, month, day, hour, minutes)
     date.strftime('%Y-%m-%d at %H:%M')
   end
 
@@ -64,7 +66,7 @@ class NaturalLanguageProcessor
     time.strftime('%Y-%m-%d %H:%M:%S')
   end
 
-  def self.translate_weekday_and_relative_week(day_match, time_match, period_match)
+  def self.translate_weekday_and_relative_week(day_match, time_match, period_match, half)
     week_modifier = case day_match[1]
                     when "今週" then 0.weeks
                     when "来週" then 1.week
@@ -80,12 +82,7 @@ class NaturalLanguageProcessor
     end
     
     hour = time_match ? time_match[1].to_i : 6
-
-    minute = if time_match && time_match[2] == "半"
-      30
-    else
-      time_match && time_match[2] ? time_match[2].to_i : 0
-    end
+    minute = half ? 30 : (time_match && time_match[2] ? time_match[2].to_i : 0)
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
 
     target_date = target_date.change(hour: hour, min: minute)
