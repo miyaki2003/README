@@ -24,6 +24,7 @@ class NaturalLanguageProcessor
   private
 
   def self.translate_relative_day_time(day, period, hour, minutes)
+    puts "[Debug] translate_relative_day_time: day=#{day}, period=#{period}, hour=#{hour}, minutes=#{minutes}"
     date = case day
            when "今日" then Time.current
            when "明日" then 1.day.since
@@ -35,6 +36,7 @@ class NaturalLanguageProcessor
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
+    puts "[Debug] translate_specific_date_time: month=#{month}, day=#{day}, period=#{period}, hour=#{hour}, minutes=#{minutes}"
     year = Time.current.year
     hour = adjust_hour_for_period(hour.to_i, period)
     date = Time.new(year, month.to_i, day.to_i, hour, minutes)
@@ -65,6 +67,7 @@ class NaturalLanguageProcessor
   end
 
   def self.translate_weekday_and_relative_week(day_match, time_match, period_match)
+    puts "[Debug] translate_weekday_and_relative_week: day_match=#{day_match}, time_match=#{time_match}, period_match=#{period_match}"
     week_modifier = case day_match[1]
                     when "今週" then 0.weeks
                     when "来週" then 1.week
