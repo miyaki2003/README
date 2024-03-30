@@ -49,11 +49,11 @@ class LineBotController < ApplicationController
         set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
         user.update(status: nil, temporary_data: nil)
       else
-        send_error_message(reply_token, "過去の時間はリマインドできません")
+        send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
         user.update(status: nil, temporary_data: nil)
       end
     else
-      send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+      send_error_message(reply_token, "日時情報を正しく認識できませんでした\n再度日時を入力してください")
       user.update(status: nil, temporary_data: nil)
     end
   end
@@ -101,10 +101,10 @@ class LineBotController < ApplicationController
   end
 
   def parse_message(message)
-    formatted_datetime = NaturalLanguageProcessor.parse_time_from_text(message)
-    if formatted_datetime
-      datetime = DateTime.parse(formatted_datetime)
-      return datetime.strftime('%Y-%m-%d %H:%M')
+    datetime = NaturalLanguageProcessor.parse_time_from_text(message)
+    if datetime
+      formatted_datetime = datetime.strftime('%Y-%m-%d %H:%M')
+      return formatted_datetime
     else
       return nil
     end
