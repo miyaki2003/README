@@ -102,8 +102,13 @@ class NaturalLanguageProcessor
       hour
     end
   end
+
   def self.parse_time_from_text(text)
     translated_text = parse_and_format_datetime(text)
-    translated_text
+    begin
+      DateTime.parse(translated_text)
+    rescue ArgumentError
+      nil
+    end
   end
 end
