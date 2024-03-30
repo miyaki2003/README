@@ -37,7 +37,6 @@ class NaturalLanguageProcessor
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
     hour = adjust_hour_for_period(hour, period)
-    minutes = minutes == "半" ? 30 : minutes.to_i
     date = Time.new(year, month, day, hour, minutes)
     date.strftime('%Y-%m-%d at %H:%M')
   end
