@@ -49,12 +49,12 @@ class LineBotController < ApplicationController
         set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
         user.update(status: nil, temporary_data: nil)
       else
-        send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
-        user.update(status: 'awaiting_time', temporary_data: nil)
+        send_error_message(reply_token, "過去の時間はリマインドできません")
+        user.update(status: nil, temporary_data: nil)
       end
     else
-      send_error_message(reply_token, "日時情報を正しく認識できませんでした\n再度日時を入力してください")
-      user.update(status: 'awaiting_time', temporary_data: nil)
+      send_error_message(reply_token, "日時情報を正しく認識できませんでした")
+      user.update(status: nil, temporary_data: nil)
     end
   end
 
@@ -93,7 +93,6 @@ class LineBotController < ApplicationController
   end
 
   def send_error_message(reply_token, message_text)
-    return if reply_token.nil? || message_text.nil?
     message = {
       type: 'text',
       text: message_text
