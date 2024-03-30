@@ -107,6 +107,7 @@ class NaturalLanguageProcessor
 
   def self.parse_time_from_text(text)
     translated_text = parse_and_format_datetime(text)
+    puts "[Debug] translated_text: #{translated_text.inspect}"
     begin
       DateTime.parse(translated_text)
     rescue ArgumentError
