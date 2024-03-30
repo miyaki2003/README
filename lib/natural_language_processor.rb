@@ -7,15 +7,15 @@ class NaturalLanguageProcessor
 
   def self.parse_and_format_datetime(text)
     case text
-    when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*|半)?分?/
+    when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d+|半)分?/
       translate_relative_day_time($1, $2, $3, $4 == "半" ? 30 : $4.to_i)
-    when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d*|半)?分?/
+    when /(\d+)月(\d+)日の?(朝|午前|夜|午後)?(\d+)(?:時|:)(\d+|半)分?/
       translate_specific_date_time($1, $2, $3, $4, $5 == "半" ? 30 : $5.to_i)
     when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
       translate_relative_time(text)
     else
       day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
-      time_match = text.match(/の?(\d+)(?:時|:)(\d*|半)?分?/)
+      time_match = text.match(/の?(\d+)(?:時|:)(\d+|半)分?/)
       period_match = text.match(/(朝|午前|午後)/)
       translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
     end
@@ -37,6 +37,7 @@ class NaturalLanguageProcessor
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
     hour = adjust_hour_for_period(hour, period)
+    minutes = minutes == "半" ? 30 : minutes.to_i
     date = Time.new(year, month, day, hour, minutes)
     date.strftime('%Y-%m-%d at %H:%M')
   end
