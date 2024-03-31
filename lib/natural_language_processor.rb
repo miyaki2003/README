@@ -5,7 +5,12 @@ class NaturalLanguageProcessor
     "木" => 4, "金" => 5, "土" => 6
   }.freeze
 
+  def self.full_to_half(text)
+    text.tr('０-９', '0-9').tr('：', ':').tr('／', '/')
+  end
+
   def self.parse_and_format_datetime(text)
+    text = full_to_half(text)
     datetime = case text
                when /(今日|明日|明後日)の?(朝|午前|午後)?(\d+)(?:時|:)(\d*)分?/
                  translate_relative_day_time($1, $2, $3, $4)
