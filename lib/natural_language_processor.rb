@@ -23,6 +23,7 @@ class NaturalLanguageProcessor
 
   private
 
+
   def self.translate_relative_day_time(day, period, hour, minutes)
     date = case day
            when "今日" then Time.current
@@ -30,8 +31,12 @@ class NaturalLanguageProcessor
            when "明後日" then 2.days.since
            else Time.current
            end
+  
     hour = adjust_hour_for_period(hour.to_i, period)
-    "#{date.strftime('%Y-%m-%d')} at #{format('%02d', hour)}:#{format('%02d', minutes.to_i)}"
+    minutes = minutes.to_i
+  
+    date = date.change(hour: hour, min: minutes)
+    date.strftime('%Y-%m-%d at %H:%M')
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
