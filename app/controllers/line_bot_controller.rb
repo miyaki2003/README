@@ -100,7 +100,7 @@ class LineBotController < ApplicationController
 
   def parse_message(message)
     begin
-      formatted_datetime = NaturalLanguageProcessor.parse_time_from_text(message)
+      formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
       return nil if formatted_datetime.nil? || formatted_datetime.strip.empty?
       datetime = DateTime.parse(formatted_datetime)
       datetime.strftime('%Y-%m-%d %H:%M')
