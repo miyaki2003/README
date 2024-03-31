@@ -14,12 +14,23 @@ class NaturalLanguageProcessor
     datetime = case text
                when /(今日|明日|明後日)の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                  translate_relative_day_time($1, $2, $3, $4)
-               when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
-                 translate_specific_date_time($1, $2, $3, $4, $5)
-               when /(\d{1,2})月(\d{1,2})日の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d*)分?/
-                 translate_specific_date_time($1, $2, $3, $4, $5)
+                when /((\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
+                  month = $2 || $4
+                  day = $3 || $5
+                  period = $6
+                  hour = $7
+                  minutes = $8 || "0"
+                  translate_specific_date_time(month, day, period, hour, minutes)
+               when /(\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日/
+                month = $1 || $3
+                day = $2 || $4
+                translate_specific_date_time(month, day, nil, "6", "0")
+               when /(\d{1,2})(?:時|:)(\d{1,2})?分?/
+                translate_time_with_default_date($1, $2)
+               when /(\d{1,2})月?/
+                translate_month_only($1)
                when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
-                 translate_relative_time(text)
+                translate_relative_time(text)
                else
                  day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
                  time_match = text.match(/の?(\d{1,2})(?:時|:)(\d{1,2})?分?/)
@@ -54,6 +65,25 @@ class NaturalLanguageProcessor
     year = Time.current.year
     hour = adjust_hour_for_period(hour.to_i, period)
     date = Time.new(year, month, day, hour, minutes.to_i)
+    format_datetime(date)
+  end
+
+  def self.translate_time_with_default_date(hour, minutes)
+    year = Time.current.year
+    month = Time.current.month
+    day = Time.current.day
+    hour = hour.to_i
+    minutes = minutes ? minutes.to_i : 0
+    date = Time.new(year, month, day, hour, minutes)
+    format_datetime(date)
+  end
+
+  def self.translate_month_only(month)
+    year = Time.current.year
+    day = 1
+    hour = 6
+    minutes = 0
+    date = Time.new(year, month.to_i, day, hour, minutes)
     format_datetime(date)
   end
 
