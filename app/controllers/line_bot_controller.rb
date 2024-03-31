@@ -44,16 +44,14 @@ class LineBotController < ApplicationController
 
   def process_user_message(user, text, reply_token)
     parsed_datetime = parse_message(text)
-    if parsed_datetime
-      if parsed_datetime > Time.now
-        set_and_confirm_reminder(user, user.temporary_data, parsed_datetime, reply_token)
-        user.update(status: nil, temporary_data: nil)
-      else
-        send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
-        user.update(status: nil, temporary_data: nil)
-      end
-    else
+    if parsed_datetime.nil?
       send_error_message(reply_token, "日時情報を正しく認識できませんでした\n再度日時を入力してください")
+      user.update(status: nil, temporary_data: nil)
+    elsif Time.parse(parsed_datetime) <= Time.now
+      send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
+      user.update(status: nil, temporary_data: nil)
+    else
+      set_and_confirm_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
       user.update(status: nil, temporary_data: nil)
     end
   end
@@ -103,10 +101,11 @@ class LineBotController < ApplicationController
   def parse_message(message)
     begin
       formatted_datetime = NaturalLanguageProcessor.parse_time_from_text(message)
+      return nil if formatted_datetime.nil? || formatted_datetime.strip.empty?
       datetime = DateTime.parse(formatted_datetime)
-      return datetime.strftime('%Y-%m-%d %H:%M')
+      datetime.strftime('%Y-%m-%d %H:%M')
     rescue ArgumentError
-      return nil
+      nil
     end
   end
 
