@@ -41,19 +41,7 @@ class NaturalLanguageProcessor
     datetime.strftime('%Y-%m-%d at %H:%M')
   end
 
-  def self.translate_relative_day_time(day, period, hour, minutes)
-    date = case day
-           when "今日" then Time.current
-           when "明日" then 1.day.since
-           when "明後日" then 2.days.since
-           else Time.current
-           end
-    hour = hour.present? ? hour.to_i : 6
-    minutes = minutes.present? ? minutes.to_i : 0
-    adjusted_hour = adjust_hour_for_period(hour, period)
-    date = date.change(hour: adjusted_hour, min: minutes)
-    format_datetime(date)
-  end
+  
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
@@ -81,12 +69,12 @@ class NaturalLanguageProcessor
     year = Time.current.year
     month = Time.current.month
     day = day.to_i
-    hour = hour.present? ? hour.to_i : 6
-    minutes = minutes.present? ? minutes.to_i : 0
+    hour = hour.to_i.zero? ? 6 : hour.to_i
+    minutes = minutes.to_i.zero? ? 0 : minutes.to_i
     adjusted_hour = adjust_hour_for_period(hour, period)
     date = Time.new(year, month, day, adjusted_hour, minutes)
     format_datetime(date)
-end
+  end
 
   def self.translate_relative_time(text)
     case text
