@@ -95,7 +95,6 @@ class NaturalLanguageProcessor
 
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
-
     target_date = target_date.change(hour: hour, min: minute)
     format_datetime(target_date)
   end
