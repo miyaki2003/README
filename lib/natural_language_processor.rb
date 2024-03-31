@@ -19,7 +19,7 @@ class NaturalLanguageProcessor
                  period_match = text.match(/(朝|午前|午後)/)
                  translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
                end
-    datetime ? format_datetime(datetime) : "Unrecognized format"
+    datetime || "Unrecognized format"
   end
 
   private
