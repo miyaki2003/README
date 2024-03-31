@@ -46,10 +46,10 @@ class LineBotController < ApplicationController
     parsed_datetime = parse_message(text)
     if parsed_datetime.nil?
       send_error_message(reply_token, "日時情報を正しく認識できませんでした\n再度日時を入力してください")
-      user.update(status: 'awaiting_time', temporary_data: nil)
+      user.update(status: 'awaiting_time')
     elsif Time.parse(parsed_datetime) <= Time.now
       send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
-      user.update(status: 'awaiting_time', temporary_data: nil)
+      user.update(status: 'awaiting_time')
     else
       set_and_confirm_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
       user.update(status: nil, temporary_data: nil)
