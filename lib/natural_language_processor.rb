@@ -12,23 +12,18 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     text = full_to_half(text)
     datetime = case text
-               when /(今日|明日|明後日)の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
+               when /(今日|明日|明後日)の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/#[\s　の]*をつける
                  translate_relative_day_time($1, $2, $3, $4)
                 when /((\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
-                  month = $2 || $4
-                  day = $3 || $5
-                  period = $6
-                  hour = $7
-                  minutes = $8 || "0"
-                  translate_specific_date_time(month, day, period, hour, minutes)
+                 translate_specific_date_time($2 || $4, $3 || $5, $6, $7, $8 || 0)
                when /(\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日/
-                month = $1 || $3
-                day = $2 || $4
-                translate_specific_date_time(month, day, nil, "6", "0")
-               when /(\d{1,2})(?:時|:)(\d{1,2})?分?/
-                translate_time_with_default_date($1, $2)
+                 translate_specific_date_time($1 || $3, $2 || $4, nil, 6, 0)
+               when /((?:朝|午前|午後)?)(\d{1,2})(?:時|:)(\d{1,2})?分?/
+                translate_time_with_default_date($1, $2, $3)
                when /(\d{1,2})月?/
                 translate_month_only($1)
+              when /(\d{1,2})日\s*(朝|午前|午後)?(\d{1,2})?時?(\d{1,2})?分?/
+                translate_day_time($1, $2, $3, $4)
                when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
                 translate_relative_time(text)
                else
@@ -53,39 +48,45 @@ class NaturalLanguageProcessor
            when "明後日" then 2.days.since
            else Time.current
            end
-  
-    hour = adjust_hour_for_period(hour.to_i, period)
-    minutes = minutes.to_i
-  
+    hour = hour ? hour : 6
+    minutes = minutes ? minutes : 0
+    hour = adjust_hour_for_period(hour, period)
     date = date.change(hour: hour, min: minutes)
     format_datetime(date)
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
-    hour = adjust_hour_for_period(hour.to_i, period)
-    date = Time.new(year, month, day, hour, minutes.to_i)
+    hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, hour, minutes)
     format_datetime(date)
   end
 
-  def self.translate_time_with_default_date(hour, minutes)
+  def self.translate_time_with_default_date(period, hour, minutes)
     year = Time.current.year
     month = Time.current.month
     day = Time.current.day
-    hour = hour.to_i
-    minutes = minutes ? minutes.to_i : 0
+    hour = adjust_hour_for_period(hour, period)
     date = Time.new(year, month, day, hour, minutes)
     format_datetime(date)
   end
 
   def self.translate_month_only(month)
     year = Time.current.year
-    day = 1
-    hour = 6
-    minutes = 0
-    date = Time.new(year, month.to_i, day, hour, minutes)
+    date = Time.new(year, month, 1, 6, 0)
     format_datetime(date)
   end
+
+  def self.translate_day_time(day, period, hour, minutes)
+    year = Time.current.year
+    month = Time.current.month
+    day = day.to_i
+    hour = hour ? hour : 6
+    minutes = minutes ? minutes : 0
+    hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, hour, minutes)
+    format_datetime(date)
+end
 
   def self.translate_relative_time(text)
     case text
