@@ -48,10 +48,10 @@ class NaturalLanguageProcessor
            when "明後日" then 2.days.since
            else Time.current
            end
-    hour = hour ? hour : 6
-    minutes = minutes ? minutes : 0
-    hour = adjust_hour_for_period(hour, period)
-    date = date.change(hour: hour, min: minutes)
+    hour = hour.present? ? hour.to_i : 6
+    minutes = minutes.present? ? minutes.to_i : 0
+    adjusted_hour = adjust_hour_for_period(hour, period)
+    date = date.change(hour: adjusted_hour, min: minutes)
     format_datetime(date)
   end
 
@@ -81,10 +81,10 @@ class NaturalLanguageProcessor
     year = Time.current.year
     month = Time.current.month
     day = day.to_i
-    hour = hour ? hour : 6
-    minutes = minutes ? minutes : 0
-    hour = adjust_hour_for_period(hour, period)
-    date = Time.new(year, month, day, hour, minutes)
+    hour = hour.present? ? hour.to_i : 6
+    minutes = minutes.present? ? minutes.to_i : 0
+    adjusted_hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, adjusted_hour, minutes)
     format_datetime(date)
 end
 
@@ -134,6 +134,8 @@ end
   end
 
   def self.adjust_hour_for_period(hour, period)
+    return hour if period.nil?
+    
     if period == "午後" && hour < 12
       hour + 12
     elsif (period == "午前" || period == "朝") && hour == 12
