@@ -16,9 +16,9 @@ class NaturalLanguageProcessor
                 translate_relative_day_time($1, $2, $3, $4)
               when /(今日|明日|明後日)/
                 translate_relative_day_time($1, nil, nil, nil)
-              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
+              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2})?分?/
                 translate_specific_date_time($1, $2, $3, $4, $5)
-              when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d*)分?/
+              when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d*)分?/
                 translate_specific_date_time($1, $2, $3, $4, $5)
               when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
                 translate_relative_time(text)
@@ -55,6 +55,8 @@ class NaturalLanguageProcessor
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
+    hour = hour.nil? ? 6 : hour.to_i
+    minutes = minutes.to_i
     hour = adjust_hour_for_period(hour.to_i, period)
     date = Time.new(year, month, day, hour, minutes.to_i)
     format_datetime(date)
