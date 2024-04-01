@@ -25,8 +25,8 @@ class NaturalLanguageProcessor
                when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
                  translate_relative_time(text)
                else
-                 day_match = text.match(/(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/)
-                 time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2})?分?/)
+                 day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
+                 time_match = text.match(/の?(\d{1,2})(?:時|:)(\d{1,2})?分?/)
                  period_match = text.match(/(朝|午前|午後)/)
                  translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
                end
@@ -64,16 +64,11 @@ class NaturalLanguageProcessor
     format_datetime(date)
   end
 
-  def self.translate_datetime(day, period, hour, minutes)
+  def self.translate_datetime(day = Time.current.day, period = nil, hour = 6, minutes = 0)
     year = Time.current.year
     month = Time.current.month
-  
-    day = day.present? ? day.to_i : Time.current.day
-    hour = hour.present? ? hour.to_i : 6
-    minutes = minutes.present? ? minutes.to_i : 0
-  
+
     adjusted_hour = adjust_hour_for_period(hour, period)
-  
     date = Time.new(year, month, day, adjusted_hour, minutes)
     format_datetime(date)
   end
@@ -123,6 +118,7 @@ class NaturalLanguageProcessor
   end
 
   def self.adjust_hour_for_period(hour, period)
+    return hour if period.nil?
     
     if period == "午後" && hour < 12
       hour + 12
