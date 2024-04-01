@@ -51,7 +51,6 @@ class NaturalLanguageProcessor
     date = date.change(hour: hour, min: minutes)
     format_datetime(date)
   end
-  end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
