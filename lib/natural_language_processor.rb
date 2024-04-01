@@ -18,10 +18,16 @@ class NaturalLanguageProcessor
                 translate_specific_date_time($1, $2, $3, $4, $5)
               when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d*)分?/
                 translate_specific_date_time($1, $2, $3, $4, $5)
-              when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2})?分?/
-                translate_specific_date_time(nil, $1, $2, $3 || "6", $4 || "0")
-              when /(\d{1,2})(?:時|:)(\d{1,2})?分?/, /(\d{1,2})時?/
+              when /(\d{1,2})日[\s　の]*(\d{1,2})(?:時|:)(\d{1,2})分?/
+                translate_specific_date_time(nil, $1, nil, $2, $3 || "0")
+              when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})時?(\d{1,2})?分?/
+                translate_specific_date_time(nil, $1, $2, $3, $4 || "0")
+              when /(\d{1,2})日/
+                translate_specific_date_time(nil, $1, nil, "6", "0")
+              when /(\d{1,2})(?:時|:)(\d{1,2})?分?/
                 translate_specific_date_time(nil, Time.now.day.to_s, nil, $1, $2 || "0")
+              when /(\d{1,2})時?/
+                translate_specific_date_time(nil, Time.now.day.to_s, nil, $1, "0")
               when /(\d{1,2})月/
                 translate_specific_date_time($1, "1", nil, "6", "0")
               when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
