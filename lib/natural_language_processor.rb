@@ -12,17 +12,17 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     text = full_to_half(text)
     datetime = case text
-               when /(今日|明日|明後日)の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
+               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                  translate_relative_day_time($1, $2, $3, $4)
                when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                  translate_specific_date_time($1, $2, $3, $4, $5)
-               when /(\d{1,2})月(\d{1,2})日の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d*)分?/
+               when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d*)分?/
                  translate_specific_date_time($1, $2, $3, $4, $5)
                when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
                  translate_relative_time(text)
                else
-                 day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
-                 time_match = text.match(/の?(\d{1,2})(?:時|:)(\d{1,2})?分?/)
+                 day_match = text.match(/(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/)
+                 time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2})?分?/)
                  period_match = text.match(/(朝|午前|午後)/)
                  translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
                end
@@ -43,8 +43,8 @@ class NaturalLanguageProcessor
            else Time.current
            end
   
-    hour = adjust_hour_for_period(hour.to_i, period)
-    minutes = minutes.to_i
+    hour = hour.nil? ? 6 : adjust_hour_for_period(hour.to_i, period)
+    minutes = minutes.nil? ? 0 : minutes.to_i
   
     date = date.change(hour: hour, min: minutes)
     format_datetime(date)
