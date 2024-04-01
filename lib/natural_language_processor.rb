@@ -12,20 +12,20 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     text = full_to_half(text)
     datetime = case text
+               when /(今日|明日|明後日)/
+                 translate_relative_day_without_time($1)
                when /(今日|明日|明後日)の?(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/#[\s　の]*をつける
                  translate_relative_day_time($1, $2, $3, $4)
-                when /((\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
+               when /((\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                  translate_specific_date_time($2 || $4, $3 || $5, $6, $7, $8 || 0)
                when /(\d{1,2})\/(\d{1,2})|(\d{1,2})月(\d{1,2})日/
                  translate_specific_date_time($1 || $3, $2 || $4, nil, 6, 0)
-               when /((?:朝|午前|午後)?)(\d{1,2})(?:時|:)(\d{1,2})?分?/
-                translate_time_with_default_date($1, $2, $3)
                when /(\d{1,2})月?/
-                translate_month_only($1)
-              when /(\d{1,2})日\s*(朝|午前|午後)?(\d{1,2})?時?(\d{1,2})?分?/
-                translate_day_time($1, $2, $3, $4)
+                 translate_month_only($1)
+               when /(\d{1,2})日?\s*(朝|午前|午後)?(\d{1,2})?時?(\d{1,2})?分?/
+                 translate_datetime($1, $2, $3, $4)
                when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
-                translate_relative_time(text)
+                 translate_relative_time(text)
                else
                  day_match = text.match(/(今週|来週|再来週)の?(日|月|火|水|木|金|土)(曜?日?)?/)
                  time_match = text.match(/の?(\d{1,2})(?:時|:)(\d{1,2})?分?/)
@@ -41,19 +41,22 @@ class NaturalLanguageProcessor
     datetime.strftime('%Y-%m-%d at %H:%M')
   end
 
-  
-
-  def self.translate_specific_date_time(month, day, period, hour, minutes)
-    year = Time.current.year
-    hour = adjust_hour_for_period(hour, period)
-    date = Time.new(year, month, day, hour, minutes)
+  def self.translate_relative_day_time(day, period = nil, hour = nil, minutes = nil)
+    date = case day
+           when "今日" then Time.current
+           when "明日" then 1.day.since
+           when "明後日" then 2.days.since
+           else Time.current
+           end
+    hour = hour.present? ? hour.to_i : 6
+    minutes = minutes.present? ? minutes.to_i : 0
+    adjusted_hour = adjust_hour_for_period(hour, period)
+    date = date.change(hour: adjusted_hour, min: minutes)
     format_datetime(date)
   end
 
-  def self.translate_time_with_default_date(period, hour, minutes)
+  def self.translate_specific_date_time(month, day, period, hour, minutes)
     year = Time.current.year
-    month = Time.current.month
-    day = Time.current.day
     hour = adjust_hour_for_period(hour, period)
     date = Time.new(year, month, day, hour, minutes)
     format_datetime(date)
@@ -65,14 +68,15 @@ class NaturalLanguageProcessor
     format_datetime(date)
   end
 
-  def self.translate_day_time(day, period, hour, minutes)
+  def self.translate_datetime(day, period, hour, minutes)
     year = Time.current.year
     month = Time.current.month
-    day = day.to_i
-    hour = hour.to_i.zero? ? 6 : hour.to_i
-    minutes = minutes.to_i.zero? ? 0 : minutes.to_i
-    adjusted_hour = adjust_hour_for_period(hour, period)
-    date = Time.new(year, month, day, adjusted_hour, minutes)
+
+    day = day.nil? ? Time.current.day : day.to_i
+    hour = (hour.nil? || hour.empty?) ? 6 : hour.to_i
+    minutes = (minutes.nil? || minutes.empty?) ? 0 : minutes.to_i
+    hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, hour, minutes)
     format_datetime(date)
   end
 
@@ -116,7 +120,6 @@ class NaturalLanguageProcessor
 
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
-
     target_date = target_date.change(hour: hour, min: minute)
     format_datetime(target_date)
   end
