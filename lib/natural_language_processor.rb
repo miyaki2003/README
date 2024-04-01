@@ -14,6 +14,8 @@ class NaturalLanguageProcessor
     datetime = case text
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                 translate_relative_day_time($1, $2, $3, $4)
+              when /(今日|明日|明後日)/
+                translate_relative_day_time($1, nil, nil, nil)
               when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                 translate_specific_date_time($1, $2, $3, $4, $5)
               when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d*)分?/
@@ -43,9 +45,10 @@ class NaturalLanguageProcessor
            else Time.current
            end
   
-    hour = adjust_hour_for_period(hour.to_i, period)
+    hour = hour.nil? ? 6 : hour.to_i
     minutes = minutes.to_i
-  
+
+    hour = adjust_hour_for_period(hour.to_i, period)
     date = date.change(hour: hour, min: minutes)
     format_datetime(date)
   end
