@@ -12,7 +12,7 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     text = full_to_half(text)
     datetime = case text
-               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)?(\d{1,2})?分?/
+               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                  translate_relative_day_time($1, $2, $3, $4)
                when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/
                  translate_specific_date_time($1, $2, $3, $4, $5)
@@ -43,12 +43,14 @@ class NaturalLanguageProcessor
            else Time.current
            end
   
-    hour = hour.nil? ? 6 : hour.to_i
+    hour = hour ? hour.to_i : 6
+
+    hour = adjust_hour_for_period(hour.to_i, period)
     minutes = minutes.to_i
-         
-    hour = adjust_hour_for_period(hour, period)
+  
     date = date.change(hour: hour, min: minutes)
     format_datetime(date)
+  end
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
