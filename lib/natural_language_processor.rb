@@ -64,11 +64,16 @@ class NaturalLanguageProcessor
     format_datetime(date)
   end
 
-  def self.translate_datetime(day = Time.current.day, period = nil, hour = 6, minutes = 0)
+  def self.translate_datetime(day, period, hour, minutes)
     year = Time.current.year
     month = Time.current.month
-
+  
+    day = day.present? ? day.to_i : Time.current.day
+    hour = hour.present? ? hour.to_i : 6
+    minutes = minutes.present? ? minutes.to_i : 0
+  
     adjusted_hour = adjust_hour_for_period(hour, period)
+  
     date = Time.new(year, month, day, adjusted_hour, minutes)
     format_datetime(date)
   end
@@ -118,7 +123,6 @@ class NaturalLanguageProcessor
   end
 
   def self.adjust_hour_for_period(hour, period)
-    return hour if period.nil?
     
     if period == "午後" && hour < 12
       hour + 12
