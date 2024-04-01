@@ -43,12 +43,14 @@ class NaturalLanguageProcessor
            else Time.current
            end
   
-    hour = hour.nil? ? 6 : hour.to_i
+    hour = hour ? hour.to_i : 6
+
+    hour = adjust_hour_for_period(hour.to_i, period)
     minutes = minutes.to_i
-         
-    hour = adjust_hour_for_period(hour, period)
+  
     date = date.change(hour: hour, min: minutes)
     format_datetime(date)
+  end
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
