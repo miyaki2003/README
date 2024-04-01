@@ -18,16 +18,10 @@ class NaturalLanguageProcessor
                 translate_specific_date_time($1, $2, $3, $4, $5)
               when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d*)分?/
                 translate_specific_date_time($1, $2, $3, $4, $5)
-              when /(\d{1,2})日[\s　の]*(\d{1,2})(?:時|:)(\d{1,2})分?/
-                translate_specific_date_time(nil, $1, nil, $2, $3 || "0")
-              when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})時?(\d{1,2})?分?/
-                translate_specific_date_time(nil, $1, $2, $3, $4 || "0")
-              when /(\d{1,2})日/
-                translate_specific_date_time(nil, $1, nil, "6", "0")
-              when /(\d{1,2})(?:時|:)(\d{1,2})?分?/
-                translate_specific_date_time(nil, Time.now.day.to_s, nil, $1, $2 || "0")
-              when /(\d{1,2})時?/
-                translate_specific_date_time(nil, Time.now.day.to_s, nil, $1, "0")
+              when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2})?分?/
+                translate_specific_date_time(nil, $1, $2, $3, $4)
+              when /(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/, /(\d{1,2})時?/
+                translate_specific_date_time(nil, nil, $1, $2, $3)
               when /(\d{1,2})月/
                 translate_specific_date_time($1, "1", nil, "6", "0")
               when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
@@ -64,11 +58,16 @@ class NaturalLanguageProcessor
   end
 
   def self.translate_specific_date_time(month, day, period, hour, minutes)
-    year = Time.current.year
+    current_time = Time.current
+
+    year = current_time.year
+    month = month.nil? ? current_time.month : month.to_i
+    day = day.nil? ? current_time.day : day.to_i
     hour = hour.nil? ? 6 : hour.to_i
     minutes = minutes.to_i
-    hour = adjust_hour_for_period(hour.to_i, period)
-    date = Time.new(year, month, day, hour, minutes.to_i)
+    hour = adjust_hour_for_period(hour, period)
+
+    date = Time.new(year, month, day, hour, minutes)
     format_datetime(date)
   end
 
