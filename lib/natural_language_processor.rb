@@ -135,7 +135,6 @@ class NaturalLanguageProcessor
     target_date = target_date.change(hour: hour, min: minute)
     format_datetime(target_date)
   end
-  
 
   def self.translate_month_relative_day_time(month, day, period, hour, minutes)
     current_time = Time.current
