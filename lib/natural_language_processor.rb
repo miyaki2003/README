@@ -28,7 +28,7 @@ class NaturalLanguageProcessor
                 minutes = $3 == "半" ? 30 : $3
                 translate_specific_date_time(nil, nil, $1, $2, minutes)
               when /(\d{1,2})月/
-                translate_specific_date_time($1, "1", nil, "6", "0")
+                translate_specific_date_time($1, 1, nil, 6, 0)
               when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
                 translate_relative_time(text)
               else
