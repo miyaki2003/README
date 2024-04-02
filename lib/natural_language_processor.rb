@@ -15,7 +15,7 @@ class NaturalLanguageProcessor
               when /(今日|明日|明後日)([\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?)?/
                 minutes = $5 == "半" ? 30 : $5
                 translate_relative_day_time($1, $3, $4, minutes)
-              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)分?/
                 minutes = $5 == "半" ? 30 : $5
                 translate_specific_date_time($1, $2, $3, $4, minutes)
               when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)分?/
@@ -73,6 +73,15 @@ class NaturalLanguageProcessor
     hour = adjust_hour_for_period(hour, period)
 
     date = Time.new(year, month, day, hour, minutes)
+    format_datetime(date)
+  end
+
+  def self.translate_specific_date_time(month, day, period, hour, minutes)
+    year = Time.current.year
+    hour = hour.nil? ? 6 : hour.to_i
+    minutes = minutes.to_i
+    hour = adjust_hour_for_period(hour.to_i, period)
+    date = Time.new(year, month, day, hour, minutes.to_i)
     format_datetime(date)
   end
 
