@@ -101,7 +101,7 @@ class NaturalLanguageProcessor
     format_datetime(time)
   end
 
-  def self.translate_weekday_and_relative_week(day_match, time_match, period_match)
+  def self.translate_weekday_and_relative_week(day_match, modified_time_match, period_match)
     week_modifier = case day_match[1]
                     when "今週" then 0.weeks
                     when "来週" then 1.week
