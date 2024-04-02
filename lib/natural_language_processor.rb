@@ -33,7 +33,7 @@ class NaturalLanguageProcessor
                 translate_relative_time(text)
               else
                 day_match = text.match(/(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/)
-                time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2})?分?/)
+                time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/)
                 period_match = text.match(/(朝|午前|午後)/)
                 translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
               end
@@ -115,6 +115,7 @@ class NaturalLanguageProcessor
     hour = time_match ? time_match[1].to_i : 6
 
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
+    minute = time_match && time_match[2] == "半" ? 30 : (time_match && time_match[2] ? time_match[2].to_i : 0)
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
 
     target_date = target_date.change(hour: hour, min: minute)
