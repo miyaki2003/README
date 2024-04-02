@@ -13,19 +13,20 @@ class NaturalLanguageProcessor
     text = full_to_half(text)
     datetime = case text
               when /(今日|明日|明後日)([\s　の]*(朝|午前|午後)?(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?)?/
-                puts "Before conversion: #{$5}"
                 minutes = $5 == "半" ? 30 : $5
-                puts "After conversion: #{minutes}"
-                puts "Passing to method: #{minutes}"
                 translate_relative_day_time($1, $3, $4, minutes)
-              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2})?分?/
-                translate_specific_date_time($1, $2, $3, $4, $5)
-              when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d*)分?/
-                translate_specific_date_time($1, $2, $3, $4, $5)
-              when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2})?分?/
-                translate_specific_date_time(nil, $1, $2, $3, $4)
-              when /(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2})?分?/, /(\d{1,2})時?/
-                translate_specific_date_time(nil, nil, $1, $2, $3)
+              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                minutes = $5 == "半" ? 30 : $5
+                translate_specific_date_time($1, $2, $3, $4, minutes)
+              when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)分?/
+                minutes = $5 == "半" ? 30 : $5
+                translate_specific_date_time($1, $2, $3, $4, minutes)
+              when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                minutes = $4 == "半" ? 30 : $4
+                translate_specific_date_time(nil, $1, $2, $3, minutes)
+              when /(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/, /(\d{1,2})時?/
+                minutes = $3 == "半" ? 30 : $3
+                translate_specific_date_time(nil, nil, $1, $2, minutes)
               when /(\d{1,2})月/
                 translate_specific_date_time($1, "1", nil, "6", "0")
               when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
