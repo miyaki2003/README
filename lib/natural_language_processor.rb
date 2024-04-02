@@ -13,8 +13,8 @@ class NaturalLanguageProcessor
     text = full_to_half(text)
     datetime = case text
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                minutes = $5 == "半" ? 30 : $5
-                translate_relative_day_time($1, $3, $4, minutes)
+                minutes = $4 == "半" ? 30 : $4
+                translate_relative_day_time($1, $2, $3, minutes)
               when /(\d{1,2})月/
                 translate_specific_date_time($1, 1, nil, nil, nil)
               when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
