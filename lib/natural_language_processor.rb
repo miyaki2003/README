@@ -119,9 +119,12 @@ class NaturalLanguageProcessor
     hour = modified_time_match ? modified_time_match[1].to_i : 6
 
     minute = modified_time_match && modified_time_match[2] ? modified_time_match[2].to_i : 0
+    puts "Before adjust: hour=#{hour}, minute=#{minute}, period=#{period_match ? period_match[1] : 'nil'}"
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
+    puts "After adjust: hour=#{hour}, minute=#{minute}"
 
     target_date = target_date.change(hour: hour, min: minute)
+    puts "Target date: #{target_date}"
     format_datetime(target_date)
   end
 
