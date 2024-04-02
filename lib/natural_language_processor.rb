@@ -24,7 +24,7 @@ class NaturalLanguageProcessor
               when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_specific_date_time(nil, $1, $2, $3, minutes)
-              when /(朝|午前|午後)?(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/
+              when /(朝|午前|午後)?(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $3 == "半" ? 30 : $3
                 translate_specific_date_time(nil, nil, $1, $2, minutes)
               when /(\d{1,2})月/
@@ -33,7 +33,7 @@ class NaturalLanguageProcessor
                 translate_relative_time(text)
               else
                 day_match = text.match(/(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/)
-                time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/)
+                time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/)
                 period_match = text.match(/(朝|午前|午後)/)
                 if day_match
                   minutes = time_match[2] == "半" ? "30" : time_match[2]
