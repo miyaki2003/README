@@ -25,7 +25,7 @@ class NaturalLanguageProcessor
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_relative_day_time($1, $2, $3, minutes)
-              when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
+              when /(\d+)分後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
                 translate_relative_time(text)
               when /(\d{1,2})月/
                 translate_specific_date_time($1, 1, nil, nil, nil)
@@ -89,6 +89,15 @@ class NaturalLanguageProcessor
     when /(\d+)時間後/
       hours = $1.to_i
       time = Time.current + hours.hours
+    when /(\d+)時間(\d+)分後/
+      hours = $1.to_i
+      minutes = $2.to_i
+      time = Time.current + hours.hours + minutes.minutes
+    when /(\d+)時間半後/
+      hours = $1.to_i
+      time = Time.current + hours.hours + 30.minutes
+    when /半日後/
+      time = Time.current + 12.hours
     when /(\d+)日後/
       days = $1.to_i
       time = Time.current + days.days
