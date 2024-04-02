@@ -12,6 +12,11 @@ class NaturalLanguageProcessor
   def self.parse_and_format_datetime(text)
     text = full_to_half(text)
     datetime = case text
+              when /(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/
+                day_match = text.match(/(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/)
+                time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/)
+                period_match = text.match(/(朝|午前|午後)/)
+                translate_weekday_and_relative_week(day_match, time_match, period_match)
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_relative_day_time($1, $2, $3, minutes)
@@ -31,11 +36,6 @@ class NaturalLanguageProcessor
                 translate_specific_date_time(nil, nil, $1, $2, minutes)
               when /(\d+)分後/, /(\d+)時間後/, /(\d+)日後/, /(\d+)週間後/, /(\d+)ヶ月後/
                 translate_relative_time(text)
-              else
-                day_match = text.match(/(今週|来週|再来週)[\s　の]*(日|月|火|水|木|金|土)(曜?日?)?/)
-                time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/)
-                period_match = text.match(/(朝|午前|午後)/)
-                translate_weekday_and_relative_week(day_match, time_match, period_match) if day_match
               end
     datetime || "Unrecognized format"
   end
