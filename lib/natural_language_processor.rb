@@ -17,6 +17,11 @@ class NaturalLanguageProcessor
                 time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)(\d{1,2}|半)?分?/)
                 period_match = text.match(/(朝|午前|午後)/)
                 translate_weekday_and_relative_week(day_match, time_match, period_match)
+              when /(今月|来月|再来月)[\s　の]*(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                minutes = $5 == "半" ? 30 : $5.to_i
+                translate_month_relative_day_time($1, $2, $3, $4, minutes)
+              when /(今月|来月|再来月)[\s　の]*/
+                translate_month_relative_day_time($1, nil, nil, nil, nil)
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_relative_day_time($1, $2, $3, minutes)
@@ -120,6 +125,26 @@ class NaturalLanguageProcessor
 
     target_date = target_date.change(hour: hour, min: minute)
     format_datetime(target_date)
+  end
+
+  def self.translate_month_relative_day_time(month, day, period, hour, minutes)
+    current_time = Time.current
+
+    month_increment = case month
+                      when "今月" then 0
+                      when "来月" then 1
+                      when "再来月" then 2
+                      end
+    target_time = current_time + month_increment.months
+
+    day = day.nil? ? 1 : day.to_i
+    hour = hour.nil? ? 6 : hour.to_i
+    minutes = minutes.nil? ? 0 : minutes.to_i
+
+    hour = adjust_hour_for_period(hour, period)
+
+    datetime = Time.new(target_time.year, target_time.month, day, hour, minutes)
+    format_datetime(datetime)
   end
 
   def self.adjust_hour_for_period(hour, period)
