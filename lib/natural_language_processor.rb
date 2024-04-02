@@ -24,7 +24,7 @@ class NaturalLanguageProcessor
               when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_specific_date_time(nil, $1, $2, $3, minutes)
-              when /(朝|午前|午後)?(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/
+              when /(朝|午前|午後)?[\s　の](\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $3 == "半" ? 30 : $3
                 translate_specific_date_time(nil, nil, $1, $2, minutes)
               when /(\d{1,2})月/
@@ -36,8 +36,9 @@ class NaturalLanguageProcessor
                 time_match = text.match(/[\s　の]*(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/)
                 period_match = text.match(/(朝|午前|午後)/)
                 if day_match
-                  minutes = time_match[2] == "半" ? "30" : time_match[2]
-                  translate_weekday_and_relative_week(day_match, [time_match[1], minutes], period_match)
+                  minutes = time_match[2] == "半" ? 30 : time_match[2]
+                  modified_time_match = [time_match[1], minutes]
+                  translate_weekday_and_relative_week(day_match, modified_time_match, period_match)
                 end
               end
     datetime || "Unrecognized format"
@@ -115,9 +116,9 @@ class NaturalLanguageProcessor
       target_date += 1.week
     end
     
-    hour = time_match ? time_match[1].to_i : 6
+    hour = modified_time_match ? modified_time_match[1].to_i : 6
 
-    minute = time_match && time_match[2] ? time_match[2].to_i : 0
+    minute = modified_time_match && modified_time_match[2] ? modified_time_match[2].to_i : 0
     hour = adjust_hour_for_period(hour, period_match ? period_match[1] : nil)
 
     target_date = target_date.change(hour: hour, min: minute)
