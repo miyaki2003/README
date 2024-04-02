@@ -76,15 +76,6 @@ class NaturalLanguageProcessor
     format_datetime(date)
   end
 
-  def self.translate_specific_date_time(month, day, period, hour, minutes)
-    year = Time.current.year
-    hour = hour.nil? ? 6 : hour.to_i
-    minutes = minutes.to_i
-    hour = adjust_hour_for_period(hour.to_i, period)
-    date = Time.new(year, month, day, hour, minutes.to_i)
-    format_datetime(date)
-  end
-
   def self.translate_relative_time(text)
     case text
     when /(\d+)分後/
