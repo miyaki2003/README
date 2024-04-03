@@ -123,7 +123,7 @@ class LineBotController < ApplicationController
   def send_current_date_and_time(reply_token)
     wdays = ["日", "月", "火", "水", "木", "金", "土"]
     wday_num = Time.current.wday
-    message_text = "今日は#{Time.current.strftime('%Y年%m月%d日')} #{wdays[wday_num]}曜日です"
+    message_text = "今日は#{Time.current.strftime('%Y年%m月%d日')}#{wdays[wday_num]}曜日です"
     message = {
       type: 'text',
       text: message_text
