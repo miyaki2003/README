@@ -122,7 +122,7 @@ class LineBotController < ApplicationController
   
     reminders.each_with_index do |reminder, index|
       time = reminder.reminder_time
-      message_text += "#{time.month}月#{time.day}日#{time.hour}時#{time.min}分\n「#{reminder.title}」"
+      message_text += "#{time.year}年#{time.month}月#{time.day}日#{time.hour}時#{time.min}分\n「#{reminder.title}」"
       message_text += "\n\n" unless index == reminders.size - 1
     end
   
