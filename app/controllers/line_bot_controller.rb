@@ -26,6 +26,7 @@ class LineBotController < ApplicationController
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
     user_message = event.message['text']
+    case user_message
     when 'キャンセル'
       user.update(status: nil, temporary_data: nil)
       cancel_operation(event['replyToken'])
