@@ -2,7 +2,7 @@ class ReminderJob < ApplicationJob
   queue_as :default
 
   def perform(reminder_id)
-    reminder = Reminder.find_by(id: reminder_id)
+    reminder = Reminder.find_by(id: reminder_id, is_active: true)
     return unless reminder
 
     message = {
