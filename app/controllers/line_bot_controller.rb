@@ -34,6 +34,8 @@ class LineBotController < ApplicationController
       send_reminder_list(user, event['replyToken'])
     when '今日'
       send_current_date_and_time(event['replyToken'])
+    when '取り消し'
+      cancel_last_reminder(user, event['replyToken'])
     else
       if user.status == 'awaiting_time'
         process_user_message(user, user_message, event['replyToken'])
@@ -128,6 +130,23 @@ class LineBotController < ApplicationController
       type: 'text',
       text: message_text
     }
+    client.reply_message(reply_token, message)
+  end
+
+  def cancel_last_reminder(user, reply_token)
+    last_reminder = user.reminders.where(is_active: true).order(created_at: :desc).first
+    if last_reminder
+      last_reminder.update(is_active: false)
+      message = {
+        type: 'text',
+        text: '直前のリマインダーを取り消しました'
+      }
+    else
+      message = {
+        type: 'text',
+        text: 'リマインダーが見つかりませんでした'
+      }
+    end
     client.reply_message(reply_token, message)
   end
 
