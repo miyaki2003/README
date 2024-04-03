@@ -101,11 +101,12 @@ class LineBotController < ApplicationController
   end
 
   def send_reminder_list(user, reply_token)
-    reminders = user.reminders.order(reminder_time: :desc).limit(10)
+    reminders = user.reminders.where('reminder_time > ?', Time.now).order(reminder_time: :asc).limit(10)
     message_text = "リマインド一覧です\n\n"
   
-    reminders.each do |reminder|
-      message_text += "#{reminder.reminder_time.strftime('%m月%d日%H時%M分')}\n「#{reminder.title}」\n\n"
+    reminders.each_with_index do |reminder, index|
+      message_text += "#{reminder.reminder_time.strftime('%m月%d日%H時%M分')}\n「#{reminder.title}」"
+      message_text += "\n\n" unless index == reminders.size - 1
     end
   
     message = {
