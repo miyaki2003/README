@@ -111,7 +111,7 @@ class LineBotController < ApplicationController
     message_text = "リマインド一覧です\n\n"
   
     reminders.each_with_index do |reminder, index|
-      message_text += "#{reminder.reminder_time.strftime('%m月%d日%H時%M分')}\n「#{reminder.title}」"
+      message_text += "#{reminder.reminder_time.strftime('%Y年%m月%d日%H時%M分')}\n「#{reminder.title}」"
       message_text += "\n\n" unless index == reminders.size - 1
     end
   
