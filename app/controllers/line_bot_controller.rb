@@ -30,6 +30,8 @@ class LineBotController < ApplicationController
     if user_message.downcase == 'キャンセル'
       user.update(status: nil, temporary_data: nil)
       cancel_operation(event['replyToken'])
+    elsif user_message.downcase == '一覧'
+      send_reminder_list(user, event['replyToken'])
     elsif user.status == 'awaiting_time'
       process_user_message(user, user_message, event['replyToken'])
     else
@@ -91,6 +93,21 @@ class LineBotController < ApplicationController
   end
 
   def send_error_message(reply_token, message_text)
+    message = {
+      type: 'text',
+      text: message_text
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def send_reminder_list(user, reply_token)
+    reminders = user.reminders.order(reminder_time: :desc).limit(10)
+    message_text = "リマインド一覧です\n\n"
+  
+    reminders.each do |reminder|
+      message_text += "#{reminder.reminder_time.strftime('%m月%d日%H時%M分')}\n「#{reminder.title}」\n\n"
+    end
+  
     message = {
       type: 'text',
       text: message_text
