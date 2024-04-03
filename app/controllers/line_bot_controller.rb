@@ -107,7 +107,7 @@ class LineBotController < ApplicationController
   end
 
   def send_reminder_list(user, reply_token)
-    reminders = user.reminders.where(is_active: true, 'reminder_time > ?', Time.now).order(reminder_time: :asc).limit(10)
+    reminders = user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc).limit(10)
     message_text = "リマインド一覧です\n\n"
   
     reminders.each_with_index do |reminder, index|
