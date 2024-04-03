@@ -27,15 +27,19 @@ class LineBotController < ApplicationController
     user = User.find_or_create_by(line_user_id: user_id)
     user_message = event.message['text']
   
-    if user_message.downcase == 'キャンセル'
+    when user_message.downcase == 'キャンセル'
       user.update(status: nil, temporary_data: nil)
       cancel_operation(event['replyToken'])
-    elsif user_message.downcase == '一覧'
+    when user_message.downcase == '一覧'
       send_reminder_list(user, event['replyToken'])
-    elsif user.status == 'awaiting_time'
-      process_user_message(user, user_message, event['replyToken'])
+    when '今日'
+      send_current_date_and_time(event['replyToken'])
     else
-      start_reminder_setting(user, user_message, event['replyToken'])
+      if user.status == 'awaiting_time'
+        process_user_message(user, user_message, event['replyToken'])
+      else
+        start_reminder_setting(user, user_message, event['replyToken'])
+      end
     end
   end
   
@@ -109,6 +113,17 @@ class LineBotController < ApplicationController
       message_text += "\n\n" unless index == reminders.size - 1
     end
   
+    message = {
+      type: 'text',
+      text: message_text
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def send_current_date_and_time(reply_token)
+    wdays = ["日", "月", "火", "水", "木", "金", "土"]
+    wday_num = Time.current.wday
+    message_text = "今日は#{Time.current.strftime('%Y年%m月%d日')} #{wdays[wday_num]}曜日です"
     message = {
       type: 'text',
       text: message_text
