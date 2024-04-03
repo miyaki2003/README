@@ -26,11 +26,10 @@ class LineBotController < ApplicationController
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
     user_message = event.message['text']
-  
-    when user_message.downcase == 'キャンセル'
+    when 'キャンセル'
       user.update(status: nil, temporary_data: nil)
       cancel_operation(event['replyToken'])
-    when user_message.downcase == '一覧'
+    when '一覧'
       send_reminder_list(user, event['replyToken'])
     when '今日'
       send_current_date_and_time(event['replyToken'])
