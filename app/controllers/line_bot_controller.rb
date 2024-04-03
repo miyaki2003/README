@@ -91,9 +91,19 @@ class LineBotController < ApplicationController
   end
 
   def confirm_reminder_set(reply_token, title, parsed_datetime)
+
+    year = parsed_datetime.year
+    month = parsed_datetime.month
+    day = parsed_datetime.day
+    hour = parsed_datetime.hour
+    minute = parsed_datetime.min
+
+    date_str = "#{year}年#{month}月#{day}日#{hour}時#{minute}分"
+
+
     message = {
       type: 'text',
-      text: "#{parsed_datetime.strftime('%Y年%m月%d日%H時%M分')}に「#{title}」をリマインドします"
+      text: "#{date_str}に「#{title}」をリマインドします"
     }
     client.reply_message(reply_token, message)
   end
@@ -111,7 +121,8 @@ class LineBotController < ApplicationController
     message_text = "リマインド一覧です\n\n"
   
     reminders.each_with_index do |reminder, index|
-      message_text += "#{reminder.reminder_time.strftime('%Y年%m月%d日%H時%M分')}\n「#{reminder.title}」"
+      time = reminder.reminder_time
+      message_text += "#{time.month}月#{time.day}日#{time.hour}時#{time.min}分\n「#{reminder.title}」"
       message_text += "\n\n" unless index == reminders.size - 1
     end
   
@@ -124,8 +135,14 @@ class LineBotController < ApplicationController
 
   def send_current_date_and_time(reply_token)
     wdays = ["日", "月", "火", "水", "木", "金", "土"]
-    wday_num = Time.current.wday
-    message_text = "今日は#{Time.current.strftime('%Y年%m月%d日')}#{wdays[wday_num]}曜日です"
+    current_time = Time.current
+    wday_num = current_time.wday
+
+    year = current_time.year
+    month = current_time.month
+    day = current_time.day
+
+    message_text = "今日は#{year}年#{month}月#{day}日#{wdays[wday_num]}曜日です"
     message = {
       type: 'text',
       text: message_text
