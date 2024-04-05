@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       buttonText: {
         month: '月',
-        today: '今',
+        today: '今日',
         week: '週',
         list: 'リスト',
         prev: '<',
