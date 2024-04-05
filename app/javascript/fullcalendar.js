@@ -5,16 +5,28 @@ import listPlugin from '@fullcalendar/list';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
+import './stylesheets/fullcalendar.scss';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
+
+function backgroundColorParams(today, start) {
+  let endDate = today.toISOString().split('T')[0];
+  return {
+    start: '0001-01-01',
+    end: endDate,
+    display: 'background',
+    color: '#d7d7d7'
+  };
+}
 
 document.addEventListener('DOMContentLoaded', function() {
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
       height: "auto",
-      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
+      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin, googleCalendarPlugin ],
       themeSystem: 'bootstrap5',
       locale: 'ja',
       initialView: 'dayGridMonth',
@@ -24,9 +36,23 @@ document.addEventListener('DOMContentLoaded', function() {
         googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com',
         className: 'event_holiday'
       },
+
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
+
+
+      dateClick: function(info) {
+        document.getElementById('eventDate').value = info.dateStr;
+        document.getElementById('eventModal').style.display = 'block';
+      },
+
+
+      eventClick: function(info) {
+        alert('Event: ' + info.event.title);
+      },
+
+
       customButtons: {
         CustomButton: {
           text: '設定',
@@ -56,12 +82,13 @@ document.addEventListener('DOMContentLoaded', function() {
         next: 'chevron-right'
       },
       buttonText: {
-        today: '今月',
         month: '月',
+        today: '今',
         week: '週',
-        list: 'リスト'
+        list: 'リスト',
+        prev: '<',
+        next: '>',
       },
-      initialView: 'dayGridMonth',
       views: {
         dayGridMonth: {
           titleFormat: { year: 'numeric', month: 'numeric' },
@@ -71,12 +98,15 @@ document.addEventListener('DOMContentLoaded', function() {
           listDayFormat: { month: 'numeric', day: 'numeric', weekday: 'narrow' },
           listDaySideFormat: false
         }
-      },
-      dateClick: function(info) {
-        document.getElementById('eventModal').style.display = 'block';
-        document.getElementById('eventStart').value = info.dateStr;
       }
     });
+
+    
+    
+
+    let today = new Date();
+    let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+    let backgroundEvent = backgroundColorParams(today, startOfMonth);
 
     calendar.setOption('windowResize', function() {
       if (window.innerWidth < 768) {
@@ -86,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    
+    calendar.addEvent(backgroundEvent);
     calendar.render();
   }
 });
