@@ -6,7 +6,6 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
 import googleCalendarPlugin from '@fullcalendar/google-calendar';
-import './stylesheets/fullcalendar.scss';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -20,6 +19,9 @@ function backgroundColorParams(today, start) {
     color: '#d7d7d7'
   };
 }
+
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
   let calendarEl = document.getElementById('calendar');
@@ -89,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         prev: '<',
         next: '>',
       },
+      initialView: 'dayGridMonth',
       views: {
         dayGridMonth: {
           titleFormat: { year: 'numeric', month: 'numeric' },
