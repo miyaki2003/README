@@ -3,7 +3,11 @@ const sassPlugin = require('esbuild-plugin-sass');
 const watchMode = process.argv.includes('--watch');
 
 let buildOptions = {
-  entryPoints: ['app/javascript/application.js'],
+  entryPoints: {
+    application: 'app/javascript/application.js',
+    fullcalendar: 'app/javascript/fullcalendar.js',
+    liff_init: 'app/javascript/liff_init.js',
+  },
   bundle: true,
   outdir: './app/assets/builds',
   sourcemap: true,
