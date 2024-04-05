@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
         prev: '<',
         next: '>',
       },
-      initialView: 'dayGridMonth',
       views: {
         dayGridMonth: {
           titleFormat: { year: 'numeric', month: 'numeric' },
