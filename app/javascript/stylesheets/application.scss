@@ -1,1 +1,14 @@
-@import "bootstrap";
+/*週*/
+.fc-col-header-cell{
+	background: #d3d3d3;
+}
+/*日付*/
+.fc-daygrid-day{
+	background: #fff;
+}
+
+/*日曜*/
+.fc-daygrid-day.fc-day-sun{
+	background: #ededed;
+	color: #ee827c;
+}

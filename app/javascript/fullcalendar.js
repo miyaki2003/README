@@ -24,9 +24,34 @@ document.addEventListener('DOMContentLoaded', function() {
         googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com',
         className: 'event_holiday'
       },
+
+      events: [
+        {
+          title: 'My Event',
+          start: '2024-04-12',
+        }
+      ],
+
+
+
+
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
+
+
+      dateClick: function(info) {
+        alert('Clicked on: ' + info.dateStr);
+        document.getElementById('eventDate').value = info.dateStr;
+        document.getElementById('eventModal').style.display = 'block';
+      },
+
+
+      eventClick: function(info) {
+        alert('Event: ' + info.event.title);
+      },
+
+
       customButtons: {
         CustomButton: {
           text: '設定',
@@ -56,10 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
         next: 'chevron-right'
       },
       buttonText: {
-        today: '今月',
         month: '月',
+        today: '今',
         week: '週',
-        list: 'リスト'
+        list: 'リスト',
+        prev: '<',
+        next: '>',
       },
       initialView: 'dayGridMonth',
       views: {
@@ -71,13 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
           listDayFormat: { month: 'numeric', day: 'numeric', weekday: 'narrow' },
           listDaySideFormat: false
         }
-      },
-      dateClick: function(info) {
-        document.getElementById('eventModal').style.display = 'block';
-        document.getElementById('eventStart').value = info.dateStr;
       }
     });
-
     calendar.setOption('windowResize', function() {
       if (window.innerWidth < 768) {
         calendar.changeView('listMonth');
@@ -85,7 +107,10 @@ document.addEventListener('DOMContentLoaded', function() {
         calendar.changeView('dayGridMonth');
       }
     });
-
     calendar.render();
   }
 });
+
+function closeModal() {
+  document.getElementById('eventModal').style.display = 'none';
+}
