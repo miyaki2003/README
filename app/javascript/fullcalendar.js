@@ -5,6 +5,7 @@ import listPlugin from '@fullcalendar/list';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -19,12 +20,15 @@ function backgroundColorParams(today, start) {
   };
 }
 
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
       height: "auto",
-      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
+      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin, googleCalendarPlugin ],
       themeSystem: 'bootstrap5',
       locale: 'ja',
       initialView: 'dayGridMonth',
@@ -35,23 +39,12 @@ document.addEventListener('DOMContentLoaded', function() {
         className: 'event_holiday'
       },
 
-      events: [
-        {
-          title: 'My Event',
-          start: '2024-04-12',
-        }
-      ],
-
-
-
-
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
 
 
       dateClick: function(info) {
-        alert('Clicked on: ' + info.dateStr);
         document.getElementById('eventDate').value = info.dateStr;
         document.getElementById('eventModal').style.display = 'block';
       },
@@ -111,6 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    
+    
+
     let today = new Date();
     let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
     let backgroundEvent = backgroundColorParams(today, startOfMonth);
@@ -123,11 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    
     calendar.addEvent(backgroundEvent);
     calendar.render();
   }
 });
-
-function closeModal() {
-  document.getElementById('eventModal').style.display = 'none';
-}

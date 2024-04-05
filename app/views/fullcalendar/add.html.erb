@@ -1,10 +1,11 @@
-<div id="eventModal" style="display:none;">
-  <form id="eventForm">
-    <label for="eventDate">日付:</label>
-    <input type="text" id="eventDate" name="date" readonly>
-    <label for="eventTitle">タイトル:</label>
-    <input type="text" id="eventTitle" name="title">
-    <button type="submit">保存</button>
-    <button type="button" onclick="closeModal()">キャンセル</button>
-  </form>
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <span class="close modalClose">×</span>
+    <form id="eventForm">
+      <input type="date" id="eventDate" readonly>
+      <input type="text" id="eventTitle" placeholder="イベントタイトル">
+      <button type="submit">イベントを追加</button>
+    </form>
+  </div>
 </div>
+<%= javascript_include_tag 'fullcalendar', "data-turbo-track": "reload", type: "module" %>
