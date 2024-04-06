@@ -34,7 +34,7 @@ gem "google-cloud-language"
 
 gem 'chronic'
 
-gem 'dartsass-rails'
+gem 'sassc-rails'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
