@@ -21,10 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
       initialView: 'dayGridMonth',
       selectable: true,
       googleCalendarApiKey: 'AIzaSyBEjT2zMm5yB9LYkUawhLf6A9oNt1rRWBA',
-      events: {
-        googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com',
-        className: 'event_holiday'
-      },
+      eventSources: [
+        {
+          googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com',
+          className: 'event_holiday'
+        },
+        '/events.json'
+      ],
 
       dayCellContent: function(arg){
         return arg.date.getDate();
@@ -32,8 +35,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
       dateClick: function(info) {
-        document.getElementById('eventDate').value = info.dateStr;
-        document.getElementById('eventModal').style.display = 'block';
+        const year = info.date.getFullYear();
+        const month = (info.date.getMonth() + 1);
+        const day = info.date.getDate();
+
+        $.ajax({
+          type: 'GET',
+          url:  '/events/new',
+        }).done(function (res) {
+
+            $('.modal-body').html(res);
+
+
+            $('#event_start_1i').val(year);
+            $('#event_start_2i').val(month);
+            $('#event_start_3i').val(day);
+
+            $('#event_end_1i').val(year);
+            $('#event_end_2i').val(month);
+            $('#event_end_3i').val(day);
+
+
+            $('#modal').modal('show');
+        }).fail(function (result) {
+
+          alert("failed");
+        });
       },
 
 
@@ -99,5 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
+    $(".error").click(function(){
+      calendar.refetchEvents();
+  });
   }
 });
