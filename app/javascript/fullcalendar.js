@@ -10,15 +10,7 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function backgroundColorParams(today, start) {
-  let endDate = today.toISOString().split('T')[0];
-  return {
-    start: '0001-01-01',
-    end: endDate,
-    display: 'background',
-    color: '#d7d7d7'
-  };
-}
+
 
 
 
@@ -102,14 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
-
     
-    
-
-    let today = new Date();
-    let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-    let backgroundEvent = backgroundColorParams(today, startOfMonth);
-
     calendar.setOption('windowResize', function() {
       if (window.innerWidth < 768) {
         calendar.changeView('listMonth');
@@ -118,8 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    
-    calendar.addEvent(backgroundEvent);
     calendar.render();
   }
 });
