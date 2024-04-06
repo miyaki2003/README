@@ -10,11 +10,6 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
