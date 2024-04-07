@@ -1,41 +1,115 @@
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
 @import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
 
-:root {
-  --primary: #0d6efd;
-  --dark: #21252f;
-  --body: #888;
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  &:before, &:after {
+    box-sizing: border-box;
+  }
 }
 
 body {
-  font-family: "Sora", sans-serif;
-  line-height: 1.7;
-  color: var(--body);
+  font-family: 'Sora', sans-serif;
+  background: #000000;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #000000;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color:var(--dark);
-  font-weight: 900;
+.container {
+  max-width: 60em;
+  min-width: 45em;
+  margin: 0 auto;
+  padding: 0 2em;
 }
 
-a {
-  color: var(--dark);
-  text-decoration: none;
+nav {
+  position: fixed;
+  width: 100%;
+  margin: 0 auto;
+  top: 0;
+  z-index: 3;
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    float: right;
+  }
+  li {
+    display: inline-block;
+    padding: 2em;
+    text-align: center;
+    transition: all .2s;
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+  a {
+    color: #FFF;
+    text-decoration: none;
+    transition: all .3s;
+    &:hover {
+      color: #DDD;
+    }
+  }
 }
 
-.navbar .nav-link {
-  color: #fff !important;
-  font-size: 14px;
+#icon {
+  display: inline-block;
+  padding-top: .7em;
+  font-size: 2em;
   font-weight: 700;
-  padding-top: 16px;
+  text-transform: uppercase;
 }
 
-.btn {
-  padding: 10px 17px;
-  border-width: 1px;
-  border-radius: 0;
+#nav-bg {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.1); 
+  position: fixed;
+  height: 5em;
+  width: 100%;
+  top: 0;
+  z-index: 1;
+  border: 1px solid black;
+}
+
+header {
+  position: relative;
+  background-color: #00BFFF;
+  padding: 10em 0 8em;
+  z-index: 2;
+  h1 {
+    font-size: 4em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+}
+
+#about {
+  background: #ffff;
+  height: 70em;
+  padding: 5em 0;
+  p {
+    line-height: 2em;
+    font-size: 1.4em;
+    margin: 0;
+    color: #000000;
+  }
+}
+
+.custom-login-btn {
+  color: #000000;
+  margin: 5px;
+  padding: 5px 5px;
+  margin-bottom: 10px;
+}
+
+
+.custom-login-btn:hover {
+  font-size: 1.2em;
 }
