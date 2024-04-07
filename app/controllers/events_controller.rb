@@ -17,7 +17,7 @@ class EventsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.js {render partial: "error" }
+        format.js { render partial: "shared/error_messages", locals: { object: @event } }
       end
     end
   end

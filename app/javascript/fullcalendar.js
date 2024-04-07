@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#event_end_3i').val(day);
 
 
-            $('#modal').modal('show');
+            $('#modal').fadeIn();
         }).fail(function (result) {
 
           alert("failed");
