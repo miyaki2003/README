@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   get 'liff', to: 'liff#index'
 
-  get 'fullcalendar', to: 'fullcalendar#index'
+  resources :events
 
   resources :reminders, only: %i[index destroy]
 end
