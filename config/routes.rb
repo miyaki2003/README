@@ -10,6 +10,10 @@ Rails.application.routes.draw do
 
   get 'liff', to: 'liff#index'
 
+  get '/terms', to: 'staticpages#terms'
+  
+  get '/privacy_policy', to: 'staticpages#privacy_policy'
+
   resources :events
 
   resources :reminders, only: %i[index destroy]

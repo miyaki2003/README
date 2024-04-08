@@ -35,34 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
       dateClick: function(info) {
-        const year = info.date.getFullYear();
-        const month = (info.date.getMonth() + 1);
-        const day = info.date.getDate();
-
-        $.ajax({
-          type: 'GET',
-          url:  '/events/new',
-        }).done(function (res) {
-
-            $('.modal-body').html(res);
-
-
-            $('#event_start_1i').val(year);
-            $('#event_start_2i').val(month);
-            $('#event_start_3i').val(day);
-
-            $('#event_end_1i').val(year);
-            $('#event_end_2i').val(month);
-            $('#event_end_3i').val(day);
-
-
-            $('#modal').fadeIn();
-        }).fail(function (result) {
-
-          alert("failed");
+        let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+            keyboard: true
         });
+        modal.show();
+        document.querySelector("#event_start_1i").value = info.date.getFullYear();
+        document.querySelector("#event_start_2i").value = info.date.getMonth() + 1;
+        document.querySelector("#event_start_3i").value = info.date.getDate();
       },
-
 
       eventClick: function(info) {
         alert('Event: ' + info.event.title);
