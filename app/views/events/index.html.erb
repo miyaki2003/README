@@ -2,32 +2,34 @@
 <div class="container">
   <div id="calendar"></div>
 </div>
-<div id="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="eventModalLabel">イベント追加</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <%= form_with(model: @event, url: events_path, id: "event-form", remote: true) do |f| %>
+          <div class="mb-3">
+            <%= f.label :title, "タイトル" %>
+            <%= f.text_field :title, class: "form-control" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :start, "開始日時" %>
+            <%= f.datetime_select :start, {default: Date.today + 0.hours + 00.minutes, minute_step: 60}, class: "form-control" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :end_time, "終了日時" %>
+            <%= f.datetime_select :end_time, {default: Date.today + 0.hours + 00.minutes, minute_step: 60}, class: "form-control" %>
+          </div>
+          <%= f.submit "保存", class: "btn btn-primary" %>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
 
-<div id="response-modal" tabindex="0" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="error" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="response-modal-body">
-        </div>
-      </div>
-    </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/googlecalendar@6.1.8/index.global.min.js"></script>
 <%= javascript_include_tag 'fullcalendar', "data-turbo-track": "reload", type: "module" %>
