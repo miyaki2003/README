@@ -39,9 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
             keyboard: true
         });
         modal.show();
-        document.querySelector("#event_start_1i").value = info.date.getFullYear();
-        document.querySelector("#event_start_2i").value = info.date.getMonth() + 1;
-        document.querySelector("#event_start_3i").value = info.date.getDate();
       },
 
       eventClick: function(info) {
@@ -106,8 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
-    $(".error").click(function(){
-      calendar.refetchEvents();
-  });
+    
   }
 });
