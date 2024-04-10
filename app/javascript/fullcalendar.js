@@ -11,6 +11,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
 document.addEventListener('DOMContentLoaded', function() {
+  let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  let tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
   let lastClickedElement = null;
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
@@ -30,15 +34,22 @@ document.addEventListener('DOMContentLoaded', function() {
         '/events.json'
       ],
 
+      events: [
+          {
+              title  : 'イベント1',
+              start  : '2023-04-10T14:30:00',
+              end    : '2023-04-10T16:30:00',
+          },
+          {
+              title  : 'イベント2',
+              start  : '2023-04-12T10:00:00',
+              end    : '2023-04-12T12:00:00',
+          }
+      ],
+
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
-
-
-      
-
-      
-
 
       dateClick: function(info) {
         if (window.matchMedia("(pointer: coarse)").matches) {
@@ -59,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
               lastClickedElement.style.backgroundColor = '';
             }
         
-            info.dayEl.style.backgroundColor = '#D3E8ED';
+            info.dayEl.style.backgroundColor = '#E0F2F1';
             lastClickedElement = info.dayEl;
           }
         } else {
@@ -76,8 +87,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
       
       eventClick: function(info) {
-        alert('Event: ' + info.event.title);
+        let eventTitle = info.event.title;
+
+        document.getElementById('eventModalLabel').textContent = eventTitle + " Details";
+
+        document.getElementById('eventTitle').textContent = 'Title: ' + info.event.title;
+        document.getElementById('eventStart').textContent = 'Start: ' + info.event.start.toLocaleString();
+        document.getElementById('eventEnd').textContent = 'End: ' + (info.event.end ? info.event.end.toLocaleString() : 'Not set');
+
+        document.getElementById('eventDetails').style.display = 'block';
+        document.getElementById('eventEditForm').style.display = 'none';
+        document.getElementById('editEventBtn').style.display = 'inline-block';
+        document.getElementById('saveEventBtn').style.display = 'none';
+
+        let modal = new bootstrap.Modal(document.getElementById('eventModal'));
+        modal.show();
       },
+
+
 
       customButtons: {
         CustomButton: {
@@ -93,15 +120,16 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         },
       },
+
       headerToolbar: {
-        start: 'prev',
-        center: 'title',
-        end: 'lineButton CustomButton next'
+        start: 'title',
+        center: '',
+        end: 'dayGridMonth timeGridWeek listWeek lineButton CustomButton'
       },
       footerToolbar: {
-        left: 'today',
-        center: 'dayGridMonth timeGridWeek listWeek',
-        right: 'CustomButton'
+        left: 'prev',
+        center: 'today CustomButton',
+        right: 'next'
       },
       buttonIcons: {
         prev: 'chevron-left',
@@ -112,8 +140,8 @@ document.addEventListener('DOMContentLoaded', function() {
         today: '今日',
         week: '週',
         list: 'リスト',
-        prev: '<',
-        next: '>',
+        prev: '<i class="fa-solid fa-chevron-left"></i>',
+        next: '<i class="fa-solid fa-chevron-right"></i>',
       },
       views: {
         dayGridMonth: {
@@ -123,17 +151,17 @@ document.addEventListener('DOMContentLoaded', function() {
           titleFormat: { year: 'numeric', month: 'numeric' },
           listDayFormat: { month: 'numeric', day: 'numeric', weekday: 'narrow' },
           listDaySideFormat: false
+        },
+        timeGridWeek: {
+          titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' }
+        },
+        listWeek: {
+          titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' }
         }
       }
     });
     
-    calendar.setOption('windowResize', function() {
-      if (window.innerWidth < 768) {
-        calendar.changeView('listMonth');
-      } else {
-        calendar.changeView('dayGridMonth');
-      }
-    });
+    
 
     calendar.render();
     
