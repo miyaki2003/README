@@ -34,19 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
         '/events.json'
       ],
 
-      events: [
-          {
-              title  : 'イベント1',
-              start  : '2023-04-10T14:30:00',
-              end    : '2023-04-10T16:30:00',
-          },
-          {
-              title  : 'イベント2',
-              start  : '2023-04-12T10:00:00',
-              end    : '2023-04-12T12:00:00',
-          }
-      ],
-
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
@@ -123,8 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       headerToolbar: {
         start: 'title',
-        center: '',
-        end: 'dayGridMonth timeGridWeek listWeek lineButton CustomButton'
+        end: 'dayGridMonth listMonth lineButton CustomButton'
       },
       footerToolbar: {
         left: 'prev',
@@ -138,10 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
       buttonText: {
         month: '月',
         today: '今日',
-        week: '週',
         list: 'リスト',
-        prev: '<i class="fa-solid fa-chevron-left"></i>',
-        next: '<i class="fa-solid fa-chevron-right"></i>',
+        prev: '<',
+        next: '>',
       },
       views: {
         dayGridMonth: {
@@ -152,12 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
           listDayFormat: { month: 'numeric', day: 'numeric', weekday: 'narrow' },
           listDaySideFormat: false
         },
-        timeGridWeek: {
-          titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' }
-        },
-        listWeek: {
-          titleFormat: { year: 'numeric', month: 'numeric', day: 'numeric' }
-        }
       }
     });
     
