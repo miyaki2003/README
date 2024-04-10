@@ -45,18 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
           modal.show();
           
           modal._element.addEventListener('hidden.bs.modal', function() {
-            info.dayEl.style.borderColor = '';
             lastClickedElement = null;
           });
 
-      } else {
-
-          if (lastClickedElement) {
-            lastClickedElement.style.backgroundColor = '';
-          }
-
-          info.dayEl.style.backgroundColor = '#D3E8ED';
-          lastClickedElement = info.dayEl;
+        } else {
+            lastClickedElement = info.dayEl;
         }
       },
       
