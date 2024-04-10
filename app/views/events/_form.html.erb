@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag 'events/_form', media: 'all', 'data-turbolinks-track': 'reload' %>
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -16,19 +17,23 @@
             <%= f.text_field :start, class: "form-control", id: "start-time-picker" %>
           </div>
           <div class="mb-3">
-            <%= f.label :end_time, "終了時間" %>
-            <%= f.text_field :end_time, class: "form-control", id: "end-time-picker" %>
+            <%= f.label :end, "終了時間" %>
+            <%= f.text_field :end, class: "form-control", id: "end-time-picker" %>
           </div>
-          <div class="form-check form-switch custom-switch-layout">
-            <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
-            <%= f.check_box :line_notify, class: "form-check-input", id: "line-notify-switch" %>
+
+
+          <div class="mb-3 d-flex align-items-center justify-content-between">
+            <div>
+              <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
+            </div>
+            <div class="form-check form-switch switch-container">
+              <%= f.check_box :line_notify, class: "form-check-input", id: "line-notify-switch" %>
+            </div>
           </div>
 
           <div class="mb-3" id="notify-time-input" style="display:none;">
-            <div class="d-flex align-items-center">
-              <%= f.label :notify_time, "通知時間", class: "form-label me-2" %>
-              <%= f.time_field :notify_time, class: "form-control" %>
-            </div>
+            <%= f.label :notify_time, "通知時間", class: "form-label" %>
+            <%= f.time_field :notify_time, class: "form-control" %>
           </div>
 
           <script>
@@ -56,6 +61,7 @@
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
+                defaultDate: "7:00"
               });
 
               flatpickr("#end-time-picker", {
@@ -63,6 +69,7 @@
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
+                defaultDate: "23:59"
               });
             });
           </script>
