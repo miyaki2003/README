@@ -12,12 +12,12 @@
             <%= f.text_field :title, class: "form-control" %>
           </div>
           <div class="mb-3">
-            <%= f.label :start, "開始日時" %>
-            <%= f.datetime_field :start, class: "form-control" %>
+            <%= f.label :start, "開始時間" %>
+            <%= f.text_field :start, class: "form-control", id: "start-time-picker" %>
           </div>
           <div class="mb-3">
-            <%= f.label :end_time, "終了日時" %>
-            <%= f.datetime_field :end_time, class: "form-control" %>
+            <%= f.label :end_time, "終了時間" %>
+            <%= f.text_field :end_time, class: "form-control", id: "end-time-picker" %>
           </div>
           <div class="form-check form-switch custom-switch-layout">
             <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
@@ -46,6 +46,24 @@
 
               toggleNotifyTimeInput();
               notifySwitch.addEventListener('change', toggleNotifyTimeInput);
+            });
+          </script>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              flatpickr("#start-time-picker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+              });
+
+              flatpickr("#end-time-picker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+              });
             });
           </script>
           
