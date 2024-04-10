@@ -1,4 +1,4 @@
-<%= javascript_include_tag 'top', "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag 'staticpages/top', media: 'all', 'data-turbolinks-track': 'reload' %>
 <nav>
   <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
     <ul style="margin: 0; padding: 0; list-style: none; flex-grow: 1; display: flex; justify-content: flex-start;">
@@ -22,9 +22,6 @@
       <%= link_to 'Calendar', events_path %>
     </p>
   </div>
-
-
-
 
 <div id="carouselExampleIndicators" class="carousel slide">
   <div class="carousel-indicators">
@@ -53,10 +50,6 @@
   </button>
 </div>
 
-
-
-
-
 </section>
 <div class="bg-custom-color text-text-color font-genjyuu w-full shadow-top-shadow">
   <footer class="flex flex-col items-center justify-center pb-6 pt-6">
@@ -67,3 +60,26 @@
     <p class="text-sm" style="color: white;">© 2024 ReminderChat</p>
   </footer>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var header = $('header');
+      var range = 200;
+
+      $(window).on('scroll', function () {
+        var scrollTop = $(this).scrollTop(),
+            height = header.outerHeight(),
+            offset = height / 2,
+            calc = 1 - (scrollTop - offset + range) / range;
+
+        header.css({ 'opacity': calc });
+
+        if (calc > '1') {
+          header.css({ 'opacity': 1 });
+        } else if ( calc < '0' ) {
+          header.css({ 'opacity': 0 });
+        }
+      });
+    });
+  </script>
