@@ -1,4 +1,5 @@
 class Event < ApplicationRecord
+  belongs_to :user
   default_scope -> { order(start: :asc) }
 
   validates :title, presence: true

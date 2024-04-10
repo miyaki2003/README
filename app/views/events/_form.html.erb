@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag 'events/_form', media: 'all', 'data-turbolinks-track': 'reload' %>
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -12,13 +13,67 @@
             <%= f.text_field :title, class: "form-control" %>
           </div>
           <div class="mb-3">
-            <%= f.label :start, "開始日時" %>
-            <%= f.datetime_field :start, class: "form-control" %>
+            <%= f.label :start, "開始時間" %>
+            <%= f.text_field :start, class: "form-control", id: "start-time-picker" %>
           </div>
           <div class="mb-3">
-            <%= f.label :end_time, "終了日時" %>
-            <%= f.datetime_field :end_time, class: "form-control" %>
+            <%= f.label :end, "終了時間" %>
+            <%= f.text_field :end, class: "form-control", id: "end-time-picker" %>
           </div>
+
+
+          <div class="mb-3 d-flex align-items-center justify-content-between">
+            <div>
+              <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
+            </div>
+            <div class="form-check form-switch switch-container">
+              <%= f.check_box :line_notify, class: "form-check-input", id: "line-notify-switch" %>
+            </div>
+          </div>
+
+          <div class="mb-3" id="notify-time-input" style="display:none;">
+            <%= f.label :notify_time, "通知時間", class: "form-label" %>
+            <%= f.time_field :notify_time, class: "form-control" %>
+          </div>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const notifySwitch = document.getElementById('line-notify-switch');
+              const notifyTimeInput = document.getElementById('notify-time-input');
+
+              function toggleNotifyTimeInput() {
+                if (notifySwitch.checked) {
+                  notifyTimeInput.style.display = 'block';
+                } else {
+                  notifyTimeInput.style.display = 'none';
+                }
+              }
+
+              toggleNotifyTimeInput();
+              notifySwitch.addEventListener('change', toggleNotifyTimeInput);
+            });
+          </script>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              flatpickr("#start-time-picker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                defaultDate: "7:00"
+              });
+
+              flatpickr("#end-time-picker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                defaultDate: "23:59"
+              });
+            });
+          </script>
+          
           <%= f.submit "保存", class: "btn btn-primary" %>
         <% end %>
       </div>
