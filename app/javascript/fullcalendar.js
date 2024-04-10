@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
 document.addEventListener('DOMContentLoaded', function() {
+  let lastClickedElement = null;
   let calendarEl = document.getElementById('calendar');
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
@@ -34,17 +35,34 @@ document.addEventListener('DOMContentLoaded', function() {
       },
 
 
-      dateClick: function(info) {
-        let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
-            keyboard: true
-        });
-        modal.show();
-      },
+      
 
+      dateClick: function(info) {
+        if (lastClickedElement === info.dayEl) {
+          let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+            keyboard: true
+          });
+          modal.show();
+          
+          modal._element.addEventListener('hidden.bs.modal', function() {
+            info.dayEl.style.borderColor = '';
+            lastClickedElement = null;
+          });
+
+      } else {
+
+          if (lastClickedElement) {
+            lastClickedElement.style.backgroundColor = '';
+          }
+
+          info.dayEl.style.backgroundColor = '#D3E8ED';
+          lastClickedElement = info.dayEl;
+        }
+      },
+      
       eventClick: function(info) {
         alert('Event: ' + info.event.title);
       },
-
 
       customButtons: {
         CustomButton: {
