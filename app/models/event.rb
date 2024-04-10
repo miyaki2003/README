@@ -11,7 +11,7 @@ class Event < ApplicationRecord
     return if start.blank? || end_time.blank?
 
     if start > end_time
-      errors.add(:end_time, "が開始時刻を上回っています。正しく記入してください。")
+      errors.add(:end_time, "が開始時刻を上回っています")
     end
   end
 end

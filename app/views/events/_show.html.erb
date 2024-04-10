@@ -1,0 +1,28 @@
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div id="eventDetails">
+          <p id="eventTitle"></p>
+          <p id="eventStart"></p>
+          <p id="eventEnd"></p>
+
+        </div>
+
+        <div id="eventEditForm" style="display: none;">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+        <button type="button" id="editEventBtn" class="btn btn-primary">編集</button>
+        <button type="button" id="saveEventBtn" class="btn btn-success" style="display: none;">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
