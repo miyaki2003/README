@@ -37,36 +37,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
       
 
+      
+
+
       dateClick: function(info) {
         if (window.matchMedia("(pointer: coarse)").matches) {
-          
-          info.dayEl.style.backgroundColor = '#D3E8ED';
-  
-          var modal = new bootstrap.Modal(document.getElementById('eventModal'), {
-              keyboard: true
-          });
-          modal.show();
-          
-          modal._element.addEventListener('hidden.bs.modal', function() {
-              info.dayEl.style.borderColor = '';
-              lastClickedElement = null;
-          });
-      } else {
           if (lastClickedElement === info.dayEl) {
+
             let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
               keyboard: true
             });
             modal.show();
-            
+        
             modal._element.addEventListener('hidden.bs.modal', function() {
+              info.dayEl.style.backgroundColor = '';
               lastClickedElement = null;
             });
-
           } else {
-              lastClickedElement = info.dayEl;
+
+            if (lastClickedElement) {
+              lastClickedElement.style.backgroundColor = '';
+            }
+        
+            info.dayEl.style.backgroundColor = '#D3E8ED';
+            lastClickedElement = info.dayEl;
           }
+        } else {
+
+          let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+            keyboard: true
+          });
+          modal.show();
+    
+          lastClickedElement = info.dayEl;
         }
       },
+
+
       
       eventClick: function(info) {
         alert('Event: ' + info.event.title);
