@@ -1,14 +1,19 @@
-/*週*/
-.fc-col-header-cell{
-	background: #d3d3d3;
-}
-/*日付*/
-.fc-daygrid-day{
-	background: #fff;
+.fc-day-other {
+  .fc-daygrid-day-top, .fc-scrollgrid-sync-inner .fc-col-header-cell-cushion, .fc-list-day-cushion {
+    color: $d-grey;
+  }
 }
 
-/*日曜*/
-.fc-daygrid-day.fc-day-sun{
-	background: #ededed;
-	color: #ee827c;
+// 土曜日
+.fc-day-sat {
+  .fc-daygrid-day-top, .fc-scrollgrid-sync-inner .fc-col-header-cell-cushion, .fc-list-day-cushion {
+    color: $d-blue;
+  }
+}
+
+// 日曜日
+.fc-day-sun{
+  .fc-daygrid-day-top, .fc-scrollgrid-sync-inner .fc-col-header-cell-cushion, .fc-list-day-cushion {
+    color: $d-red;
+  }
 }
