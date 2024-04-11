@@ -25,6 +25,7 @@ body {
   min-width: 45em;
   margin: 0 auto;
   padding: 0 2em;
+  color: #094067
 }
 
 nav {
@@ -77,9 +78,22 @@ nav {
   border: 1px solid black;
 }
 
+ul li a {
+  color: #094067;
+}
+
+
+.btn.custom-login-btn {
+  color: #094067;
+}
+
+.btn.custom-login-btn .fas {
+  color: #094067;
+}
+
 header {
   position: relative;
-  background-color: #E0F2F1;
+  background-color: #d8eefe;
   padding: 10em 0 8em;
   z-index: 2;
   h1 {
@@ -88,8 +102,16 @@ header {
   }
 }
 
+.bg-custom-color {
+  background-color: #d8eefe;
+}
+
+.text-sm {
+  color: #094067;
+}
+
 #about {
-  background: #ffff;
+  background: #fffffe;
   height: 70em;
   padding: 5em 0;
   p {

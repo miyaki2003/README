@@ -11,16 +11,16 @@
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力が必須です">
-              <i class="fas fa-question-circle tooltip-icon"></i>
+              <i class="fa-solid fa-circle-exclamation tooltip-icon"></i>
             </span>
             <%= f.text_field :title, class: "form-control" %>
           </div>
           <div class="mb-3">
-            <%= f.label :start, "開始時間" %>
+            <%= f.label :start_time, "開始時間" %>
             <%= f.time_field :start_time, class: "form-control", value: "18:00" %>
           </div>
           <div class="mb-3">
-            <%= f.label :end, "終了時間" %>
+            <%= f.label :end_time, "終了時間" %>
             <%= f.time_field :end_time, class: "form-control", value: "23:59" %>
           </div>
 
