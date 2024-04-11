@@ -140,7 +140,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    
+    calendar.setOption('windowResize', function() {
+      if (window.innerWidth < 768) {
+        calendar.changeView('listMonth');
+      } else {
+        calendar.changeView('dayGridMonth');
+      }
+    });
 
     calendar.render();
     
