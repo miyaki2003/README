@@ -14,9 +14,9 @@ class NotificationJob < ApplicationJob
       type: 'text',
       text: "「#{event.title}」"
     }
-    user_id = event.user.line_user_id
+    user_id = event.user_id
 
-    response = client.push_message(line_user_id, message)
+    response = client.push_message(user_id, message)
     puts response.body
   end
 end
