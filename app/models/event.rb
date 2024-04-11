@@ -8,9 +8,9 @@ class Event < ApplicationRecord
   private
 
   def start_end_check
-    return if start.blank? || end_time.blank?
+    return if start_time.blank? || end_time.blank?
 
-    if start > end_time
+    if start_time > end_time
       errors.add(:end_time, "が開始時刻を上回っています")
     end
   end
