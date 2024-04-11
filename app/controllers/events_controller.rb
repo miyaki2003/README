@@ -15,7 +15,7 @@ class EventsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render 'index', status: :unprocessable_entity }
         format.turbo_stream { render turbo_stream: turbo_stream.replace('eventModal', partial: "events/form", locals: { event: @event }) }
       end
     end
@@ -28,7 +28,7 @@ class EventsController < ApplicationController
   end
 
   def schedule_line_notification
-    notification_time =  DateTime.new(@event.start.year, @event.start.month, @event.start.day, params[:event][:notify_time_hour].to_i, params[:event][:notify_time_minute].to_i)
+    notification_time =  DateTime.new(@event.start_time.year, @event.start_time.month, @event.start_time.day, params[:event][:notify_time_hour].to_i, params[:event][:notify_time_minute].to_i)
   
     NotificationJob.set(wait_until: notification_time).perform_later(@event.id)
   end
