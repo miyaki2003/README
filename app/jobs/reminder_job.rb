@@ -13,6 +13,6 @@ class ReminderJob < ApplicationJob
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
-    response = client.push_message(reminder.user.line_user_id, message)
+    response = client.push_message(reminder.user.user_id, message)
   end
 end
