@@ -1,0 +1,23 @@
+.fc-col-header-cell {
+  background-color: #d8eefe;
+}
+
+.fc-daygrid-day-number {
+  color: #094067 !important;
+}
+
+.fc-col-header-cell-cushion {
+  color: #094067 !important;
+}
+
+.fc-day-sat {
+  .fc-daygrid-day-top, .fc-scrollgrid-sync-inner .fc-col-header-cell-cushion, .fc-list-day-cushion, .fc-daygrid-day-number {
+    color: #6666ff !important;
+  }
+}
+
+.fc-day-sun{
+  .fc-daygrid-day-top, .fc-scrollgrid-sync-inner .fc-col-header-cell-cushion, .fc-list-day-cushion, .fc-daygrid-day-number {
+    color: #ff6666 !important;
+  }
+}
