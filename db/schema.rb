@@ -28,6 +28,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_06_111828) do
     t.string "title"
     t.datetime "start_time"
     t.datetime "end_time"
+    t.datetime "notify_time"
+    t.boolean "line_notify", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
