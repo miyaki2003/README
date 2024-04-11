@@ -24,7 +24,7 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :start, :end_time, :notify_time_hour, :notify_time_minute)
+    params.require(:event).permit(:title, :start_time, :end_time, :notify_time_hour, :notify_time_minute)
   end
 
   def schedule_line_notification
