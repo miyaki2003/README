@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
               lastClickedElement.style.backgroundColor = '';
             }
         
-            info.dayEl.style.backgroundColor = '#E0F2F1';
+            info.dayEl.style.backgroundColor = '#d8eefe';
             lastClickedElement = info.dayEl;
           }
         } else {
@@ -94,14 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
       customButtons: {
-        CustomButton: {
-          text: '設定',
-          click: function() {
-            window.location.href = 'http://localhost:3000/';
-          }
-        },
         lineButton: {
-          text: 'LINEへ',
           click: function() {
             window.location.href = 'http://localhost:3000/';
           }
@@ -110,11 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
       headerToolbar: {
         start: 'title',
-        end: 'dayGridMonth listMonth lineButton CustomButton'
+        end: 'dayGridMonth listMonth lineButton'
       },
       footerToolbar: {
         left: 'prev',
-        center: 'today CustomButton',
+        center: 'today',
         right: 'next'
       },
       buttonIcons: {
@@ -149,6 +142,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
+
+    let lineButtonEl = document.querySelector('.fc-lineButton-button');
+    if (lineButtonEl) {
+      const icon = document.createElement("i");
+      icon.className = "fa-brands fa-line";
+      icon.style.fontSize = '40px';
+      lineButtonEl.appendChild(icon);
+    }
     
   }
 });

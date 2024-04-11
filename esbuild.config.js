@@ -11,7 +11,8 @@ let buildOptions = {
   bundle: true,
   outdir: './app/assets/builds',
   sourcemap: true,
-  plugins: [sassPlugin()]
+  plugins: [sassPlugin()],
+  loader: { '.js': 'jsx' },
 };
 
 if (watchMode) {
