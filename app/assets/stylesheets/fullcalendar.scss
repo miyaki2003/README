@@ -3,11 +3,11 @@
 }
 
 .fc-daygrid-day-number {
-  color: #2d334a !important;
+  color: #4b5183 !important;
 }
 
 .fc-col-header-cell-cushion {
-  color: #2d334a !important;
+  color: #4b5183 !important;
 }
 
 .fc-day-sat {
@@ -16,7 +16,7 @@
   }
 }
 
-.fc-day-sun{
+.fc-day-sun {
   .fc-daygrid-day-top, .fc-scrollgrid-sync-inner .fc-col-header-cell-cushion, .fc-list-day-cushion, .fc-daygrid-day-number {
     color: #ff6666 !important;
   }
@@ -24,64 +24,90 @@
 
 .fc-dayGridMonth-button {
   background-color: #bae8e8 !important;
-  color: #2d334a !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .fc-listMonth-button {
   background-color: #bae8e8 !important;
-  color: #2d334a !important;
-}
-
-.fc-lineButton-button {
-  background-color: #bae8e8 !important;
-  color: #2d334a !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .fc-CustomButton-button {
   background-color: #bae8e8 !important;
-  color: #2d334a !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.fc-lineButton-button {
+  background-color: #bae8e8 !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .fc-prev-button {
   background-color: #bae8e8 !important;
-  color: #2d334a !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
+
 .fc-today-button {
   background-color: #bae8e8 !important;
-  color: #2d334a !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
+
+.fc-CalendarButton-button {
+  background-color: #bae8e8 !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
 .fc-next-button {
   background-color: #bae8e8 !important;
-  color: #2d334a !important;
+  color: #4b5183 !important;
+  border-color: #bae8e8 !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .fc-toolbar-title {
-  color: #2d334a !important;
+  color: #4b5183 !important;
 }
 
 .fc-list-day-text {
-  color: #2d334a !important;
+  color: #4b5183 !important;
 }
 
 .fc-list-event-time {
-  color: #2d334a !important;
+  color: #4b5183 !important;
 }
 
 .fc-list-event-title a {
-  color: #2d334a !important;
+  color: #4b5183 !important;
 }
 
 .fc-list-day-cushion {
   background-color: #bae8e8 !important;
 }
 
-.fc-CalendarButton-button{
-  background-color: #bae8e8 !important;
+.fa-regular {
+  color: #4b5183 !important;
 }
 
-.fa-regular {
-  color: #2d334a !important;
-}
+
+
+
+
+
+
 
 
 @media (max-width: 768px) {
@@ -143,6 +169,42 @@
 
   .fc-today-button {
     margin-right: 300px;
+  }
+
+  .fc-lineButton-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-dayGridMonth-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-listMonth-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-CustomButton-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-lineButton-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-prev-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-today-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-CalendarButton-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .fc-next-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
 }
 
