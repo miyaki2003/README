@@ -1,6 +1,6 @@
 class Event < ApplicationRecord
   belongs_to :user
-  default_scope -> { order(start: :asc) }
+  default_scope -> { order(start_time: :asc) }
 
   validates :title, presence: true
   validate  :start_end_check
