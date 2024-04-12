@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
       customButtons: {
         lineButton: {
           click: function() {
-            window.location.href = 'http://localhost:3000/';
+            window.location.href = 'https://line.me/R/ti/p/%40083jbanw';
           }
         },
         CustomButton: {
