@@ -20,7 +20,9 @@
     <p>
       <%= link_to 'ログイン', auth_at_provider_path(provider: :line) %>
       <%= link_to 'カレンダー', events_path %>
-      <%= link_to 'ログアウト', logout_path, method: :delete %>
+      <%= form_with url: logout_path, method: :delete do %>
+        <%= submit_tag 'ログアウト' %>
+      <% end %>
     </p>
   </div>
 
