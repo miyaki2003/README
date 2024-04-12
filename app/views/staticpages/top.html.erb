@@ -18,8 +18,9 @@
 <section id="about">
   <div class="container">
     <p>
-      <%= link_to 'Login with Line', auth_at_provider_path(provider: :line) %>
-      <%= link_to 'Calendar', events_path %>
+      <%= link_to 'ログイン', auth_at_provider_path(provider: :line) %>
+      <%= link_to 'カレンダー', events_path %>
+      <%= link_to 'ログアウト', logout_path, data: { turbo_method: :delete } %>
     </p>
   </div>
 
