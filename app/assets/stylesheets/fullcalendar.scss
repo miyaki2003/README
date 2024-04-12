@@ -37,6 +37,11 @@
   color: #2d334a !important;
 }
 
+.fc-CustomButton-button {
+  background-color: #bae8e8 !important;
+  color: #2d334a !important;
+}
+
 .fc-prev-button {
   background-color: #bae8e8 !important;
   color: #2d334a !important;
@@ -48,6 +53,97 @@
 .fc-next-button {
   background-color: #bae8e8 !important;
   color: #2d334a !important;
+}
+
+.fc-toolbar-title {
+  color: #2d334a !important;
+}
+
+.fc-list-day-text {
+  color: #2d334a !important;
+}
+
+.fc-list-event-time {
+  color: #2d334a !important;
+}
+
+.fc-list-event-title a {
+  color: #2d334a !important;
+}
+
+.fc-list-day-cushion {
+  background-color: #bae8e8 !important;
+}
+
+.fc-CalendarButton-button{
+  background-color: #bae8e8 !important;
+}
+
+.fa-regular {
+  color: #2d334a !important;
+}
+
+
+@media (max-width: 768px) {
+  .fc-toolbar-chunk {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .fc-toolbar-chunk button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 7px 8px;
+  }
+
+  .fc-toolbar-chunk button i {
+    line-height: 1;
+  }
+
+  .fc-header-toolbar {
+    margin-top: 10px;
+  }
+
+  .fc-CalendarButton-button {
+    width: 45px; 
+  }
+
+  .fc-today-button {
+    margin-right: 40px;
+  }
+}
+
+@media (min-width: 769px) {
+  .fc-toolbar-chunk {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .fc-toolbar-chunk button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 10px;
+  }
+
+  .fc-toolbar-chunk button i {
+    line-height: 1;
+  }
+
+  .fc-header-toolbar {
+    margin-top: 10px;
+  }
+
+  .fc-CalendarButton-button {
+    width: 50px; 
+  }
+
+  .fc-today-button {
+    margin-right: 300px;
+  }
 }
 
 
