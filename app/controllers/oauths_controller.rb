@@ -11,6 +11,12 @@ class OauthsController < ApplicationController
       redirect_to root_path, alert: "ログインに失敗しました。"
     end
   end
+
+  def destroy
+    logout
+    redirect_to root_path, status: :see_other
+  end
+
   private
 
     def auth_params
