@@ -120,8 +120,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 7px 8px;
+    gap: 5px;
+    padding: 5px 5px;
   }
 
   .fc-toolbar-chunk button i {
@@ -133,11 +133,13 @@
   }
 
   .fc-CalendarButton-button {
-    width: 45px; 
+    width: 42px; 
+    height: 42px;
   }
 
   .fc-today-button {
-    margin-right: 40px;
+    margin-right: 50px;
+    height: 35px;
   }
 }
 

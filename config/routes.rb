@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   get "oauth/:provider" => "oauths#oauth", :as => :auth_at_provider
 
+  delete '/logout', to: 'oauths#logout'
+
   post '/callback', to: 'line_bot#callback'
 
   get 'liff', to: 'liff#index'
