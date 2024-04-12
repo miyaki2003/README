@@ -25,7 +25,7 @@ body {
   min-width: 45em;
   margin: 0 auto;
   padding: 0 2em;
-  color: #094067
+  color: #2d334a;
 }
 
 nav {
@@ -69,31 +69,41 @@ nav {
 
 #nav-bg {
   backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0.1); 
+  background-color: rgba(186, 232, 232, 0.1); 
   position: fixed;
   height: 5em;
   width: 100%;
   top: 0;
   z-index: 1;
-  border: 1px solid black;
+  border: 1px solid #000000;
 }
 
 ul li a {
-  color: #094067;
+  color: #2d334a;
 }
 
 
 .btn.custom-login-btn {
-  color: #094067;
+  color: #2d334a;
 }
 
 .btn.custom-login-btn .fas {
-  color: #094067;
+  color: #2d334a;
+}
+
+.custom-login-btn {
+  color: #2d334a;
+  margin: 5px;
+  padding: 5px 5px;
+  margin-bottom: 10px;
+}
+.custom-login-btn:hover {
+  font-size: 1.2em;
 }
 
 header {
   position: relative;
-  background-color: #d8eefe;
+  background-color: #bae8e8;
   padding: 10em 0 8em;
   z-index: 2;
   h1 {
@@ -103,11 +113,11 @@ header {
 }
 
 .bg-custom-color {
-  background-color: #d8eefe;
+  background-color: #bae8e8;
 }
 
 .text-sm {
-  color: #094067;
+  color: #2d334a;
 }
 
 #about {
@@ -122,14 +132,30 @@ header {
   }
 }
 
-.custom-login-btn {
-  color: #000000;
-  margin: 5px;
-  padding: 5px 5px;
-  margin-bottom: 10px;
-}
 
 
-.custom-login-btn:hover {
-  font-size: 1.2em;
+
+
+@media only screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  nav ul {
+    flex-direction: column;
+  }
+
+  .container {
+    padding: 0 10px;
+    min-width: auto;
+  }
+
+  header h1 {
+    font-size: 2.5em;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    font-size: 1em;
+  }
 }
