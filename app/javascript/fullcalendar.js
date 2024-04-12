@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
               lastClickedElement.style.backgroundColor = '';
             }
         
-            info.dayEl.style.backgroundColor = '#d8eefe';
+            info.dayEl.style.backgroundColor = '#e3f6f5';
             lastClickedElement = info.dayEl;
           }
         } else {
@@ -99,15 +99,25 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'http://localhost:3000/';
           }
         },
+        CustomButton: {
+          click: function() {
+            window.location.href = 'http://localhost:3000/';
+          }
+        },
+        CalendarButton: {
+          click: function() {
+            window.location.href = 'http://localhost:3000/';
+          }
+        },
       },
 
       headerToolbar: {
         start: 'title',
-        end: 'dayGridMonth listMonth lineButton'
+        end: 'dayGridMonth listMonth CustomButton lineButton'
       },
       footerToolbar: {
         left: 'prev',
-        center: 'today',
+        center: 'today CalendarButton',
         right: 'next'
       },
       buttonIcons: {
@@ -132,14 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
         },
       }
     });
-    
-    calendar.setOption('windowResize', function() {
-      if (window.innerWidth < 768) {
-        calendar.changeView('listMonth');
-      } else {
-        calendar.changeView('dayGridMonth');
-      }
-    });
 
     calendar.render();
 
@@ -150,6 +152,21 @@ document.addEventListener('DOMContentLoaded', function() {
       icon.style.fontSize = '40px';
       lineButtonEl.appendChild(icon);
     }
-    
+
+    let CustomButtonEl = document.querySelector('.fc-CustomButton-button');
+    if (CustomButtonEl) {
+      const icon = document.createElement("i");
+      icon.className = "fa-solid fa-gear";
+      icon.style.fontSize = '25px';
+      CustomButtonEl.appendChild(icon);
+    }
+
+    let CalendarButtonEl = document.querySelector('.fc-CalendarButton-button');
+    if (CalendarButtonEl) {
+      const icon = document.createElement("i");
+      icon.className = "fa-regular fa-calendar-plus";
+      icon.style.fontSize = '25px';
+      CalendarButtonEl.appendChild(icon);
+    }
   }
 });
