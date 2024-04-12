@@ -20,7 +20,7 @@
     <p>
       <%= link_to 'ログイン', auth_at_provider_path(provider: :line) %>
       <%= link_to 'カレンダー', events_path %>
-      <%= link_to 'ログアウト', logout_path, data: { turbo_method: :delete } %>
+      <%= link_to 'ログアウト', logout_path, method: :delete %>
     </p>
   </div>
 
