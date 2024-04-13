@@ -5,10 +5,11 @@ class EventsController < ApplicationController
     @event = Event.new
   end
 
-  
-
   def create
     @event = Event.new(event_params)
+    @event.start_time = "#{params[:event][:start_date]} #{params[:event][:start_time]}"
+    @event.end_time = "#{params[:event][:end_date]} #{params[:event][:end_time]}"
+    @event.notify_time = "#{params[:event][:notify_date]} #{params[:event][:notify_time]}"
     respond_to do |format|
       if @event.save
         schedule_line_notification if params[:event][:line_notify] == "1"
@@ -28,7 +29,7 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :start_time, :end_time, :line_notify, :notify_time)
+    params.require(:event).permit(:title)
   end
 
   def schedule_line_notification

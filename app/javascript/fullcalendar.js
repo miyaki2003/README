@@ -34,11 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
         '/events.json'
       ],
 
+      eventContent: function(arg) {
+        return { html: arg.event.title };
+      },
+      
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
 
       dateClick: function(info) {
+        document.getElementById('start_date').value = info.dateStr;
+        document.getElementById('end_date').value = info.dateStr;
+        document.getElementById('notify_date').value = info.dateStr;
         if (window.matchMedia("(pointer: coarse)").matches) {
           if (lastClickedElement === info.dayEl) {
 
@@ -71,27 +78,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       },
 
-
-      
       eventClick: function(info) {
-        let eventTitle = info.event.title;
-
-        document.getElementById('eventModalLabel').textContent = eventTitle + " Details";
-
-        document.getElementById('eventTitle').textContent = 'Title: ' + info.event.title;
-        document.getElementById('eventStart').textContent = 'Start: ' + info.event.start.toLocaleString();
-        document.getElementById('eventEnd').textContent = 'End: ' + (info.event.end ? info.event.end.toLocaleString() : 'Not set');
-
-        document.getElementById('eventDetails').style.display = 'block';
-        document.getElementById('eventEditForm').style.display = 'none';
-        document.getElementById('editEventBtn').style.display = 'inline-block';
-        document.getElementById('saveEventBtn').style.display = 'none';
-
-        let modal = new bootstrap.Modal(document.getElementById('eventModal'));
+        info.jsEvent.preventDefault();
+        document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + info.event.title;
+        document.getElementById('eventDetailsStart').textContent = '開始： ' + info.event.start.toLocaleTimeString('ja-JP', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: false
+        });
+        document.getElementById('eventDetailsEnd').textContent = '終了： ' + (info.event.end ? info.event.end.toLocaleString() : '終了時間未設定');
+        
+        let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
         modal.show();
       },
-
-
 
       customButtons: {
         lineButton: {
