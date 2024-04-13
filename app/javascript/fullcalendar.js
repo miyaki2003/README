@@ -33,12 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         '/events.json'
       ],
-
+      
       dayCellContent: function(arg){
         return arg.date.getDate();
       },
 
       dateClick: function(info) {
+        document.getElementById('start_date').value = info.dateStr;
+        document.getElementById('end_date').value = info.dateStr;
+        document.getElementById('notify_date').value = info.dateStr;
         if (window.matchMedia("(pointer: coarse)").matches) {
           if (lastClickedElement === info.dayEl) {
 
