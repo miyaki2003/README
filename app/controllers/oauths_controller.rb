@@ -8,6 +8,12 @@ class OauthsController < ApplicationController
     if @user = login_from(provider)
       redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
     else
+      @user = create_from(provider)
+    reset_session
+    auto_login(@user)
+    if @user.persisted?
+      redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
+    else
       redirect_to root_path, alert: "ログインに失敗しました。"
     end
   end
