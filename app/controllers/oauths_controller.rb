@@ -28,4 +28,5 @@ g
     def auth_params
         params.permit(:code, :provider, :error, :state)
     end
+    
 end
