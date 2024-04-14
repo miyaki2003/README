@@ -2,15 +2,15 @@ class OauthsController < ApplicationController
   def oauth
     login_at(:line)
   end
-
+g
   def callback
     provider = "line"
     if @user = login_from(provider)
       redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
     else
       @user = create_from(provider)
-    reset_session
-    auto_login(@user)
+      reset_session
+      auto_login(@user)
     if @user.persisted?
       redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
     else
