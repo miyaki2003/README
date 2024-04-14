@@ -81,12 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
       eventClick: function(info) {
         info.jsEvent.preventDefault();
         document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + info.event.title;
-        document.getElementById('eventDetailsStart').textContent = '開始： ' + info.event.start.toLocaleTimeString('ja-JP', {
+        document.getElementById('eventDetailsStart').textContent = '開始時間： ' + info.event.start.toLocaleTimeString('ja-JP', {
           hour: 'numeric',
           minute: '2-digit',
           hour12: false
         });
-        document.getElementById('eventDetailsEnd').textContent = '終了： ' + (info.event.end ? info.event.end.toLocaleTimeString('ja-JP', {
+        document.getElementById('eventDetailsEnd').textContent = '終了時間： ' + (info.event.end ? info.event.end.toLocaleTimeString('ja-JP', {
           hour: 'numeric',
           minute: '2-digit',
           hour12: false
