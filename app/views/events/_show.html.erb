@@ -23,23 +23,32 @@
   document.addEventListener('DOMContentLoaded', function() {
     const editBtn = document.getElementById('editEventBtn');
     const deleteBtn = document.getElementById('delete-event');
-    const editModal = new bootstrap.Modal(document.getElementById('editEventModal'));
-    
-    editBtn.addEventListener('click', function() {
+    const editModalEl = document.getElementById('editEventModal');
 
-      $('#eventDetailsModal').modal('hide');
+    if (editModalEl) {
+      const editModal = new bootstrap.Modal(editModalEl);
 
-      editModal.show();
-    });
+      editBtn.addEventListener('click', function() {
+        const eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+        eventDetailsModal.hide();
+        
+        editModal.show();
+      });
+    } else {
+      console.error('Edit modal element not found');
+    }
 
     deleteBtn.addEventListener('click', function() {
       const confirmDelete = confirm('このイベントを削除しますか？');
       if (confirmDelete) {
         const form = document.getElementById('edit-event-form');
-
-        form.action = `/events/${form.dataset.eventId}/destroy`;
-        form.method = 'post';
-        form.submit();
+        if (form.dataset.eventId) {
+          form.action = `/events/${form.dataset.eventId}/destroy`;
+          form.method = 'post';
+          form.submit();
+        } else {
+          console.error('Event ID not found');
+        }
       }
     });
   });
