@@ -86,7 +86,18 @@ document.addEventListener('DOMContentLoaded', function() {
           minute: '2-digit',
           hour12: false
         });
-        document.getElementById('eventDetailsEnd').textContent = '終了： ' + (info.event.end ? info.event.end.toLocaleString() : '終了時間未設定');
+        document.getElementById('eventDetailsEnd').textContent = '終了： ' + (info.event.end ? info.event.end.toLocaleTimeString('ja-JP', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: false
+      }) : '終了時間未設定');
+
+      if (info.event.extendedProps.line_notify) {
+        document.getElementById('eventNotifyTime').style.display = 'block';
+        document.getElementById('eventNotifyTime').textContent = '通知： ' + info.event.extendedProps.notify_time;
+      } else {
+        document.getElementById('eventNotifyTime').style.display = 'none';
+      }
         
         let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
         modal.show();
