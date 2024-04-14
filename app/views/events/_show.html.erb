@@ -21,14 +21,23 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    toggleNotifyTimeInput();
-    notifySwitch.addEventListener('change', toggleNotifyTimeInput);
+    const editBtn = document.getElementById('editEventBtn');
+    const deleteBtn = document.getElementById('delete-event');
+    const editModal = new bootstrap.Modal(document.getElementById('editEventModal'));
+    
+    editBtn.addEventListener('click', function() {
 
-    document.getElementById('delete-event').addEventListener('click', function() {
+      $('#eventDetailsModal').modal('hide');
+
+      editModal.show();
+    });
+
+    deleteBtn.addEventListener('click', function() {
       const confirmDelete = confirm('このイベントを削除しますか？');
       if (confirmDelete) {
         const form = document.getElementById('edit-event-form');
-        form.action = form.action + '/destroy';
+
+        form.action = `/events/${form.dataset.eventId}/destroy`;
         form.method = 'post';
         form.submit();
       }
