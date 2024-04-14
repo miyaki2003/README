@@ -1,6 +1,5 @@
 class EventsController < ApplicationController
   def index
-    #before_action :require_login
     @events = Event.all
     @event = Event.new
   end
