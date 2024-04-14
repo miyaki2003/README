@@ -9,10 +9,29 @@
         <p id="eventDetailsTitle"></p>
         <p id="eventDetailsStart"></p>
         <p id="eventDetailsEnd"></p>
+        <p id="eventNotifyTime" style="display: none;"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+        <button type="button" id="editEventBtn" class="btn btn-primary">編集</button>
+        <button type="button" class="btn btn-danger" id="delete-event">削除</button>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    toggleNotifyTimeInput();
+    notifySwitch.addEventListener('change', toggleNotifyTimeInput);
+
+    document.getElementById('delete-event').addEventListener('click', function() {
+      const confirmDelete = confirm('このイベントを削除しますか？');
+      if (confirmDelete) {
+        const form = document.getElementById('edit-event-form');
+        form.action = form.action + '/destroy';
+        form.method = 'post';
+        form.submit();
+      }
+    });
+  });
+</script>
