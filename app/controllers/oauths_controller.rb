@@ -2,7 +2,7 @@ class OauthsController < ApplicationController
   def oauth
     login_at(:line)
   end
-g
+  
   def callback
     provider = "line"
     if @user = login_from(provider)
@@ -28,5 +28,4 @@ g
     def auth_params
         params.permit(:code, :provider, :error, :state)
     end
-    
 end
