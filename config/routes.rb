@@ -19,4 +19,6 @@ Rails.application.routes.draw do
   resources :events
 
   resources :reminders, only: %i[index destroy]
+
+  post '/events/:id/destroy', to: 'events#destroy', as: :destroy_event
 end

@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = Event.new(event_params)
+    @event = current_user.events.build(event_params)
     @event.start_time = "#{params[:event][:start_date]} #{params[:event][:start_time]}"
     @event.end_time = "#{params[:event][:end_date]} #{params[:event][:end_time]}"
     @event.notify_time = "#{params[:event][:notify_date]} #{params[:event][:notify_time]}"
@@ -24,6 +24,12 @@ class EventsController < ApplicationController
         end
       end
     end
+  end
+
+  def destroy
+    @event = Event.find(params[:id])
+    @event.destroy
+    redirect_to events_path, notice: '削除しました'
   end
 
   private
