@@ -5,8 +5,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    Rails.logger.info "Current User: #{current_user.inspect}"
-    @event = current_user.events.build(event_params)
+    @event = Event.new(event_params)
     @event.start_time = "#{params[:event][:start_date]} #{params[:event][:start_time]}"
     @event.end_time = "#{params[:event][:end_date]} #{params[:event][:end_time]}"
     @event.notify_time = "#{params[:event][:notify_date]} #{params[:event][:notify_time]}"
