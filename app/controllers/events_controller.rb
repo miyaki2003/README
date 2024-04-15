@@ -5,6 +5,7 @@ class EventsController < ApplicationController
   end
 
   def create
+    #@event = current_user.events.build(event_params)
     @event = Event.new(event_params)
     @event.start_time = "#{params[:event][:start_date]} #{params[:event][:start_time]}"
     @event.end_time = "#{params[:event][:end_date]} #{params[:event][:end_time]}"
