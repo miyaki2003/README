@@ -26,10 +26,25 @@ class EventsController < ApplicationController
     end
   end
 
+  def details
+    @event = Event.find(params[:id])
+      render json: {
+      id: @event.id,
+      title: @event.title,
+      start: @event.start_time,
+      end: @event.end_time
+    }
+  end
+
   def destroy
     @event = Event.find(params[:id])
-    @event.destroy
-    redirect_to events_path, notice: '削除しました'
+    if @event.nil?
+      render json: { error: "Event not found." }, status: :not_found
+    elsif @event.destroy
+      render json: { success: true }, status: :ok
+    else
+      render json: { error: "Failed to delete the event." }, status: :unprocessable_entity
+    end
   end
 
   private
