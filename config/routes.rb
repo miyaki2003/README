@@ -16,9 +16,11 @@ Rails.application.routes.draw do
   
   get '/privacy_policy', to: 'staticpages#privacy_policy'
 
-  resources :events
+  resources :events do
+    member do
+      get 'details'
+    end
+  end
 
   resources :reminders, only: %i[index destroy]
-
-  post '/events/:id/destroy', to: 'events#destroy', as: :destroy_event
 end

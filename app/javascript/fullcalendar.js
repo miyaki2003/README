@@ -79,28 +79,41 @@ document.addEventListener('DOMContentLoaded', function() {
       },
 
       eventClick: function(info) {
-        info.jsEvent.preventDefault();
-        document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + info.event.title;
-        document.getElementById('eventDetailsStart').textContent = '開始時間： ' + info.event.start.toLocaleTimeString('ja-JP', {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: false
-        });
-        document.getElementById('eventDetailsEnd').textContent = '終了時間： ' + (info.event.end ? info.event.end.toLocaleTimeString('ja-JP', {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: false
-      }) : '終了時間未設定');
+      info.jsEvent.preventDefault();
 
-      if (info.event.extendedProps.line_notify) {
-        document.getElementById('eventNotifyTime').style.display = 'block';
-        document.getElementById('eventNotifyTime').textContent = '通知： ' + info.event.extendedProps.notify_time;
-      } else {
-        document.getElementById('eventNotifyTime').style.display = 'none';
-      }
+      fetch(`/events/${info.event.id}/details`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+
+          document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + data.title;
+          document.getElementById('eventDetailsStart').textContent = '開始時間： ' + new Date(data.start).toLocaleTimeString('ja-JP', {
+            hour: 'numeric', minute: '2-digit', hour12: false
+          });
+          document.getElementById('eventDetailsEnd').textContent = '終了時間： ' + (data.end ? new Date(data.end).toLocaleTimeString('ja-JP', {
+            hour: 'numeric', minute: '2-digit', hour12: false
+          }) : '終了時間未設定');
+          
+          if (data.line_notify) {
+            document.getElementById('eventNotifyTime').style.display = 'block';
+            document.getElementById('eventNotifyTime').textContent = '通知： ' + data.notify_time;
+          } else {
+            document.getElementById('eventNotifyTime').style.display = 'none';
+          }
+
         
-        let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-        modal.show();
+          let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+          modal.show();
+          document.getElementById('delete-event').setAttribute('data-event-id', data.id);
+        })
+        .catch(error => {
+          console.error('Error loading the event details:', error);
+          alert('Failed to load event details: ' + error.message);
+        });
       },
 
       customButtons: {
@@ -154,6 +167,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
+
+    document.getElementById('delete-event').addEventListener('click', function() {
+      const eventId = this.getAttribute('data-event-id');
+     
+        fetch(`/events/${eventId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          }
+        }).then(response => {
+          if (response.ok) {
+            
+            calendar.refetchEvents();
+          } else {
+            alert('イベントの削除に失敗しました。');
+          }
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+
+    });
 
     let lineButtonEl = document.querySelector('.fc-lineButton-button');
     if (lineButtonEl) {

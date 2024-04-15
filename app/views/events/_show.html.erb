@@ -13,7 +13,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" id="editEventBtn" class="btn btn-primary">編集</button>
-        <button type="button" class="btn btn-danger" id="delete-event">削除</button>
+        <button type="button" class="btn btn-danger" id="delete-event" data-event-id="">削除</button>
+
       </div>
     </div>
   </div>
@@ -37,19 +38,5 @@
     } else {
       console.error('Edit modal element not found');
     }
-
-    deleteBtn.addEventListener('click', function() {
-      const confirmDelete = confirm('このイベントを削除しますか？');
-      if (confirmDelete) {
-        const form = document.getElementById('edit-event-form');
-        if (form.dataset.eventId) {
-          form.action = `/events/${form.dataset.eventId}/destroy`;
-          form.method = 'post';
-          form.submit();
-        } else {
-          console.error('Event ID not found');
-        }
-      }
-    });
   });
 </script>
