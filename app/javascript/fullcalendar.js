@@ -17,9 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   let lastClickedElement = null;
   let calendarEl = document.getElementById('calendar');
-  let eventModal = new bootstrap.Modal(document.getElementById('eventModal'), { keyboard: true });
-  const eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'), { keyboard: true });
+  let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+    keyboard: true
+  });
   let form = document.getElementById('event-form');
+
+  const notifySwitch = document.getElementById('line-notify-switch');
+  const notifyTimeInput = document.getElementById('notify-time-input');
+  const notifyTime = document.getElementById('notify_time');
+  const eventForm = document.getElementById('event-form');
 
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
@@ -52,10 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('notify_date').value = info.dateStr;
         if (window.matchMedia("(pointer: coarse)").matches) {
           if (lastClickedElement === info.dayEl) {
-
-            let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
-              keyboard: true
-            });
+            
             modal.show();
         
             modal._element.addEventListener('hidden.bs.modal', function() {
@@ -73,9 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         } else {
 
-          let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
-            keyboard: true
-          });
           modal.show();
     
           lastClickedElement = info.dayEl;
@@ -168,14 +168,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
-    const form = document.getElementById('event-form');
+    notifySwitch.addEventListener('change', function() {
+      notifyTimeInput.style.display = this.checked ? 'block' : 'none';
+    });
+
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const formData = new FormData(form);
-      const searchParams = new URLSearchParams();
-      for (const pair of formData) {
-        searchParams.append(pair[0], pair[1]);
+  
+      if (notifySwitch.checked) {
+        const notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time'));
+        if (notifyDateTime <= new Date()) {
+          alert('通知時間は現在時刻よりも後に設定してください。');
+          return;
+        }
       }
+
+    const searchParams = new URLSearchParams();
+    for (const pair of formData.entries()) {
+      searchParams.append(pair[0], pair[1]);
+    }
 
       fetch(form.action, {
         method: 'POST',
@@ -193,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           calendar.refetchEvents();
           form.reset();
-          eventModal.hide();
+          modal.hide();
         }
       })
       .catch(error => console.error('Error:', error));
@@ -209,9 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }).then(response => {
           if (response.ok) {
-            
             calendar.refetchEvents();
-            eventDetailsModal.hide();
           } else {
             alert('イベントの削除に失敗しました。');
           }

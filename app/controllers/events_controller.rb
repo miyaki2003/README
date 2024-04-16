@@ -10,12 +10,14 @@ class EventsController < ApplicationController
     @event.start_time = "#{params[:event][:start_date]} #{params[:event][:start_time]}"
     @event.end_time = "#{params[:event][:end_date]} #{params[:event][:end_time]}"
     @event.notify_time = "#{params[:event][:notify_date]} #{params[:event][:notify_time]}"
-    respond_to do |format|
+    if params[:event][:line_notify] == "1" && DateTime.parse(@event.notify_time) <= DateTime.current
+      render json: { error: "通知時間は未来の時間を指定してください。" }, status: :unprocessable_entity
+    else
       if @event.save
         schedule_line_notification if params[:event][:line_notify] == "1"
-        format.json { render json: @event, status: :created }
+        render json: @event, status: :created
       else
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+        render json: @event.errors, status: :unprocessable_entity
       end
     end
   end

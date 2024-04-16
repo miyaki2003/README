@@ -40,25 +40,6 @@
             <%= f.label :notify_time, "通知時間", class: "form-label" %>
             <%= f.time_field :notify_time, class: "form-control", value: "06:00" %>
           </div>
-
-          <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              const notifySwitch = document.getElementById('line-notify-switch');
-              const notifyTimeInput = document.getElementById('notify-time-input');
-
-              function toggleNotifyTimeInput() {
-                if (notifySwitch.checked) {
-                  notifyTimeInput.style.display = 'block';
-                } else {
-                  notifyTimeInput.style.display = 'none';
-                }
-              }
-
-              toggleNotifyTimeInput();
-              notifySwitch.addEventListener('change', toggleNotifyTimeInput);
-            });
-          </script>
-          
           <%= f.submit "保存", class: "btn btn-primary" %>
         <% end %>
       </div>
