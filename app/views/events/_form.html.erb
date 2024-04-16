@@ -7,7 +7,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <%= form_with(model: event, url: events_path, id: "event-form", data: { turbo_frame: "eventModal" }) do |f| %>
+        <%= form_with(model: event, url: events_path, id: "event-form", local: true) do |f| %>
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力が必須です">
@@ -65,5 +65,3 @@
     </div>
   </div>
 </div>
-<turbo-frame id="eventModal">
-</turbo-frame>

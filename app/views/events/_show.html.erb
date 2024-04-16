@@ -19,24 +19,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const editBtn = document.getElementById('editEventBtn');
-    const deleteBtn = document.getElementById('delete-event');
-    const editModalEl = document.getElementById('editEventModal');
-
-    if (editModalEl) {
-      const editModal = new bootstrap.Modal(editModalEl);
-
-      editBtn.addEventListener('click', function() {
-        const eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-        eventDetailsModal.hide();
-        
-        editModal.show();
-      });
-    } else {
-      console.error('Edit modal element not found');
-    }
-  });
-</script>

@@ -13,15 +13,9 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.save
         schedule_line_notification if params[:event][:line_notify] == "1"
-        format.html { redirect_to events_url, notice: 'Event was successfully created.' }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace('event_form', partial: "events/form", locals: { event: Event.new })
-        end
+        format.json { render json: @event, status: :created }
       else
-        format.html { render :index, status: :unprocessable_entity }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace('error_explanation', partial: 'shared/error_messages', locals: { object: @event })
-        end
+        format.json { render json: @event.errors, status: :unprocessable_entity }
       end
     end
   end
