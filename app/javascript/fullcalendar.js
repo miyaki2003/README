@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   let lastClickedElement = null;
   let calendarEl = document.getElementById('calendar');
+  let eventModal = new bootstrap.Modal(document.getElementById('eventModal'), { keyboard: true });
+  const eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'), { keyboard: true });
+  let form = document.getElementById('event-form');
+
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
       height: "auto",
@@ -79,42 +83,38 @@ document.addEventListener('DOMContentLoaded', function() {
       },
 
       eventClick: function(info) {
-      info.jsEvent.preventDefault();
-
-      fetch(`/events/${info.event.id}/details`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-
-          document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + data.title;
-          document.getElementById('eventDetailsStart').textContent = '開始時間： ' + new Date(data.start).toLocaleTimeString('ja-JP', {
-            hour: 'numeric', minute: '2-digit', hour12: false
+        info.jsEvent.preventDefault();
+        fetch(`/events/${info.event.id}/details`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + data.title;
+            document.getElementById('eventDetailsStart').textContent = '開始時間： ' + new Date(data.start).toLocaleTimeString('ja-JP', {
+              hour: 'numeric', minute: '2-digit', hour12: false
+            });
+            document.getElementById('eventDetailsEnd').textContent = '終了時間： ' + (data.end ? new Date(data.end).toLocaleTimeString('ja-JP', {
+              hour: 'numeric', minute: '2-digit', hour12: false
+            }) : '終了時間未設定');
+            
+            if (data.line_notify) {
+              document.getElementById('eventNotifyTime').style.display = 'block';
+              document.getElementById('eventNotifyTime').textContent = '通知： ' + data.notify_time;
+            } else {
+              document.getElementById('eventNotifyTime').style.display = 'none';
+            }
+            let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+            modal.show();
+            document.getElementById('delete-event').setAttribute('data-event-id', data.id);
+          })
+          .catch(error => {
+            console.error('Error loading the event details:', error);
+            alert('Failed to load event details: ' + error.message);
           });
-          document.getElementById('eventDetailsEnd').textContent = '終了時間： ' + (data.end ? new Date(data.end).toLocaleTimeString('ja-JP', {
-            hour: 'numeric', minute: '2-digit', hour12: false
-          }) : '終了時間未設定');
-          
-          if (data.line_notify) {
-            document.getElementById('eventNotifyTime').style.display = 'block';
-            document.getElementById('eventNotifyTime').textContent = '通知： ' + data.notify_time;
-          } else {
-            document.getElementById('eventNotifyTime').style.display = 'none';
-          }
-
-        
-          let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-          modal.show();
-          document.getElementById('delete-event').setAttribute('data-event-id', data.id);
-        })
-        .catch(error => {
-          console.error('Error loading the event details:', error);
-          alert('Failed to load event details: ' + error.message);
-        });
-      },
+        },
 
       customButtons: {
         lineButton: {
@@ -168,9 +168,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
+    const form = document.getElementById('event-form');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const searchParams = new URLSearchParams();
+      for (const pair of formData) {
+        searchParams.append(pair[0], pair[1]);
+      }
+
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: searchParams
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.errors) {
+          alert('エラーが発生しました。');
+        } else {
+          
+          calendar.refetchEvents();
+          form.reset();
+          eventModal.hide();
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+
     document.getElementById('delete-event').addEventListener('click', function() {
       const eventId = this.getAttribute('data-event-id');
-     
         fetch(`/events/${eventId}`, {
           method: 'DELETE',
           headers: {
@@ -181,13 +211,13 @@ document.addEventListener('DOMContentLoaded', function() {
           if (response.ok) {
             
             calendar.refetchEvents();
+            eventDetailsModal.hide();
           } else {
             alert('イベントの削除に失敗しました。');
           }
         }).catch(error => {
           console.error('Error:', error);
         });
-
     });
 
     let lineButtonEl = document.querySelector('.fc-lineButton-button');
