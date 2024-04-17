@@ -17,6 +17,11 @@ class LineBotController < ApplicationController
       end
     end
 
+    rescue => e
+      Rails.logger.error "エラーが発生しました: #{e.message}"
+      head :internal_server_error
+    else
+
     head :ok
   end
 
