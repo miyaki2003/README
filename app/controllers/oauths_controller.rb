@@ -1,5 +1,5 @@
 class OauthsController < ApplicationController
-  #skip_before_action :require_login, only: [:oauth, :callback, :destroy]
+  skip_before_action :require_login, only: [:oauth, :callback, :destroy]
   def oauth
     login_at(:line)
   end
