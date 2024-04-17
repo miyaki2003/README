@@ -7,18 +7,18 @@ class EventsController < ApplicationController
   def create
     #@event = current_user.events.build(event_params)
     @event = Event.new(event_params)
-    @event.start_time = "#{params[:event][:start_date]} #{params[:event][:start_time]}"
-    @event.end_time = "#{params[:event][:end_date]} #{params[:event][:end_time]}"
-    @event.notify_time = "#{params[:event][:notify_date]} #{params[:event][:notify_time]}"
-    if params[:event][:line_notify] == "1" && DateTime.parse(@event.notify_time) <= DateTime.current
-      render json: { error: "通知時間は未来の時間を指定してください。" }, status: :unprocessable_entity
-    else
+
+    set_datetime_params
+
+    if @event.valid?
       if @event.save
         schedule_line_notification if params[:event][:line_notify] == "1"
         render json: @event, status: :created
       else
         render json: @event.errors, status: :unprocessable_entity
       end
+    else
+      render json: @event.errors, status: :unprocessable_entity
     end
   end
 
@@ -28,7 +28,9 @@ class EventsController < ApplicationController
       id: @event.id,
       title: @event.title,
       start: @event.start_time,
-      end: @event.end_time
+      end: @event.end_time,
+      notify_time: @event.notify_time,
+      line_notify: @event.line_notify
     }
   end
 
@@ -45,13 +47,28 @@ class EventsController < ApplicationController
 
   private
 
+
+
+
   def event_params
-    params.require(:event).permit(:title, :line_notify)
+    params.require(:event).permit(:title, :line_notify, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time)
   end
 
+  def set_datetime_params
+    if params[:event][:start_date].present? && params[:event][:start_time].present?
+      @event.start_time = Time.zone.parse("#{params[:event][:start_date]} #{params[:event][:start_time]}")
+    end
+    if params[:event][:end_date].present? && params[:event][:end_time].present?
+      @event.end_time = Time.zone.parse("#{params[:event][:end_date]} #{params[:event][:end_time]}")
+    end
+    if params[:event][:notify_date].present? && params[:event][:notify_time].present?
+      @event.notify_time = Time.zone.parse("#{params[:event][:notify_date]} #{params[:event][:notify_time]}")
+    end
+  end
+  
+
   def schedule_line_notification
-    notification_time =  DateTime.new(@event.start_time.year, @event.start_time.month, @event.start_time.day, params[:event][:notify_time_hour].to_i, params[:event][:notify_time_minute].to_i)
-    NotificationJob.set(wait_until: notification_time).perform_later(@event.id)
+    NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
   end
   
   def calculate_notification_time(start_time, notify_before_str)

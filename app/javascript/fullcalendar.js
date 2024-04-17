@@ -27,6 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const notifyTime = document.getElementById('notify_time');
   const eventForm = document.getElementById('event-form');
 
+  function toggleNotifyTimeInput() {
+    notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
+  }
+
+  notifySwitch.addEventListener('change', toggleNotifyTimeInput);
+  $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
+  toggleNotifyTimeInput();
+
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
       height: "auto",
@@ -56,65 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('start_date').value = info.dateStr;
         document.getElementById('end_date').value = info.dateStr;
         document.getElementById('notify_date').value = info.dateStr;
-        if (window.matchMedia("(pointer: coarse)").matches) {
-          if (lastClickedElement === info.dayEl) {
-            
-            modal.show();
-        
-            modal._element.addEventListener('hidden.bs.modal', function() {
-              info.dayEl.style.backgroundColor = '';
-              lastClickedElement = null;
-            });
-          } else {
 
-            if (lastClickedElement) {
-              lastClickedElement.style.backgroundColor = '';
-            }
-        
-            info.dayEl.style.backgroundColor = '#e3f6f5';
-            lastClickedElement = info.dayEl;
-          }
-        } else {
-
-          modal.show();
-    
-          lastClickedElement = info.dayEl;
-        }
+        handleDateClick(info);
       },
 
       eventClick: function(info) {
         info.jsEvent.preventDefault();
-        fetch(`/events/${info.event.id}/details`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            document.getElementById('eventDetailsTitle').textContent = 'タイトル： ' + data.title;
-            document.getElementById('eventDetailsStart').textContent = '開始時間： ' + new Date(data.start).toLocaleTimeString('ja-JP', {
-              hour: 'numeric', minute: '2-digit', hour12: false
-            });
-            document.getElementById('eventDetailsEnd').textContent = '終了時間： ' + (data.end ? new Date(data.end).toLocaleTimeString('ja-JP', {
-              hour: 'numeric', minute: '2-digit', hour12: false
-            }) : '終了時間未設定');
-            
-            if (data.line_notify) {
-              document.getElementById('eventNotifyTime').style.display = 'block';
-              document.getElementById('eventNotifyTime').textContent = '通知： ' + data.notify_time;
-            } else {
-              document.getElementById('eventNotifyTime').style.display = 'none';
-            }
-            let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-            modal.show();
-            document.getElementById('delete-event').setAttribute('data-event-id', data.id);
-          })
-          .catch(error => {
-            console.error('Error loading the event details:', error);
-            alert('Failed to load event details: ' + error.message);
-          });
-        },
+        fetchEventDetails(info.event.id);
+      },
 
       customButtons: {
         lineButton: {
@@ -167,10 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     calendar.render();
-
-    notifySwitch.addEventListener('change', function() {
-      notifyTimeInput.style.display = this.checked ? 'block' : 'none';
-    });
 
     form.addEventListener('submit', function(event) {
       event.preventDefault();
@@ -253,5 +206,82 @@ document.addEventListener('DOMContentLoaded', function() {
       icon.style.fontSize = '25px';
       CalendarButtonEl.appendChild(icon);
     }
+  }
+  // datechlick
+  function handleDateClick(info) {
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      if (lastClickedElement === info.dayEl) {
+        
+        modal.show();
+    
+        modal._element.addEventListener('hidden.bs.modal', function() {
+          info.dayEl.style.backgroundColor = '';
+          lastClickedElement = null;
+        });
+      } else {
+        updateDayElementBackground(info);
+      }
+    } else {
+      modal.show();
+      lastClickedElement = info.dayEl;
+    }
+  }
+  
+  function updateDayElementBackground(info) {
+    if (lastClickedElement) {
+      lastClickedElement.style.backgroundColor = '';
+    }
+    info.dayEl.style.backgroundColor = '#e3f6f5';
+    lastClickedElement = info.dayEl;
+  }
+
+// eventchlick
+  function fetchEventDetails(eventId) {
+    fetch(`/events/${eventId}/details`)
+      .then(handleResponse)
+      .then(updateUIWithEventDetails)
+      .catch(handleEventError);
+  }
+  
+  function handleResponse(response) {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  }
+  
+  function updateUIWithEventDetails(data) {
+    document.getElementById('eventDetailsTitle').textContent = `タイトル： ${data.title}`;
+    document.getElementById('eventDetailsStart').textContent = `開始時間： ${formatTime(data.start)}`;
+    document.getElementById('eventDetailsEnd').textContent = `終了時間： ${data.end ? formatTime(data.end) : '終了時間未設定'}`;
+    updateNotificationTime(data);
+    showModal(data);
+  }
+  
+  function formatTime(time) {
+    return new Date(time).toLocaleTimeString('ja-JP', {
+      hour: 'numeric', minute: '2-digit', hour12: false
+    });
+  }
+  
+  function updateNotificationTime(data) {
+    const notifyTimeElement = document.getElementById('eventNotifyTime');
+    if (data.line_notify) {
+      notifyTimeElement.style.display = 'block';
+      notifyTimeElement.textContent = `通知時間： ${formatTime(data.notify_time)}`;
+    } else {
+      notifyTimeElement.style.display = 'none';
+    }
+  }
+  
+  function showModal(data) {
+    const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+    modal.show();
+    document.getElementById('delete-event').setAttribute('data-event-id', data.id);
+  }
+  
+  function handleEventError(error) {
+    console.error('Error loading the event details:', error);
+    alert('Failed to load event details: ' + error.message);
   }
 });
