@@ -14,8 +14,13 @@ class NotificationJob < ApplicationJob
       type: 'text',
       text: "「#{event.title}」"
     }
-    line_user_id = event.user.line_user_id
 
+    return unless event.user
+
+    line_user_id = event.user.line_user_id
     response = client.push_message(line_user_id, message)
+
+    Rails.logger.info("LINE response: #{response.body}")
+
   end
 end

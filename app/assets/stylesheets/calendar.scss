@@ -203,11 +203,19 @@
 }
 
 .fc-daygrid-day-frame {
-  min-height: 120px; /* 各日の最小高さを設定 */
+  min-height: 120px;
 }
 .fc-daygrid-event {
-  height: 30px; /* イベントの高さを固定 */
+  height: 20px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.fc-daygrid-day-top {
+  height: 25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
