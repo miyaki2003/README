@@ -5,8 +5,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    #@event = current_user.events.build(event_params)
-    @event = Event.new(event_params)
+    @event = current_user.events.build(event_params)
 
     set_datetime_params
 
