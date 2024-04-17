@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  
   get 'reminders/index'
   
   root "staticpages#top"
@@ -16,6 +17,8 @@ Rails.application.routes.draw do
   get '/terms', to: 'staticpages#terms'
   
   get '/privacy_policy', to: 'staticpages#privacy_policy'
+
+  post '/calendar_notifications/receive', to: 'calendar_notifications#receive'
 
   resources :events do
     member do

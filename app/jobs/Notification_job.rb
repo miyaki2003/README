@@ -15,12 +15,11 @@ class NotificationJob < ApplicationJob
       text: "「#{event.title}」"
     }
 
-    return unless event.user
+    return unless event.user && event.user.line_user_id.present?
 
     line_user_id = event.user.line_user_id
     response = client.push_message(line_user_id, message)
 
-    Rails.logger.info("LINE response: #{response.body}")
-
+    Rails.logger.info("Sending LINE message to user_id: #{line_user_id}")
   end
 end
