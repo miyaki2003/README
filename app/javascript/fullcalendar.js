@@ -70,6 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       eventClick: function(info) {
         info.jsEvent.preventDefault();
+        if (lastClickedElement) {
+          lastClickedElement.style.backgroundColor = '';
+          lastClickedElement = null;
+        }
         fetchEventDetails(info.event.id);
       },
 
