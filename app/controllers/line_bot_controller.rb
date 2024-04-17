@@ -1,6 +1,7 @@
 class LineBotController < ApplicationController
   require 'line/bot'
   skip_before_action :verify_authenticity_token, only: [:callback]
+  skip_before_action :require_login
 
   def callback
     body = request.body.read
@@ -16,12 +17,6 @@ class LineBotController < ApplicationController
         handle_text_message(event)
       end
     end
-
-    rescue => e
-      Rails.logger.error "エラーが発生しました: #{e.message}"
-      head :internal_server_error
-    else
-
     head :ok
   end
 
