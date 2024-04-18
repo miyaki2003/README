@@ -6,16 +6,19 @@ class OauthsController < ApplicationController
   
   def callback
     provider = "line"
+    omniauth_data = request.env['omniauth.auth']
     if @user = login_from(provider)
-        redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
+      @user.update(line_user_id: omniauth_data.uid) unless @user.line_user_id == omniauth_data.uid
+      redirect_to root_path, notice: "#{provider.titleize}でログインしました"
     else
-      @user = create_from(provider)
+      @user = build_from(provider)
+      @user.line_user_id = omniauth_data.uid
       reset_session
       auto_login(@user)
-      if @user.persisted?
-        redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
+      if @user.save
+        redirect_to root_path, notice: "#{provider.titleize}でログインしました"
       else
-        redirect_to root_path, alert: "ログインに失敗しました。"
+        redirect_to root_path, alert: "ログインに失敗しました"
       end
     end
   end
