@@ -3,7 +3,7 @@ class NotificationJob < ApplicationJob
 
   def perform(event_id)
     event = Event.find_by(id: event_id)
-    return unless event
+    return unless event && event.user && event.user.line_user_id.present?
 
     client = Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
@@ -14,8 +14,6 @@ class NotificationJob < ApplicationJob
       type: 'text',
       text: "「#{event.title}」"
     }
-
-    return unless event.user && event.user.line_user_id.present?
 
     line_user_id = event.user.line_user_id
     response = client.push_message(line_user_id, message)

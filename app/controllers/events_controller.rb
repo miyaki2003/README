@@ -65,7 +65,6 @@ class EventsController < ApplicationController
       @event.notify_time = Time.zone.parse("#{params[:event][:notify_date]} #{params[:event][:notify_time]}")
     end
   end
-  
 
   def schedule_line_notification
     NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
