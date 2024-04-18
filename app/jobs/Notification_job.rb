@@ -3,21 +3,18 @@ class NotificationJob < ApplicationJob
 
   def perform(event_id)
     event = Event.find_by(id: event_id)
-    return unless event && event.user && event.user.line_user_id.present?
-
-    client = Line::Bot::Client.new { |config|
-      config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
-      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
-    }
+    return unless event
 
     message = {
       type: 'text',
       text: "「#{event.title}」"
     }
 
-    line_user_id = event.user.line_user_id
-    response = client.push_message(line_user_id, message)
+    client = Line::Bot::Client.new { |config|
+      config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
+      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
+    }
 
-    Rails.logger.info("Sending LINE message to user_id: #{line_user_id}")
+    response = client.push_message(event.user.line_user_id, message)
   end
 end
