@@ -151,7 +151,7 @@ class LineBotController < ApplicationController
   end
 
   def cancel_last_reminder(user, reply_token)
-    last_reminder = user.reminders.where(is_active: true).order(created_at: :desc).first
+    last_reminder = user.reminders.where(is_active: true).where("reminder_time > ?", Time.current).order(created_at: :desc).first
     if last_reminder
       reminder_title = last_reminder.title
       last_reminder.update(is_active: false)
