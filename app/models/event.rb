@@ -21,9 +21,6 @@ class Event < ApplicationRecord
   end
 
   def notification_time_must_be_in_the_future
-    errors.add(:notify_time, 'must be set in the future') if notify_time && notify_time < Time.current
-  end
-  def notification_time_must_be_in_the_future
     errors.add(:notify_time, 'must be set at least one minute in the future') if notify_time <= Time.current + 1.minute
   end
 end
