@@ -1,8 +1,8 @@
 require 'active_support/all'
 class NaturalLanguageProcessor
   DAY_MAPPINGS = {
-    "日" => 0, "月" => 1, "火" => 2, "水" => 3,
-    "木" => 4, "金" => 5, "土" => 6
+    "月" => 0, "火" => 1, "水" => 2, "木" => 3,
+    "金" => 4, "土" => 5, "日" => 6
   }.freeze
 
   def self.full_to_half(text)
