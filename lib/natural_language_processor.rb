@@ -48,7 +48,7 @@ class NaturalLanguageProcessor
   private
 
   def self.format_datetime(datetime)
-    datetime.strftime('%Y-%m-%d at %H:%M')
+    datetime.strftime('%Y-%m-%d %H:%M')
   end
 
   def self.translate_relative_day_time(day, period, hour, minutes)
@@ -120,11 +120,9 @@ class NaturalLanguageProcessor
     wday_key = day_match[2].gsub(/曜日?/, "")
     wday = DAY_MAPPINGS[wday_key]
 
-    target_date = Time.current.beginning_of_week(:sunday) + wday.days + week_modifier
+    target_date = Time.current.beginning_of_week(:monday) + wday.days + week_modifier
 
-    if day_match[1] == "今週" && target_date <= Time.current
-      target_date += 1.week
-    end
+    
     
     hour = time_match ? time_match[1].to_i : 6
 
