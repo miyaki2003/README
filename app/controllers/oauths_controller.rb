@@ -7,6 +7,12 @@ class OauthsController < ApplicationController
   def callback
     provider = "line"
     omniauth_data = request.env['omniauth.auth']
+    
+    unless omniauth_data
+      redirect_to root_path, alert: "認証データの取得に失敗しました"
+      return
+    end
+    
     if @user = login_from(provider)
       @user.update(line_user_id: omniauth_data.uid) unless @user.line_user_id == omniauth_data.uid
       redirect_to root_path, notice: "#{provider.titleize}でログインしました"
