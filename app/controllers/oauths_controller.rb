@@ -8,17 +8,19 @@ class OauthsController < ApplicationController
     provider = "line"
     omniauth_data = request.env['omniauth.auth']
     
-    unless omniauth_data
-      redirect_to root_path, alert: "認証データの取得に失敗しました"
+    if omniauth_data.nil?
+      redirect_to root_path, alert: "認証データが取得できませんでした。"
       return
     end
-    
+
     if @user = login_from(provider)
-      @user.update(line_user_id: omniauth_data.uid) unless @user.line_user_id == omniauth_data.uid
+      unless @user.line_user_id == omniauth_data['uid']
+        @user.update(line_user_id: omniauth_data['uid'])
+      end
       redirect_to root_path, notice: "#{provider.titleize}でログインしました"
     else
       @user = build_from(provider)
-      @user.line_user_id = omniauth_data.uid
+      @user.line_user_id = omniauth_data['uid']
       reset_session
       auto_login(@user)
       if @user.save
@@ -36,7 +38,7 @@ class OauthsController < ApplicationController
 
   private
 
-    def auth_params
-        params.permit(:code, :provider, :error, :state)
-    end
+  def auth_params
+    params.permit(:code, :provider, :error, :state)
+  end
 end
