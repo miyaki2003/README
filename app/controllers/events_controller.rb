@@ -47,9 +47,6 @@ class EventsController < ApplicationController
 
   private
 
-
-
-
   def event_params
     params.require(:event).permit(:title, :line_notify, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time)
   end
