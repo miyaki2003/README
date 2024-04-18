@@ -91,7 +91,6 @@ class LineBotController < ApplicationController
   end
 
   def confirm_reminder_set(reply_token, title, parsed_datetime)
-
     year = parsed_datetime.year
     month = parsed_datetime.month
     day = parsed_datetime.day
@@ -118,12 +117,16 @@ class LineBotController < ApplicationController
 
   def send_reminder_list(user, reply_token)
     reminders = user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc).limit(10)
-    message_text = "リマインド一覧です\n\n"
-  
-    reminders.each_with_index do |reminder, index|
-      time = reminder.reminder_time
-      message_text += "#{time.year}年#{time.month}月#{time.day}日#{time.hour}時#{time.min}分\n「#{reminder.title}」"
-      message_text += "\n\n" unless index == reminders.size - 1
+    if reminders.empty?
+        message_text = "リマインド一覧がありません"
+    else
+      message_text = "リマインド一覧です\n\n"
+    
+      reminders.each_with_index do |reminder, index|
+        time = reminder.reminder_time
+        message_text += "#{time.year}年#{time.month}月#{time.day}日#{time.hour}時#{time.min}分\n「#{reminder.title}」"
+        message_text += "\n\n" unless index == reminders.size - 1
+      end
     end
   
     message = {
