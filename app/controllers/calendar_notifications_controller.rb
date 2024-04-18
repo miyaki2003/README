@@ -3,10 +3,7 @@ class CalendarNotificationsController < ApplicationController
 
   def receive
     if valid_signature?
-      events = parse_events_from(request.body.read)
-      events.each do |event|
-        handle_event(event)
-      end
+      enqueue_notifications
       head :ok
     else
       head :bad_request
@@ -26,17 +23,9 @@ class CalendarNotificationsController < ApplicationController
     }
   end
 
-  def parse_events_from(body)
-    client.parse_events_from(body)
-  end
-
-  def handle_event(event)
-    case event
-    when Line::Bot::Event::MessageType::Text
-      process_text_message(event)
+  def enqueue_notifications
+    Event.where('notify_time <= ?', Time.current).each do |event|
+      NotificationJob.perform_later(event.id) if event.line_notify && event.user.line_user_id.present?
     end
-  end
-
-  def process_text_message(event)
   end
 end
