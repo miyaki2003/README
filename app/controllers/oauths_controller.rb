@@ -8,6 +8,8 @@ class OauthsController < ApplicationController
     provider = "line"
     omniauth_data = request.env['omniauth.auth']
 
+    Rails.logger.info "Omniauth Data: #{omniauth_data.inspect}"
+
     if @user = login_from(provider)
         redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
     else
