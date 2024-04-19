@@ -6,10 +6,14 @@ class OauthsController < ApplicationController
   
   def callback
     provider = "line"
+    omniauth_data = request.env['omniauth.auth']
+
     if @user = login_from(provider)
         redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
     else
       @user = create_from(provider)
+      @user.line_user_id = omniauth_data['uid'] if omniauth_data['uid'].present?
+      
       reset_session
       auto_login(@user)
       if @user.persisted?
