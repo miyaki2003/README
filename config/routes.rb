@@ -17,8 +17,6 @@ Rails.application.routes.draw do
   
   get '/privacy_policy', to: 'staticpages#privacy_policy'
 
-  post '/calendar_notifications/receive', to: 'calendar_notifications#receive'
-
   resources :events do
     member do
       get 'details'
