@@ -11,6 +11,7 @@ class ReminderJob < ApplicationJob
     }
 
     client = Line::Bot::Client.new { |config|
+    #ENV["LINE_MESSAGING_CHANNEL_SECRET"]
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
