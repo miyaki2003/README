@@ -36,6 +36,10 @@ gem 'chronic'
 
 gem 'sassc-rails'
 
+gem 'omniauth'
+
+gem 'omniauth-line'
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem 'dotenv-rails'
