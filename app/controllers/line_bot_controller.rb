@@ -13,7 +13,10 @@ class LineBotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each do |event|
-      if event.type == Line::Bot::Event::MessageType::Text
+      case event
+      when Line::Bot::Event::Follow
+        handle_follow_event(event)
+      when event.type == Line::Bot::Event::MessageType::Text
         handle_text_message(event)
       end
     end
@@ -22,10 +25,21 @@ class LineBotController < ApplicationController
 
   private
 
+  def handle_follow_event(event)
+    user_id = event['source']['userId']
+    user = User.find_or_create_by(line_user_id: user_id)
+  end
+
   def handle_text_message(event)
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
+    if user.new_record?
+      Rails.logger.info "新しいユーザーがline_user_id: #{user_id}で作成されました。"
+    else
+        Rails.logger.info "既存のユーザーがline_user_id: #{user_id}で見つかりました。"
+    end
     user_message = event.message['text']
+    Rails.logger.info "処理するメッセージ: #{user_message}"
     case user_message
     when 'キャンセル'
       user.update(status: nil, temporary_data: nil)

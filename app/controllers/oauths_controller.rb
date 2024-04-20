@@ -7,15 +7,15 @@ class OauthsController < ApplicationController
   def callback
     provider = "line"
     if @user = login_from(provider)
-        redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
+        redirect_to root_path, notice: "#{provider.titleize}でログインしました"
     else
       @user = create_from(provider)
       reset_session
       auto_login(@user)
       if @user.persisted?
-        redirect_to root_path, notice: "#{provider.titleize}でログインしました。"
+        redirect_to events_path, notice: "#{provider.titleize}でログインしました"
       else
-        redirect_to root_path, alert: "ログインに失敗しました。"
+        redirect_to root_path, alert: "ログインに失敗しました"
       end
     end
   end

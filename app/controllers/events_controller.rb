@@ -8,17 +8,11 @@ class EventsController < ApplicationController
     @event = current_user.events.build(event_params)
     #@event = Event.new(event_params)
 
-    @event.line_user_id = current_user.line_user_id
-
     set_datetime_params
 
-    if @event.valid?
-      if @event.save
-        schedule_line_notification if params[:event][:line_notify] == "1"
-        render json: @event, status: :created
-      else
-        render json: @event.errors, status: :unprocessable_entity
-      end
+    if @event.valid? && @event.save
+      schedule_line_notification if params[:event][:line_notify] == "1"
+      render json: @event, status: :created
     else
       render json: @event.errors, status: :unprocessable_entity
     end
