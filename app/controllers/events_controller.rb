@@ -5,6 +5,7 @@ class EventsController < ApplicationController
   end
 
   def create
+    Rails.logger.info "Current User: #{current_user.inspect}"
     @event = current_user.events.build(event_params)
     #@event = Event.new(event_params)
 
