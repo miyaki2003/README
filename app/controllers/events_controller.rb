@@ -10,9 +10,13 @@ class EventsController < ApplicationController
 
     set_datetime_params
 
-    if @event.valid? && @event.save
-      schedule_line_notification if params[:event][:line_notify] == "1"
-      render json: @event, status: :created
+    if @event.valid?
+      if @event.save
+        schedule_line_notification if params[:event][:line_notify] == "1"
+        render json: @event, status: :created
+      else
+        render json: @event.errors, status: :unprocessable_entity
+      end
     else
       render json: @event.errors, status: :unprocessable_entity
     end
