@@ -25,7 +25,17 @@ class LineBotController < ApplicationController
   def handle_text_message(event)
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
+
+    if user.new_record?
+      Rails.logger.info "新規ユーザーを作成しました。line_user_id: #{user_id}"
+      user.save!
+    else
+      Rails.logger.info "既存のユーザーを発見しました。line_user_id: #{user_id}"
+    end
+  
     user_message = event.message['text']
+    Rails.logger.info "ユーザーID: #{user.line_user_id} でメッセージを処理中: #{user_message}"
+    
     case user_message
     when 'キャンセル'
       user.update(status: nil, temporary_data: nil)
