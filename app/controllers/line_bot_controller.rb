@@ -24,6 +24,11 @@ class LineBotController < ApplicationController
 
   def handle_text_message(event)
     user_id = event['source']['userId']
+    if user_id.nil?
+      Rails.logger.info "Received userId is nil"
+    else
+      Rails.logger.info "Received userId: #{user_id}"
+    end
     user = User.find_or_create_by(line_user_id: user_id)
 
     if user.new_record?
