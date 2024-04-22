@@ -1,7 +1,7 @@
 class OauthsController < ApplicationController
   skip_before_action :require_login, only: [:oauth, :callback, :destroy]
   def oauth
-    redirect_to line_oauth_url
+    redirect_to line_oauth_url, allow_other_host: true
   end
   
   def callback
