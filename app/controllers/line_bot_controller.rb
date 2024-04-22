@@ -50,6 +50,11 @@ class LineBotController < ApplicationController
       send_error_message(event['replyToken'], "この機能を使用するにはログインが必要です")
     end
   end
+
+  def set_current_user
+    user_id = event['source']['userId']
+    @current_user = User.find_or_create_by(line_user_id: user_id)
+  end
   
   def start_reminder_setting(text, reply_token)
     current_user.update(status: 'awaiting_time', temporary_data: text)
