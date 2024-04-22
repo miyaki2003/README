@@ -1,7 +1,7 @@
 class OauthsController < ApplicationController
   skip_before_action :require_login, only: [:oauth, :callback, :destroy]
   def oauth
-    login_at(:line)
+    redirect_to line_oauth_url
   end
   
   def callback
@@ -29,5 +29,15 @@ class OauthsController < ApplicationController
 
     def auth_params
         params.permit(:code, :provider, :error, :state)
+    end
+
+    def line_oauth_url
+      client_id = Rails.application.credentials.line[:client_id]
+      redirect_uri = Rails.application.credentials.line[:callback_url]
+      state = SecureRandom.hex(15)
+      scope = "openid profile"
+      bot_prompt = "nomal"
+  
+      "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{CGI.escape(redirect_uri)}&state=#{state}&bot_prompt=#{bot_prompt}&scope=#{CGI.escape(scope)}"
     end
 end
