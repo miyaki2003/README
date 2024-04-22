@@ -1,7 +1,6 @@
 class LineBotController < ApplicationController
   require 'line/bot'
   skip_before_action :verify_authenticity_token, only: [:callback]
-  skip_before_action :require_login
 
   def callback
     body = request.body.read
@@ -24,63 +23,54 @@ class LineBotController < ApplicationController
 
   def handle_text_message(event)
     user_id = event['source']['userId']
-    if user_id.nil?
-      Rails.logger.info "Received userId is nil"
-    else
-      Rails.logger.info "Received userId: #{user_id}"
-    end
-    user = User.find_or_create_by(line_user_id: user_id)
 
-    if user.new_record?
-      Rails.logger.info "新規ユーザーを作成しました。line_user_id: #{user_id}"
-      user.save!
-    else
-      Rails.logger.info "既存のユーザーを発見しました。line_user_id: #{user_id}"
-    end
-  
-    user_message = event.message['text']
-    Rails.logger.info "ユーザーID: #{user.line_user_id} でメッセージを処理中: #{user_message}"
-    
-    case user_message
-    when 'キャンセル'
-      user.update(status: nil, temporary_data: nil)
-      cancel_operation(event['replyToken'])
-    when '一覧'
-      send_reminder_list(user, event['replyToken'])
-    when '今日'
-      send_current_date_and_time(event['replyToken'])
-    when '取り消し'
-      cancel_last_reminder(user, event['replyToken'])
-    else
-      if user.status == 'awaiting_time'
-        process_user_message(user, user_message, event['replyToken'])
+    if current_user
+      current_user.update(line_user_id: user_id) unless current_user.line_user_id.present?
+
+      user_message = event.message['text']
+      case user_message
+      when 'キャンセル'
+        current_user.update(status: nil, temporary_data: nil)
+        cancel_operation(event['replyToken'])
+      when '一覧'
+        send_reminder_list(current_user, event['replyToken'])
+      when '今日'
+        send_current_date_and_time(event['replyToken'])
+      when '取り消し'
+        cancel_last_reminder(current_user, event['replyToken'])
       else
-        start_reminder_setting(user, user_message, event['replyToken'])
+        if current_user.status == 'awaiting_time'
+          process_user_message(current_user, user_message, event['replyToken'])
+        else
+          start_reminder_setting(current_user, user_message, event['replyToken'])
+        end
       end
+    else
+      send_error_message(event['replyToken'], "この機能を使用するにはログインが必要です")
     end
   end
   
-  def start_reminder_setting(user, text, reply_token)
-    user.update(status: 'awaiting_time', temporary_data: text)
+  def start_reminder_setting(text, reply_token)
+    current_user.update(status: 'awaiting_time', temporary_data: text)
     ask_for_time(reply_token)
   end
 
-  def process_user_message(user, text, reply_token)
+  def process_user_message(text, reply_token)
     parsed_datetime = parse_message(text)
     if parsed_datetime.nil?
       send_error_message(reply_token, "日時情報を正しく認識できませんでした\n再度日時を入力してください")
-      user.update(status: 'awaiting_time')
+      current_user.update(status: 'awaiting_time')
     elsif Time.parse(parsed_datetime) <= Time.now
       send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
-      user.update(status: 'awaiting_time')
+      current_user.update(status: 'awaiting_time')
     else
-      set_and_confirm_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
-      user.update(status: nil, temporary_data: nil)
+      set_and_confirm_reminder(current_user.temporary_data, Time.parse(parsed_datetime), reply_token)
+      current_user.update(status: nil, temporary_data: nil)
     end
   end
 
-  def set_and_confirm_reminder(user, title, reminder_time, reply_token)
-    reminder = ReminderService.create(user: user, title: title, reminder_time: reminder_time)
+  def set_and_confirm_reminder(title, reminder_time, reply_token)
+    reminder = ReminderService.create(user: current_user, title: title, reminder_time: reminder_time)
     
     if reminder.persisted?
       confirm_reminder_set(reply_token, title, reminder.reminder_time)
@@ -130,8 +120,8 @@ class LineBotController < ApplicationController
     client.reply_message(reply_token, message)
   end
 
-  def send_reminder_list(user, reply_token)
-    reminders = user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc).limit(10)
+  def send_reminder_list(reply_token)
+    reminders = current_user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc).limit(10)
     if reminders.empty?
         message_text = "リマインド一覧がありません"
     else
@@ -168,8 +158,8 @@ class LineBotController < ApplicationController
     client.reply_message(reply_token, message)
   end
 
-  def cancel_last_reminder(user, reply_token)
-    last_reminder = user.reminders.where(is_active: true).where("reminder_time > ?", Time.current).order(created_at: :desc).first
+  def cancel_last_reminder(reply_token)
+    last_reminder = current_user.reminders.where(is_active: true).where("reminder_time > ?", Time.current).order(created_at: :desc).first
     if last_reminder
       reminder_title = last_reminder.title
       last_reminder.update(is_active: false)
