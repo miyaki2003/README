@@ -13,8 +13,11 @@ class LineBotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each do |event|
-      if event.type == Line::Bot::Event::MessageType::Text
+      case event.type
+      when Line::Bot::Event::MessageType::Text
         handle_text_message(event)
+      when Line::Bot::Event::Follow
+        handle_follow_event(event)
       end
     end
     head :ok
@@ -42,6 +45,13 @@ class LineBotController < ApplicationController
       else
         start_reminder_setting(user, user_message, event['replyToken'])
       end
+    end
+  end
+
+  def handle_follow_event(event)
+    user_id = event['source']['userId']
+    User.find_or_initialize_by(line_user_id: user_id).tap do |user|
+      user.save!
     end
   end
   
