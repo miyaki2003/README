@@ -6,6 +6,9 @@ class OauthsController < ApplicationController
   require 'json'
   require 'jwt' 
 
+  header = JWT.decode(id_token, nil, false)[0]
+  puts header['alg']
+
   def oauth
     redirect_to line_oauth_url, allow_other_host: true
   end
@@ -82,14 +85,24 @@ class OauthsController < ApplicationController
   end
 
   def decode_id_token(id_token)
+    header = JWT.decode(id_token, nil, false).first
+    kid = header['kid']
+
     jwks_url = "https://api.line.me/oauth2/v2.1/certs"
     jwks_json = Net::HTTP.get(URI(jwks_url))
-    jwks_keys = Array(JSON.parse(jwks_json)['keys'])
+    jwks_keys = JSON.parse(jwks_json)['keys']
 
-    key = JWT::JWK.import(jwks_keys.first)
+    jwk = jwks_keys.find { |k| k['kid'] == kid }
+    if jwk.nil?
+        raise "適切なJWKが見つかりませんでした。"
+    end
+
+    key = JWT::JWK.import(jwk)
     public_key = key.public_key
-    decoded_token = JWT.decode(id_token, public_key, true, { algorithm: 'ES256' })
+
+    alg = header['alg']
+    decoded_token = JWT.decode(id_token, public_key, true, { algorithm: alg })
 
     decoded_token[0]['sub']
-  end  
+  end
 end
