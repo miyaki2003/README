@@ -1,7 +1,7 @@
 class LineBotController < ApplicationController
   require 'line/bot'
   skip_before_action :verify_authenticity_token, only: [:callback]
-  skip_before_action :require_login
+  #skip_before_action :require_login
 
   def callback
     body = request.body.read
@@ -50,13 +50,14 @@ class LineBotController < ApplicationController
 
   def handle_follow_event(event)
     user_id = event['source']['userId']
-    user = User.find_or_initialize_by(line_user_id: user_id)
-    if user.new_record?
-      logger.debug "新規ユーザー: #{user_id}"
+    user = current_user
+    if user.line_user_id.blank?
+      user.line_user_id = user_id
+      user.save!
+      logger.debug "LINE IDをユーザーに関連付けました: #{user_id}"
     else
-      logger.debug "既存ユーザー: #{user.inspect}"
+      logger.debug "ユーザーはすでにLINE IDを持っています: #{user.line_user_id}"
     end
-    user.save!
   end
   
   def start_reminder_setting(user, text, reply_token)
