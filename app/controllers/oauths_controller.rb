@@ -88,7 +88,8 @@ class OauthsController < ApplicationController
 
     key = JWT::JWK.import(jwks_keys.first)
     public_key = key.public_key
-    decoded_token = JWT.decode(id_token, public_key, true, { algorithm: 'RS256' })
+    decoded_token = JWT.decode(id_token, public_key, true, { algorithm: 'ES256' })
+
     decoded_token[0]['sub']
   end  
 end
