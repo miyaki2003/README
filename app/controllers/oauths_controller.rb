@@ -6,9 +6,6 @@ class OauthsController < ApplicationController
   require 'json'
   require 'jwt' 
 
-  header = JWT.decode(id_token, nil, false)[0]
-  puts header['alg']
-
   def oauth
     redirect_to line_oauth_url, allow_other_host: true
   end
