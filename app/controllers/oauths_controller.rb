@@ -87,14 +87,7 @@ class OauthsController < ApplicationController
     jwks_keys = Array(JSON.parse(jwks_json)['keys'])
 
     key = JWT::JWK.import(jwks_keys.first)
-  public_key = case key[:kty]
-               when 'RSA'
-                 OpenSSL::PKey::RSA.new(key.to_pem)
-               when 'EC'
-                 OpenSSL::PKey::EC.new(key.to_pem)
-               else
-                 raise "Unsupported key type: #{key[:kty]}"
-               end
+    public_key = key.public_key
     decoded_token = JWT.decode(id_token, rsa_public, true, { algorithm: 'RS256' })
     decoded_token[0]['sub']
   end  
