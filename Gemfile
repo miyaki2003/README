@@ -34,6 +34,8 @@ gem "google-cloud-language"
 
 gem 'sassc-rails'
 
+gem 'jwt'
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem 'dotenv-rails'
