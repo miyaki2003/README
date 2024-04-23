@@ -51,13 +51,12 @@ class LineBotController < ApplicationController
   def handle_follow_event(event)
     user_id = event['source']['userId']
     user = User.find_or_initialize_by(line_user_id: user_id)
-      if user.new_record?
-        logger.debug "新規ユーザー: #{user_id}"
-      else
-        logger.debug "既存ユーザー: #{user.inspect}"
-      end
-      user.save!
+    if user.new_record?
+      logger.debug "新規ユーザー: #{user_id}"
+    else
+      logger.debug "既存ユーザー: #{user.inspect}"
     end
+    user.save!
   end
   
   def start_reminder_setting(user, text, reply_token)
