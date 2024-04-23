@@ -415,6 +415,7 @@ DEPENDENCIES
   google-cloud-language
   jbuilder
   jsbundling-rails
+  jwt
   line-bot-api
   pg (~> 1.1)
   pry-rails
