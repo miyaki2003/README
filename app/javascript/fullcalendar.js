@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
       customButtons: {
         lineButton: {
           click: function() {
-            window.location.href = 'https://line.me/R/ti/p/%40083jbanw';
+            window.location.href = 'https://line.me/R/ti/p/%40971xadbw';
           }
         },
         CustomButton: {
