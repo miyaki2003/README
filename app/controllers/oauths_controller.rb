@@ -76,30 +76,8 @@ class OauthsController < ApplicationController
     JSON.parse(response.body, symbolize_names: true)
   end
 
-  def decode_id_token(id_token)
-    decoded_token = JWT.decode(id_token, nil, false)
-    decoded_token[0]['sub']
-  end
-
-  def decode_id_token(id_token)
-    header = JWT.decode(id_token, nil, false).first
-    kid = header['kid']
-
-    jwks_url = "https://api.line.me/oauth2/v2.1/certs"
-    jwks_json = Net::HTTP.get(URI(jwks_url))
-    jwks_keys = JSON.parse(jwks_json)['keys']
-
-    jwk = jwks_keys.find { |k| k['kid'] == kid }
-    if jwk.nil?
-        raise "適切なJWKが見つかりませんでした。"
-    end
-
-    key = JWT::JWK.import(jwk)
-    public_key = key.public_key
-
-    alg = header['alg']
-    decoded_token = JWT.decode(id_token, public_key, true, { algorithm: alg })
-
+  def decode_id_token(id_token, client_secret)
+    decoded_token = JWT.decode(id_token, client_secret, true, { algorithm: 'HS256' })
     decoded_token[0]['sub']
   end
 end
