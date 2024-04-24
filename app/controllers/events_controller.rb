@@ -5,7 +5,6 @@ class EventsController < ApplicationController
   end
 
   def create
-    Rails.logger.info "Current User: #{current_user.inspect}"
     @event = current_user.events.build(event_params)
     #@event = Event.new(event_params)
 
@@ -14,7 +13,6 @@ class EventsController < ApplicationController
 
     if @event.valid?
       if @event.save
-        Rails.logger.info "イベントが作成されました。LINEユーザーID: #{@event.line_user_id}"
         schedule_line_notification if params[:event][:line_notify] == "1"
         render json: @event, status: :created
       else
