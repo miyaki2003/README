@@ -49,7 +49,7 @@ class OauthsController < ApplicationController
     client_id = ENV['LINE_KEY']
     redirect_uri = "https://reminder-chat-38cf4e1a3ae9.herokuapp.com/auth/line/callback"
     state = SecureRandom.hex(15)
-    scope = "openid profile email"
+    scope = "openid profile"
     bot_prompt = "aggressive"
     "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{CGI.escape(redirect_uri)}&state=#{state}&bot_prompt=#{bot_prompt}&scope=#{CGI.escape(scope)}"
   end
