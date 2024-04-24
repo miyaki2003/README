@@ -13,11 +13,8 @@ class LineBotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each do |event|
-      case event.type
-      when Line::Bot::Event::MessageType::Text
+      if event.type == Line::Bot::Event::MessageType::Text
         handle_text_message(event)
-      when Line::Bot::Event::Follow
-        handle_follow_event(event)
       end
     end
     head :ok
@@ -45,18 +42,6 @@ class LineBotController < ApplicationController
       else
         start_reminder_setting(user, user_message, event['replyToken'])
       end
-    end
-  end
-
-  def handle_follow_event(event)
-    user_id = event['source']['userId']
-    user = current_user
-    if user.line_user_id.blank?
-      user.line_user_id = user_id
-      user.save!
-      logger.debug "LINE IDをユーザーに関連付けました: #{user_id}"
-    else
-      logger.debug "ユーザーはすでにLINE IDを持っています: #{user.line_user_id}"
     end
   end
   
