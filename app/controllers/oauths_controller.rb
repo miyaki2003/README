@@ -20,7 +20,7 @@ class OauthsController < ApplicationController
 
     token_response = fetch_line_token(params[:code])
     if token_response[:access_token]
-      line_id = decode_id_token(token_response[:id_token])
+      line_id = decode_id_token(token_response[:id_token], ENV['LINE_SECRET'])
       @user = User.find_or_create_by(line_user_id: line_id)
       reset_session
       auto_login(@user)
