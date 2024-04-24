@@ -47,10 +47,22 @@ document.addEventListener('DOMContentLoaded', function() {
       eventSources: [
         {
           googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com',
-          className: 'event_holiday'
+          className: 'ja-holidays',
+          backgroundColor: '#a2d7d7',
+          borderColor: '#ffffff00'
         },
         '/events.json'
       ],
+
+      // eventDidMount: function(info) {
+      //   if (info.event.classNames.includes('ja-holidays')) {
+      //     let dateStr = info.event.start.toISOString().substring(0, 10);
+      //     let dayCell = document.querySelector(`[data-date="${dateStr}"] .fc-daygrid-day-number`);
+      //     if (dayCell) {
+      //       dayCell.style.color = '#ff6666';
+      //     }
+      //   }
+      // },
 
       eventContent: function(arg) {
         return { html: arg.event.title };
