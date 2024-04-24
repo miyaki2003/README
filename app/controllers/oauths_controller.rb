@@ -13,7 +13,7 @@ class OauthsController < ApplicationController
   def callback
     provider = "line"
     if params[:error]
-      redirect_to root_path, alert: "LINEログインに失敗しました: #{params[:error_description]}"
+      redirect_to root_path
       return
     end
     
@@ -25,12 +25,12 @@ class OauthsController < ApplicationController
       reset_session
       auto_login(@user)
       if @user.persisted?
-        redirect_to events_path, notice: "#{provider.titleize}でログインしました"
+        redirect_to events_path
       else
-        redirect_to root_path, alert: "ログインに失敗しました"
+        redirect_to root_path
       end
     else
-      redirect_to root_path, alert: "LINEトークンの取得に失敗しました"
+      redirect_to root_path
     end
   end
 
@@ -49,7 +49,7 @@ class OauthsController < ApplicationController
     client_id = ENV['LINE_KEY']
     redirect_uri = "https://reminder-chat-38cf4e1a3ae9.herokuapp.com/auth/line/callback"
     state = SecureRandom.hex(15)
-    scope = "openid profile"
+    scope = "openid profile email"
     bot_prompt = "aggressive"
     "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{CGI.escape(redirect_uri)}&state=#{state}&bot_prompt=#{bot_prompt}&scope=#{CGI.escape(scope)}"
   end
