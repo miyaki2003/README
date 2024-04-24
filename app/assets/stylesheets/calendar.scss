@@ -102,7 +102,21 @@
   color: #4b5183 !important;
 }
 
-@media (max-width: 768px) {
+// .ja-holidays{
+// 	font-size: 9px;
+// }
+
+// .fc-daygrid-day:has(.ja-holidays){
+// }
+
+// .fc-daygrid-day-number:has(.ja-holidays) {
+//   color: #ff6666 !important;
+// }
+
+
+
+
+@media (max-width: 450px) {
   .fc-toolbar-chunk {
     display: flex;
     justify-content: space-around;
@@ -133,6 +147,77 @@
     margin-right: 50px;
     height: 35px;
   }
+
+  .ja-holidays{
+    font-size: 8px;
+  }
+
+  // 追加
+  .container{
+    width: 420px;
+    padding: 5px 10px 10px 10px;
+    margin: 5px 10px 10px 10px;
+  }
+  // 追加
+  .fc-daygrid-day-top {
+    height: 25px;
+  }
+  
+  .fc-daygrid-day-bg {
+    height: 15px;
+  }  
+}
+
+@media (max-width: 375px) {
+  .fc-toolbar-chunk {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .fc-toolbar-chunk button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px 5px;
+  }
+
+  .fc-toolbar-chunk button i {
+    line-height: 1;
+  }
+
+  .fc-header-toolbar {
+    margin-top: 10px;
+  }
+
+  .fc-CalendarButton-button {
+    width: 45px; 
+    height: 45px;
+  }
+
+  .fc-today-button {
+    margin-right: 60px;
+    height: 42px;
+  }
+
+  .ja-holidays{
+    font-size: 8px;
+  }
+
+  // 追加
+  .container{
+    width: 420px;
+    padding: 5px 10px 10px 10px;
+    margin: 5px 10px 10px 10px;
+  }
+  // 追加
+  .fc-daygrid-day-top {
+    height: 25px;
+  }
+  // 変更
+  .fc-daygrid-day-bg {
+    height: 30px;
+  }  
 }
 
 @media (min-width: 769px) {
@@ -200,22 +285,14 @@
   .fc-next-button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
-}
 
-.fc-daygrid-day-frame {
-  min-height: 120px;
-}
-.fc-daygrid-event {
-  height: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
-.fc-daygrid-day-top {
-  height: 25px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  // 追加
+  .fc-daygrid-day-top {
+    height: 23px;
+  }
+  // 変更
+  .fc-daygrid-day-bg {
+    height: 25px;
+  }
 }
-

@@ -8,7 +8,7 @@ class EventsController < ApplicationController
     #@event = current_user.events.build(event_params)
     @event = Event.new(event_params)
 
-    @event.line_user_id = current_user.line_user_id
+    #@event.line_user_id = current_user.line_user_id
     set_datetime_params
 
     if @event.valid?
