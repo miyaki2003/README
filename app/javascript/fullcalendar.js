@@ -5,12 +5,13 @@ import listPlugin from '@fullcalendar/list';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
-import googleCalendarPlugin from '@fullcalendar/google-calendar';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
 document.addEventListener('DOMContentLoaded', function() {
+  // ツールチップ
   let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
   let tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -20,6 +21,32 @@ document.addEventListener('DOMContentLoaded', function() {
   let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
     keyboard: true
   });
+
+  async function fetchHolidays(year) {
+    const url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch holidays');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {};
+    }
+  }
+
+// モーダルを閉じた時のイベントリセット
+  document.getElementById('eventModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('title').value = '';
+    document.getElementById('start_date').value = '18:00';
+    document.getElementById('end_date').value = '23:59'; 
+    document.getElementById('notify_time').value = '06:00';
+    if (document.getElementById('line-notify-switch').checked) {
+      document.getElementById('line-notify-switch').click();
+    }
+  });
+
   let form = document.getElementById('event-form');
 
   const notifySwitch = document.getElementById('line-notify-switch');
@@ -38,31 +65,32 @@ document.addEventListener('DOMContentLoaded', function() {
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
       height: "auto",
-      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin, googleCalendarPlugin ],
+      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
       themeSystem: 'bootstrap5',
       locale: 'ja',
       initialView: 'dayGridMonth',
       selectable: true,
-      googleCalendarApiKey: 'AIzaSyBEjT2zMm5yB9LYkUawhLf6A9oNt1rRWBA',
+
       eventSources: [
         {
-          googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com',
-          className: 'ja-holidays',
-          backgroundColor: '#a2d7d7',
-          borderColor: '#ffffff00'
+          events: async function(fetchInfo, successCallback, failureCallback) {
+            try {
+              const year = fetchInfo.start.getFullYear();
+              const holidays = await fetchHolidays(year);
+              const holidayEvents = Object.entries(holidays).map(([date, name]) => ({
+                title: name,
+                start: date,
+                allDay: true,
+                color: 'bule'
+              }));
+              successCallback(holidayEvents);
+            } catch (error) {
+              failureCallback(error);
+            }
+          }
         },
         '/events.json'
       ],
-
-      // eventDidMount: function(info) {
-      //   if (info.event.classNames.includes('ja-holidays')) {
-      //     let dateStr = info.event.start.toISOString().substring(0, 10);
-      //     let dayCell = document.querySelector(`[data-date="${dateStr}"] .fc-daygrid-day-number`);
-      //     if (dayCell) {
-      //       dayCell.style.color = '#ff6666';
-      //     }
-      //   }
-      // },
 
       eventContent: function(arg) {
         return { html: arg.event.title };
