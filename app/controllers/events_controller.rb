@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
   def index
-    @events = Event.all
+    @events = current_user.events
+    #@events = Event.all
     @event = Event.new
   end
 
@@ -24,7 +25,8 @@ class EventsController < ApplicationController
   end
 
   def details
-    @event = Event.find(params[:id])
+    @event = current_user.events.find_by(id: params[:id])
+    #@event = Event.find(params[:id])
       render json: {
       id: @event.id,
       title: @event.title,
@@ -36,7 +38,8 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    @event = Event.find(params[:id])
+    @event = current_user.events.find_by(id: params[:id])
+    #@event = Event.find(params[:id])
     if @event.nil?
       render json: { error: "Event not found." }, status: :not_found
     elsif @event.destroy
