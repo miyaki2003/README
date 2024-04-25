@@ -97,12 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         CustomButton: {
           click: function() {
-            window.location.href = 'http://localhost:3000/';
+            // window.location.href = 'http://localhost:3000/';
           }
         },
         CalendarButton: {
           click: function() {
-            window.location.href = 'http://localhost:3000/';
+            // window.location.href = 'http://localhost:3000/';
           }
         },
       },
