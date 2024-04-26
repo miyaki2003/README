@@ -10,7 +10,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // ツールチップ
   let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
   let tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
@@ -22,19 +22,30 @@ document.addEventListener('DOMContentLoaded', function() {
     keyboard: true
   });
 
-  async function fetchHolidays(year) {
-    const url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch holidays');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching holidays:', error);
-      return {};
-    }
-  }
+ // 祝日
+ let holidays = {};
+  
+ async function fetchHolidays(year) {
+   const url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
+   try {
+     const response = await fetch(url);
+     if (!response.ok) {
+       throw new Error('Failed to fetch holidays');
+     }
+     return await response.json();
+   } catch (error) {
+     console.error('Error fetching holidays:', error);
+     return {};
+   }
+ }
+
+ async function fetchAndStoreHolidays(startYear, endYear) {
+   for (let year = startYear; year <= endYear; year++) {
+       holidays[year] = await fetchHolidays(year);
+   }
+ }
+
+  await fetchAndStoreHolidays(2015, 2029);
 
 // モーダルを閉じた時のイベントリセット
   document.getElementById('eventModal').addEventListener('hidden.bs.modal', function () {
@@ -64,33 +75,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
+      timeZone: 'Asia/Tokyo',
       height: "auto",
       plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
       themeSystem: 'bootstrap5',
       locale: 'ja',
       initialView: 'dayGridMonth',
       selectable: true,
-
       eventSources: [
-        {
-          events: async function(fetchInfo, successCallback, failureCallback) {
-            try {
-              const year = fetchInfo.start.getFullYear();
-              const holidays = await fetchHolidays(year);
-              const holidayEvents = Object.entries(holidays).map(([date, name]) => ({
-                title: name,
-                start: date,
-                allDay: true,
-                color: 'bule'
-              }));
-              successCallback(holidayEvents);
-            } catch (error) {
-              failureCallback(error);
-            }
-          }
-        },
         '/events.json'
       ],
+
+      // 祝日
+      dayCellDidMount: function(info) {
+        const date = info.date;
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+    
+        if (holidays[year] && holidays[year][dateStr]) {
+            let dayNumberLink = info.el.querySelector('.fc-daygrid-day-number');
+            if (dayNumberLink) {
+                dayNumberLink.classList.add('holiday-number');
+            }
+        }
+    },
 
       eventContent: function(arg) {
         return { html: arg.event.title };
