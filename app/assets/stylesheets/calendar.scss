@@ -22,6 +22,13 @@
   }
 }
 
+.fc-daygrid-day-top .holiday-number,
+.fc-scrollgrid-sync-inner .fc-col-header-cell-cushion .holiday-number,
+.fc-list-day-cushion .holiday-number,
+.fc-daygrid-day-number.holiday-number {
+    color: #ff6666 !important;
+}
+
 .fc-dayGridMonth-button {
   background-color: #bae8e8 !important;
   color: #4b5183 !important;
@@ -120,10 +127,6 @@
     line-height: 1;
   }
 
-  .fc-header-toolbar {
-    margin-top: 10px;
-  }
-
   .fc-CalendarButton-button {
     width: 42px; 
     height: 42px;
@@ -134,48 +137,44 @@
     height: 35px;
   }
 
-  .ja-holidays{
-    font-size: 8px;
-  }
-
-  // 追加
-  .container{
-    width: 420px;
-    padding: 5px 30px 30px 10px;
-    margin: 5px 25px 25px 10px;
-  }
-  // 追加 25
-  .fc-daygrid-day-top {
-    height: 25px;
-  }
-  
-  .fc-daygrid-day-bg {
-    height: 12px;
-  }
-}
-
-@media (max-width: 375px) {
-  .fc-toolbar-chunk {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-  .fc-toolbar-chunk button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 5px 5px;
-  }
-
-  .fc-toolbar-chunk button i {
-    line-height: 1;
+  .holiday{
+    font-size: 10px;
   }
 
   .fc-header-toolbar {
     margin-top: 10px;
   }
+  .fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 18px;
+  }
 
+  .fc .fc-toolbar.fc-footer-toolbar {
+    margin-top: 18px;
+  }
+
+  .fc-daygrid-day-events{
+    height: 51px;
+  }
+  .fc-daygrid-day-top {
+    height: 20px;
+  }
+  
+  .fc-daygrid-day-bg {
+    height: 0px;
+  }
+
+  .fc .fc-daygrid-day-top {
+    display: block;
+    flex-direction: row;
+  }
+
+  .container{
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
+
+@media (max-width: 375px) {
   .fc-CalendarButton-button {
     width: 45px; 
     height: 45px;
@@ -185,26 +184,8 @@
     margin-right: 60px;
     height: 42px;
   }
-
-  .ja-holidays{
-    font-size: 8px;
-  }
-
-  // 追加
-  .container{
-    width: 420px;
-    padding: 5px 25px 25px 10px;
-    margin: 5px 25px 25px 10px;
-  }
-  // 追加
-  .fc-daygrid-day-top {
-    height: 25px;
-  }
-  // 変更
-  .fc-daygrid-day-bg {
-    height: 27px;
-  }  
 }
+
 
 @media (min-width: 769px) {
   .fc-toolbar-chunk {
@@ -272,13 +253,56 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
 
+  .fc .fc-daygrid-day-top {
+    display: block;
+    flex-direction: row;
+  }
 
+  .fc-daygrid-day-events{
+    height: 56px;
+  }
   // 追加
   .fc-daygrid-day-top {
-    height: 23px;
+    height: 20px;
   }
   // 変更
   .fc-daygrid-day-bg {
     height: 25px;
   }
+
+  .fc-daygrid-day-top {
+    height: 24px;
+  }
+  
+  .fc-daygrid-day-bg {
+    height: 0px;
+  }
 }
+
+.fc-dayGridMonth-view .fc-event {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  background-color: #94a1b2 !important;
+  color: #ffffff !important;
+  font-size: 10px;
+  padding: 0px;
+  margin: 1px 0px 0px 0px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+  margin-right: 1px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
+  margin-left: 1px;
+}
+
+.fc-listMonth-view {
+  color: #4b5183;
+}
+
+// .fc .fc-list-event-dot {
+//   border-color: #bae8e8;
+// }
