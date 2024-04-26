@@ -12,8 +12,8 @@
             <%= f.label :title, "タイトル" %>
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力が必須です">
               <i class="fa-solid fa-circle-exclamation tooltip-icon"></i>
-            </span>
-            <%= f.text_field :title, class: "form-control" %>
+            </span>      
+            <%= f.text_field :title, id: "title", class: "form-control", maxlength: "12" %>
           </div>
           <%= f.hidden_field :start_date, id: "start_date" %>
           <div class="mb-3">
@@ -38,7 +38,7 @@
           <%= f.hidden_field :notify_date, id: "notify_date" %>
           <div class="mb-3" id="notify-time-input" style="display:none;">
             <%= f.label :notify_time, "通知時間", class: "form-label" %>
-            <%= f.time_field :notify_time, class: "form-control", value: "06:00" %>
+            <%= f.time_field :notify_time, id: "notify_time", class: "form-control", value: "06:00" %>
           </div>
           <%= f.submit "保存", class: "btn btn-primary" %>
         <% end %>
