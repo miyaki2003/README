@@ -22,6 +22,13 @@
   }
 }
 
+.fc-daygrid-day-top .holiday-number,
+.fc-scrollgrid-sync-inner .fc-col-header-cell-cushion .holiday-number,
+.fc-list-day-cushion .holiday-number,
+.fc-daygrid-day-number.holiday-number {
+    color: #ff6666 !important;
+}
+
 .fc-dayGridMonth-button {
   background-color: #bae8e8 !important;
   color: #4b5183 !important;
@@ -272,7 +279,7 @@
   }
 }
 
-.fc-event {
+.fc-dayGridMonth-view .fc-event {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -281,5 +288,21 @@
   color: #ffffff !important;
   font-size: 10px;
   padding: 0px;
-  margin: 0px;
+  margin: 1px 0px 0px 0px;
 }
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+  margin-right: 1px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
+  margin-left: 1px;
+}
+
+.fc-listMonth-view {
+  color: #4b5183;
+}
+
+// .fc .fc-list-event-dot {
+//   border-color: #bae8e8;
+// }

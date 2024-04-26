@@ -1,15 +1,15 @@
 class EventsController < ApplicationController
   def index
-    #@events = current_user.events
-    @events = Event.all
+    @events = current_user.events
+    #@events = Event.all
     @event = Event.new
   end
 
   def create
-    #@event = current_user.events.build(event_params)
-    @event = Event.new(event_params)
+    @event = current_user.events.build(event_params)
+    #@event = Event.new(event_params)
 
-    #@event.line_user_id = current_user.line_user_id
+    @event.line_user_id = current_user.line_user_id
     set_datetime_params
 
     if @event.valid?
@@ -25,8 +25,8 @@ class EventsController < ApplicationController
   end
 
   def details
-    #@event = current_user.events.find_by(id: params[:id])
-    @event = Event.find(params[:id])
+    @event = current_user.events.find_by(id: params[:id])
+    #@event = Event.find(params[:id])
       render json: {
       id: @event.id,
       title: @event.title,
@@ -38,8 +38,8 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    #@event = current_user.events.find_by(id: params[:id])
-    @event = Event.find(params[:id])
+    @event = current_user.events.find_by(id: params[:id])
+    #@event = Event.find(params[:id])
     if @event.nil?
       render json: { error: "Event not found." }, status: :not_found
     elsif @event.destroy
