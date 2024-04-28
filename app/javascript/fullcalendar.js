@@ -12,26 +12,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 document.addEventListener('DOMContentLoaded', async function() {
   // ツールチップ
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+  let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  let tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
   });
-  const lastClickedElement = null;
-  const calendarEl = document.getElementById('calendar');
-  const modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+  let lastClickedElement = null;
+  let calendarEl = document.getElementById('calendar');
+
+  let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
     keyboard: true
   });
-  const addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'), {
+
+
+  let addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'), {
     keyboard: true
   });
 
  // 祝日
- const holidays = {};
+ let holidays = {};
   
  async function fetchHolidays(year) {
-   const url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
+   let url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
    try {
-     const response = await fetch(url);
+     let response = await fetch(url);
      if (!response.ok) {
        throw new Error('Failed to fetch holidays');
      }
@@ -43,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async function() {
  }
 
  async function fetchAndStoreHolidays(startYear, endYear) {
-   for (const year = startYear; year <= endYear; year++) {
+   for (let year = startYear; year <= endYear; year++) {
        holidays[year] = await fetchHolidays(year);
    }
  }
@@ -61,12 +64,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   });
 
-  const form = document.getElementById('event-form');
+  let form = document.getElementById('event-form');
 
-  const notifySwitch = document.getElementById('line-notify-switch');
-  const notifyTimeInput = document.getElementById('notify-time-input');
-  const notifyTime = document.getElementById('notify_time');
-  const eventForm = document.getElementById('event-form');
+  let notifySwitch = document.getElementById('line-notify-switch');
+  let notifyTimeInput = document.getElementById('notify-time-input');
+  let notifyTime = document.getElementById('notify_time');
+  let eventForm = document.getElementById('event-form');
 
   function toggleNotifyTimeInput() {
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   toggleNotifyTimeInput();
 
   if (calendarEl) {
-    const calendar = new Calendar(calendarEl, {
+    let calendar = new Calendar(calendarEl, {
       timeZone: 'Asia/Tokyo',
       height: "auto",
       plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
@@ -97,10 +100,10 @@ document.addEventListener('DOMContentLoaded', async function() {
           click: function() {
             // window.location.href = 'http://localhost:3000/';
           }
-        },
-        
+        },   
         CalendarButton: {
           click: function() {
+            console.log('abc')
             addEventModal.show();
           }
         }
@@ -108,14 +111,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       // 祝日
       dayCellDidMount: function(info) {
-        const date = info.date;
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const dateStr = `${year}-${month}-${day}`;
+        let date = info.date;
+        let year = date.getFullYear();
+        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+        let day = date.getDate().toString().padStart(2, '0');
+        let dateStr = `${year}-${month}-${day}`;
     
         if (holidays[year] && holidays[year][dateStr]) {
-            const dayNumberLink = info.el.querySelector('.fc-daygrid-day-number');
+            let dayNumberLink = info.el.querySelector('.fc-daygrid-day-number');
             if (dayNumberLink) {
                 dayNumberLink.classList.add('holiday-number');
             }
@@ -206,18 +209,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     form.addEventListener('submit', function(event) {
       event.preventDefault();
-      const formData = new FormData(form);
+      let formData = new FormData(form);
   
       if (notifySwitch.checked) {
-        const notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time'));
+        let notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time'));
         if (notifyDateTime <= new Date()) {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
       }
 
-    const searchParams = new URLSearchParams();
-    for (const pair of formData.entries()) {
+    let searchParams = new URLSearchParams();
+    for (let pair of formData.entries()) {
       searchParams.append(pair[0], pair[1]);
     }
 
@@ -244,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     document.getElementById('delete-event').addEventListener('click', function() {
-      const eventId = this.getAttribute('data-event-id');
+      let eventId = this.getAttribute('data-event-id');
         fetch(`/events/${eventId}`, {
           method: 'DELETE',
           headers: {
@@ -262,25 +265,25 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
-    const lineButtonEl = document.querySelector('.fc-lineButton-button');
+    let lineButtonEl = document.querySelector('.fc-lineButton-button');
     if (lineButtonEl) {
-      const icon = document.createElement("i");
+      let icon = document.createElement("i");
       icon.className = "fa-brands fa-line";
       icon.style.fontSize = '40px';
       lineButtonEl.appendChild(icon);
     }
 
-    const CustomButtonEl = document.querySelector('.fc-CustomButton-button');
+    let CustomButtonEl = document.querySelector('.fc-CustomButton-button');
     if (CustomButtonEl) {
-      const icon = document.createElement("i");
+      let icon = document.createElement("i");
       icon.className = "fa-solid fa-gear";
       icon.style.fontSize = '25px';
       CustomButtonEl.appendChild(icon);
     }
 
-    const CalendarButtonEl = document.querySelector('.fc-CalendarButton-button');
+    let CalendarButtonEl = document.querySelector('.fc-CalendarButton-button');
     if (CalendarButtonEl) {
-      const icon = document.createElement("i");
+      let icon = document.createElement("i");
       icon.className = "fa-regular fa-calendar-plus";
       icon.style.fontSize = '25px';
       CalendarButtonEl.appendChild(icon);
@@ -344,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
   
   function updateNotificationTime(data) {
-    const notifyTimeElement = document.getElementById('eventNotifyTime');
+    let notifyTimeElement = document.getElementById('eventNotifyTime');
     if (data.line_notify) {
       notifyTimeElement.style.display = 'block';
       notifyTimeElement.textContent = `通知時間： ${formatTime(data.notify_time)}`;
@@ -354,7 +357,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
   
   function showModal(data) {
-    const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+    let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
     modal.show();
     document.getElementById('delete-event').setAttribute('data-event-id', data.id);
   }
