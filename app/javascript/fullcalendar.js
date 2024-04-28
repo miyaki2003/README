@@ -12,18 +12,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 document.addEventListener('DOMContentLoaded', async function() {
   // ツールチップ
-  let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  let tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
   });
-  let lastClickedElement = null;
-  let calendarEl = document.getElementById('calendar');
-  let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+  const lastClickedElement = null;
+  const calendarEl = document.getElementById('calendar');
+  const modal = new bootstrap.Modal(document.getElementById('eventModal'), {
+    keyboard: true
+  });
+  const addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'), {
     keyboard: true
   });
 
  // 祝日
- let holidays = {};
+ const holidays = {};
   
  async function fetchHolidays(year) {
    const url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
@@ -40,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async function() {
  }
 
  async function fetchAndStoreHolidays(startYear, endYear) {
-   for (let year = startYear; year <= endYear; year++) {
+   for (const year = startYear; year <= endYear; year++) {
        holidays[year] = await fetchHolidays(year);
    }
  }
@@ -58,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   });
 
-  let form = document.getElementById('event-form');
+  const form = document.getElementById('event-form');
 
   const notifySwitch = document.getElementById('line-notify-switch');
   const notifyTimeInput = document.getElementById('notify-time-input');
@@ -74,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   toggleNotifyTimeInput();
 
   if (calendarEl) {
-    let calendar = new Calendar(calendarEl, {
+    const calendar = new Calendar(calendarEl, {
       timeZone: 'Asia/Tokyo',
       height: "auto",
       plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
@@ -82,9 +85,26 @@ document.addEventListener('DOMContentLoaded', async function() {
       locale: 'ja',
       initialView: 'dayGridMonth',
       selectable: true,
-      eventSources: [
-        '/events.json'
-      ],
+      eventSources: ['/events.json'],
+
+      customButtons: {
+        lineButton: {
+          click: function() {
+            window.location.href = 'https://line.me/R/ti/p/%40083jbanw';
+          }
+        },
+        CustomButton: {
+          click: function() {
+            // window.location.href = 'http://localhost:3000/';
+          }
+        },
+        
+        CalendarButton: {
+          click: function() {
+            addEventModal.show();
+          }
+        }
+      },
 
       // 祝日
       dayCellDidMount: function(info) {
@@ -95,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const dateStr = `${year}-${month}-${day}`;
     
         if (holidays[year] && holidays[year][dateStr]) {
-            let dayNumberLink = info.el.querySelector('.fc-daygrid-day-number');
+            const dayNumberLink = info.el.querySelector('.fc-daygrid-day-number');
             if (dayNumberLink) {
                 dayNumberLink.classList.add('holiday-number');
             }
@@ -111,11 +131,34 @@ document.addEventListener('DOMContentLoaded', async function() {
       },
 
       dateClick: function(info) {
-        document.getElementById('start_date').value = info.dateStr;
-        document.getElementById('end_date').value = info.dateStr;
-        document.getElementById('notify_date').value = info.dateStr;
+        fetch(`/events?date=${info.dateStr}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(events => {
+          if (events.length >= 4) {
+            swal({
+              title: "予定の上限です",
+              text: "この日にはすでに4件のイベントが存在します",
+              icon: "error",
+              buttons: {
+                confirm: "OK"
+              },
+              dangerMode: true,
+              className: "custom-swal"
+            });
+          } else {
+            document.getElementById('start_date').value = info.dateStr;
+            document.getElementById('end_date').value = info.dateStr;
+            document.getElementById('notify_date').value = info.dateStr;
 
-        handleDateClick(info);
+            handleDateClick(info);
+          }
+        })
+        .catch(error => console.error('Error:', error));
       },
 
       eventClick: function(info) {
@@ -125,24 +168,6 @@ document.addEventListener('DOMContentLoaded', async function() {
           lastClickedElement = null;
         }
         fetchEventDetails(info.event.id);
-      },
-
-      customButtons: {
-        lineButton: {
-          click: function() {
-            window.location.href = 'https://line.me/R/ti/p/%40083jbanw';
-          }
-        },
-        CustomButton: {
-          click: function() {
-            // window.location.href = 'http://localhost:3000/';
-          }
-        },
-        CalendarButton: {
-          click: function() {
-            // window.location.href = 'http://localhost:3000/';
-          }
-        },
       },
 
       headerToolbar: {
@@ -186,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (notifySwitch.checked) {
         const notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time'));
         if (notifyDateTime <= new Date()) {
-          alert('通知時間は現在時刻よりも後に設定してください。');
+          alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
       }
@@ -207,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       .then(response => response.json())
       .then(data => {
         if (data.errors) {
-          alert('エラーが発生しました。');
+          alert('エラーが発生しました');
         } else {
           
           calendar.refetchEvents();
@@ -230,14 +255,14 @@ document.addEventListener('DOMContentLoaded', async function() {
           if (response.ok) {
             calendar.refetchEvents();
           } else {
-            alert('イベントの削除に失敗しました。');
+            alert('イベントの削除に失敗しました');
           }
         }).catch(error => {
           console.error('Error:', error);
         });
     });
 
-    let lineButtonEl = document.querySelector('.fc-lineButton-button');
+    const lineButtonEl = document.querySelector('.fc-lineButton-button');
     if (lineButtonEl) {
       const icon = document.createElement("i");
       icon.className = "fa-brands fa-line";
@@ -245,7 +270,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       lineButtonEl.appendChild(icon);
     }
 
-    let CustomButtonEl = document.querySelector('.fc-CustomButton-button');
+    const CustomButtonEl = document.querySelector('.fc-CustomButton-button');
     if (CustomButtonEl) {
       const icon = document.createElement("i");
       icon.className = "fa-solid fa-gear";
@@ -253,7 +278,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       CustomButtonEl.appendChild(icon);
     }
 
-    let CalendarButtonEl = document.querySelector('.fc-CalendarButton-button');
+    const CalendarButtonEl = document.querySelector('.fc-CalendarButton-button');
     if (CalendarButtonEl) {
       const icon = document.createElement("i");
       icon.className = "fa-regular fa-calendar-plus";
