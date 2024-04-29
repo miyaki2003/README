@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     keyboard: true
   });
 
-
   let addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'), {
     keyboard: true
   });
@@ -63,6 +62,17 @@ document.addEventListener('DOMContentLoaded', async function() {
       document.getElementById('line-notify-switch').click();
     }
   });
+// モーダルリセット2
+  document.getElementById('addEventModal').addEventListener('hidden.bs.modal', function () {
+    console.log("モーダルが閉じました。");
+    document.getElementById('title').value = '';
+    document.getElementById('start_date').value = '18:00';
+    document.getElementById('end_date').value = '23:59'; 
+    document.getElementById('notify_time').value = '06:00';
+    if (document.getElementById('line-notify-switch').checked) {
+      document.getElementById('line-notify-switch').click();
+    }
+  });
 
   let form = document.getElementById('event-form');
 
@@ -77,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   notifySwitch.addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
+  $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInput);
   toggleNotifyTimeInput();
 
   if (calendarEl) {
@@ -103,7 +114,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         },   
         CalendarButton: {
           click: function() {
-            console.log('abc')
             addEventModal.show();
           }
         }
