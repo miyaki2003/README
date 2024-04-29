@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     keyboard: true
   });
 
+  let settingEventModal = new bootstrap.Modal(document.getElementById('settingEventModal'), {
+    keyboard: true
+  });
+
  // 祝日
  let holidays = {};
   
@@ -83,8 +87,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   function toggleNotifyTimeInput() {
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
+    // ここ
+    console.log('スイッチが切り替わりました: ' + (notifySwitch.checked ? 'ON' : 'OFF'));
   }
 
+  // ここ
   notifySwitch.addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInput);
@@ -109,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         },
         CustomButton: {
           click: function() {
-            // window.location.href = 'http://localhost:3000/';
+            settingEventModal.show();
           }
         },   
         CalendarButton: {
