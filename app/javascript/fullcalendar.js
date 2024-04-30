@@ -66,9 +66,9 @@ document.addEventListener('DOMContentLoaded', async function() {
       document.getElementById('line-notify-switch').click();
     }
   });
-// モーダルリセット2
+// イベントリセット
   document.getElementById('addEventModal').addEventListener('hidden.bs.modal', function () {
-    console.log("モーダルが閉じました。");
+    console.log("モーダルが閉じました");
     document.getElementById('title').value = '';
     document.getElementById('start_date').value = '18:00';
     document.getElementById('end_date').value = '23:59'; 
@@ -80,22 +80,36 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   let form = document.getElementById('event-form');
 
-  let notifySwitch = document.getElementById('line-notify-switch');
-  let notifyTimeInput = document.getElementById('notify-time-input');
+
   let notifyTime = document.getElementById('notify_time');
-  let eventForm = document.getElementById('event-form');
+
+
+  let notifyTimeAdd = document.getElementById('notify_time-add');
+  // 不要
+  // let eventForm = document.getElementById('event-form');
 
   function toggleNotifyTimeInput() {
+    let notifySwitch = document.getElementById('line-notify-switch');
+    let notifyTimeInput = document.getElementById('notify-time-input');
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
-    // ここ
-    console.log('スイッチが切り替わりました: ' + (notifySwitch.checked ? 'ON' : 'OFF'));
+    console.log('スイッチ: ' + (notifySwitch.checked ? 'ON' : 'OFF'));
   }
 
-  // ここ
-  notifySwitch.addEventListener('change', toggleNotifyTimeInput);
+  function toggleNotifyTimeInputAdd() {
+    let notifySwitchAdd = document.getElementById('line-notify-switch-add');
+    let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
+    notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
+    console.log('スイッチ: ' + (notifySwitchAdd.checked ? 'ON' : 'OFF'));
+  }
+
+  document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
-  $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInput);
-  toggleNotifyTimeInput();
+
+  // AddEvent Modal用のスイッチリスナー
+  document.getElementById('line-notify-switch-add').addEventListener('change', toggleNotifyTimeInputAdd);
+  $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
+
+  
 
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
@@ -263,6 +277,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       .catch(error => console.error('Error:', error));
     });
 
+    // イベント削除
     document.getElementById('delete-event').addEventListener('click', function() {
       let eventId = this.getAttribute('data-event-id');
         fetch(`/events/${eventId}`, {
@@ -306,6 +321,15 @@ document.addEventListener('DOMContentLoaded', async function() {
       CalendarButtonEl.appendChild(icon);
     }
   }
+
+  // $('#editEventBtn').on('click', function() {
+  //     $('#eventDetailsModal').modal('hide');
+  //     $('#eventDetailsModal').on('hidden.bs.modal', function () {
+  //       $('#editEventModal').modal('show');
+  //       $('#eventDetailsModal').off('hidden.bs.modal');
+  //     });
+  // });
+
   // datechlick
   function handleDateClick(info) {
     if (window.matchMedia("(pointer: coarse)").matches) {
