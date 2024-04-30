@@ -13,9 +13,9 @@ Rails.application.routes.draw do
 
   get 'liff', to: 'liff#index'
 
-  get '/terms', to: 'staticpages#terms'
-  
-  get '/privacy_policy', to: 'staticpages#privacy_policy'
+  get '/staticpages/privacy_policy', to: 'staticpages#privacy_policy'
+
+  get '/staticpages/terms', to: 'staticpages#terms'
 
   resources :events do
     member do
