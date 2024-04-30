@@ -109,6 +109,44 @@
   color: #4b5183 !important;
 }
 
+
+
+
+.fc-dayGridMonth-view .fc-event {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  background-color: #94a1b2 !important;
+  color: #ffffff !important;
+  font-size: 10px;
+  padding: 0px;
+  margin: 1px 0px 0px 0px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+  margin-right: 1px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
+  margin-left: 1px;
+}
+
+.fc-listMonth-view {
+  color: #4b5183;
+}
+
+
+
+.custom-swal .swal-button--confirm {
+  background-color: #ff6666;
+}
+
+// リストのボタン
+.fc .fc-list-event-dot {
+  border-color: #94a1b2;
+}
+
 @media (max-width: 450px) {
   .fc-toolbar-chunk {
     display: flex;
@@ -279,30 +317,22 @@
   }
 }
 
-.fc-dayGridMonth-view .fc-event {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  background-color: #94a1b2 !important;
-  color: #ffffff !important;
-  font-size: 10px;
-  padding: 0px;
-  margin: 1px 0px 0px 0px;
-}
 
-.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
-  margin-right: 1px;
-}
 
-.fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
-  margin-left: 1px;
-}
+// .modal-dialog.bottom-slide {
+//   transition: transform 0.3s ease-out;
+//   transform: translateY(100%);
+//   position: fixed;
+//   margin: 0;
+//   bottom: 0;
+//   right: 0;
+//   left: 0;
+//   width: 100%;
+// }
 
-.fc-listMonth-view {
-  color: #4b5183;
-}
-
-// .fc .fc-list-event-dot {
-//   border-color: #bae8e8;
+// .modal.show .modal-dialog.bottom-slide {
+//   transform: translateY(0);
+// }
+// .modal-content {
+//   margin: 10px 10px 10px 10px;
 // }
