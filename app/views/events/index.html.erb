@@ -5,5 +5,7 @@
 
 <%= render 'form', event: @event %>
 <%= render 'show', event: @event %>
+<%= render 'add', event: @event %>
+<%= render 'setting', event: @event %>
 
 <%= javascript_include_tag 'fullcalendar', "data-turbo-track": "reload", type: "module" %>

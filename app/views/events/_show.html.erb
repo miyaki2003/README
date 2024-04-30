@@ -1,5 +1,5 @@
 <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="eventDetailsModalLabel">イベント詳細</h5>
@@ -10,11 +10,13 @@
         <p id="eventDetailsStart"></p>
         <p id="eventDetailsEnd"></p>
         <p id="eventNotifyTime" style="display: none;"></p>
+        <div id="eventMemo" style="display: none;">
+          <p>メモ： <span id="memoContent"></span></p>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" id="editEventBtn" class="btn btn-primary">編集</button>
         <button type="button" class="btn btn-danger" id="delete-event" data-bs-dismiss="modal" data-event-id="">削除</button>
-
       </div>
     </div>
   </div>
