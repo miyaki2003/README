@@ -417,6 +417,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('eventDetailsTitle').textContent = `タイトル： ${data.title}`;
     document.getElementById('eventDetailsStart').textContent = `開始時間： ${formatTime(data.start)}`;
     document.getElementById('eventDetailsEnd').textContent = `終了時間： ${data.end ? formatTime(data.end) : '終了時間未設定'}`;
+    let memoElement = document.getElementById('eventMemo');
+    let memoContent = document.getElementById('memoContent');
+    if (data.memo) {
+        memoElement.style.display = 'block';
+        memoContent.textContent = data.memo;
+    } else {
+        memoElement.style.display = 'none';
+    }
     updateNotificationTime(data);
     showModal(data);
   }

@@ -26,6 +26,8 @@
             <%= f.time_field :end_time, class: "form-control", value: "23:59" %>
           </div>
 
+          
+
           <div class="mb-3 d-flex align-items-center justify-content-between">
             <div>
               <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
@@ -39,6 +41,10 @@
           <div class="mb-3" id="notify-time-input" style="display:none;">
             <%= f.label :notify_time, "通知時間", class: "form-label" %>
             <%= f.time_field :notify_time, id: "notify_time", class: "form-control", value: "06:00" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :memo, "メモ" %>
+            <%= f.text_area :memo, class: "form-control", rows: 3 %>
           </div>
           <%= f.submit "保存", class: "btn btn-primary" %>
         <% end %>
