@@ -35,6 +35,12 @@ class EventsController < ApplicationController
     end
   end
 
+  def edit
+    #@event = current_user.events.find_by(id: params[:id])
+    @event = Event.find(params[:id])
+    render json: @event
+  end
+
   def details
     #@event = current_user.events.find_by(id: params[:id])
     @event = Event.find(params[:id])

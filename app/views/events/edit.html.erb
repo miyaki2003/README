@@ -1,0 +1,42 @@
+<div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editEventModalLabel">イベント編集</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with(model: @event, local: true, id: "edit-event-form") do |f| %>
+          <div class="mb-3">
+            <%= f.label :title, "タイトル" %>
+            <%= f.text_field :title, class: "form-control", maxlength: "255" %>
+          </div>
+          <%= f.hidden_field :start_date %>
+          <div class="mb-3">
+            <%= f.label :start_time, "開始時間" %>
+            <%= f.time_field :start_time, class: "form-control" %>
+          </div>
+          <%= f.hidden_field :end_date %>
+          <div class="mb-3">
+            <%= f.label :end_time, "終了時間" %>
+            <%= f.time_field :end_time, class: "form-control" %>
+          </div>
+          <div class="mb-3 d-flex align-items-center justify-content-between">
+            <div>
+              <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
+            </div>
+            <div class="form-check form-switch switch-container">
+              <%= f.check_box :line_notify, class: "form-check-input", id: "line-notify-switch" %>
+            </div>
+          </div>
+          <%= f.hidden_field :notify_date %>
+          <div class="mb-3" id="notify-time-input" style="display: <%= @event.line_notify ? 'block' : 'none' %>;">
+            <%= f.label :notify_time, "通知時間", class: "form-label" %>
+            <%= f.time_field :notify_time, class: "form-control" %>
+          </div>
+          <%= f.submit "更新", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
