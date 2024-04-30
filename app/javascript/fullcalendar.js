@@ -56,6 +56,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   await fetchAndStoreHolidays(2015, 2029);
 
+  // 今日の日付を設定
+  function getFormattedDate(date) {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  }
+  let today = new Date();
+  let formattedDate = getFormattedDate(today);
+
 // モーダルを閉じた時のイベントリセット
   document.getElementById('eventModal').addEventListener('hidden.bs.modal', function () {
     document.getElementById('title').value = '';
@@ -68,44 +78,41 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
 // イベントリセット
   document.getElementById('addEventModal').addEventListener('hidden.bs.modal', function () {
-    console.log("モーダルが閉じました");
-    document.getElementById('title').value = '';
-    document.getElementById('start_date').value = '18:00';
-    document.getElementById('end_date').value = '23:59'; 
-    document.getElementById('notify_time').value = '06:00';
-    if (document.getElementById('line-notify-switch').checked) {
-      document.getElementById('line-notify-switch').click();
+    document.getElementById('title-add').value = '';
+    document.getElementById('event_date-add').value = formattedDate;
+    document.getElementById('start_time-add').value = '18:00';
+    document.getElementById('end_time-add').value = '23:59'; 
+    document.getElementById('notify_time-add').value = '06:00';
+    if (document.getElementById('line-notify-switch-add').checked) {
+      document.getElementById('line-notify-switch-add').click();
     }
   });
 
   let form = document.getElementById('event-form');
+  let addForm = document.getElementById('event-form-add');
 
 
+  let notifySwitch = document.getElementById('line-notify-switch');
+  let notifyTimeInput = document.getElementById('notify-time-input');
+  let notifySwitchAdd = document.getElementById('line-notify-switch-add');
+  let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
   let notifyTime = document.getElementById('notify_time');
-
-
   let notifyTimeAdd = document.getElementById('notify_time-add');
   // 不要
   // let eventForm = document.getElementById('event-form');
 
   function toggleNotifyTimeInput() {
-    let notifySwitch = document.getElementById('line-notify-switch');
-    let notifyTimeInput = document.getElementById('notify-time-input');
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
-    console.log('スイッチ: ' + (notifySwitch.checked ? 'ON' : 'OFF'));
   }
 
   function toggleNotifyTimeInputAdd() {
-    let notifySwitchAdd = document.getElementById('line-notify-switch-add');
-    let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
     notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
-    console.log('スイッチ: ' + (notifySwitchAdd.checked ? 'ON' : 'OFF'));
   }
 
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
-  // AddEvent Modal用のスイッチリスナー
+  // AddEvent Modal用スイッチ
   document.getElementById('line-notify-switch-add').addEventListener('change', toggleNotifyTimeInputAdd);
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
 
@@ -250,10 +257,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
       }
 
-    let searchParams = new URLSearchParams();
-    for (let pair of formData.entries()) {
-      searchParams.append(pair[0], pair[1]);
-    }
+      let searchParams = new URLSearchParams();
+      for (let pair of formData.entries()) {
+        searchParams.append(pair[0], pair[1]);
+      }
 
       fetch(form.action, {
         method: 'POST',
@@ -272,6 +279,45 @@ document.addEventListener('DOMContentLoaded', async function() {
           calendar.refetchEvents();
           form.reset();
           modal.hide();
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+
+    // 追加イベントフォームの送信処理
+    addForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      let formData = new FormData(addForm);
+
+      if (document.getElementById('line-notify-switch-add').checked) {
+        let notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time-add'));
+        if (notifyDateTime <= new Date()) {
+          alert('通知時間は現在時刻よりも後に設定してください');
+          return;
+        }
+      }
+
+      let searchParams = new URLSearchParams();
+      for (let pair of formData.entries()) {
+        searchParams.append(pair[0], pair[1]);
+      }
+
+      fetch(addForm.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: searchParams
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.errors) {
+          alert('エラーが発生しました');
+        } else {
+          calendar.refetchEvents();
+          addForm.reset();
+          addEventModal.hide();
         }
       })
       .catch(error => console.error('Error:', error));
@@ -322,13 +368,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }
 
-  // $('#editEventBtn').on('click', function() {
-  //     $('#eventDetailsModal').modal('hide');
-  //     $('#eventDetailsModal').on('hidden.bs.modal', function () {
-  //       $('#editEventModal').modal('show');
-  //       $('#eventDetailsModal').off('hidden.bs.modal');
-  //     });
-  // });
+
 
   // datechlick
   function handleDateClick(info) {
