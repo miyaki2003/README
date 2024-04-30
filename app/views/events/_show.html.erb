@@ -12,28 +12,10 @@
         <p id="eventNotifyTime" style="display: none;"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-target="#editEventModal" data-bs-toggle="modal">編集</button>
+        <button type="button" id="editEventBtn" class="btn btn-primary" data-bs-target="#editEventModal" data-bs-toggle="modal" data-bs-dismiss="modal">編集</button>
         <button type="button" class="btn btn-danger" id="delete-event" data-bs-dismiss="modal" data-event-id="">削除</button>
       </div>
     </div>
   </div>
 </div>
-
-<div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editEventModalLabel">イベント編集</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-        
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-target="#eventDetailsModal" data-bs-toggle="modal">保存</button>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render 'events/edit', event: @event %>
