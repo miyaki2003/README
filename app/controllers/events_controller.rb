@@ -8,7 +8,8 @@ class EventsController < ApplicationController
     else
       @events = current_user.events
       #@events = Event.all
-      @event = Event.new
+      #@event = Event.new
+      @event = current_user.events.build
     end
   end
 
