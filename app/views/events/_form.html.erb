@@ -25,9 +25,6 @@
             <%= f.label :end_time, "終了時間" %>
             <%= f.time_field :end_time, class: "form-control", value: "23:59" %>
           </div>
-
-          
-
           <div class="mb-3 d-flex align-items-center justify-content-between">
             <div>
               <%= f.label :line_notify, "LINE通知", class: "form-check-label" %>
@@ -36,7 +33,6 @@
               <%= f.check_box :line_notify, class: "form-check-input", id: "line-notify-switch" %>
             </div>
           </div>
-
           <%= f.hidden_field :notify_date, id: "notify_date" %>
           <div class="mb-3" id="notify-time-input" style="display:none;">
             <%= f.label :notify_time, "通知時間", class: "form-label" %>
