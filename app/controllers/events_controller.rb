@@ -1,12 +1,14 @@
 class EventsController < ApplicationController
   def index
-    @events = current_user.events
-    #@events = Event.all
-    #@event = Event.new
     if params[:date]
       date = Date.parse(params[:date])
-      events = Event.where("DATE(start_time) = ?", date)
+      events = current_user.events.where("DATE(start_time) = ?", date)
+      #events = Event.where("DATE(start_time) = ?", date)
       render json: events, status: :ok
+    else
+      @events = current_user.events
+      #@events = Event.all
+      #@event = Event.new
     end
   end
 
