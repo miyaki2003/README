@@ -35,10 +35,14 @@ class EventsController < ApplicationController
         schedule_line_notification if params[:event][:line_notify] == "1"
         render json: @event, status: :created
       else
-        render json: @event.errors, status: :unprocessable_entity
+        #render json: @event.errors, status: :unprocessable_entity
+        Rails.logger.info(@event.errors.full_messages)
+        render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
       end
     else
-      render json: @event.errors, status: :unprocessable_entity
+      #render json: @event.errors, status: :unprocessable_entity
+      Rails.logger.info(@event.errors.full_messages)
+      render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
