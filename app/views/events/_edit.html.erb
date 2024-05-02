@@ -9,7 +9,7 @@
         <%= form_with(model: @event, local: true, id: "edit-event-form") do |f| %>
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
-            <%= f.text_field :title, class: "form-control", maxlength: "255" %>
+            <%= f.text_field :title, class: "form-control", maxlength: "12" %>
           </div>
           <%= f.hidden_field :start_date %>
           <div class="mb-3">
