@@ -31,6 +31,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     keyboard: true
   });
 
+  let eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'), {
+    keyboard: true
+  });
+
+  let editEventModal = new bootstrap.Modal(document.getElementById('editEventModal'), {
+    keyboard: true
+  });
+
+  
  // 祝日
  let holidays = {};
   
@@ -343,6 +352,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
+    // 編集モーダル
+      if (eventDetailsModal && editEventModal) {
+          document.getElementById('editEventBtn').addEventListener('click', function() {
+            // 詳細データから編集フォームへのデータ転送
+            document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
+            document.getElementById('edit-start_time').value = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
+            document.getElementById('edit-end_time').value = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
+
+            // オプションで通知時間と通知設定を転送
+            let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
+            document.getElementById('edit-notify_time').value = notifyTimeDisplay !== 'none' ? document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '') : '';
+
+            let lineNotifyCheckbox = document.getElementById('edit-line-notify-switch');
+            lineNotifyCheckbox.checked = notifyTimeDisplay !== 'none';
+
+            let memoContent = document.getElementById('memoContent').textContent;
+            document.getElementById('edit-memo').value = memoContent; 
+
+            eventDetailsModal.hide();
+            editEventModal.show();
+          });
+      } else {
+          console.error('Modal elements not found in the DOM');
+      }
+  
+    
     let lineButtonEl = document.querySelector('.fc-lineButton-button');
     if (lineButtonEl) {
       let icon = document.createElement("i");
@@ -367,8 +402,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       CalendarButtonEl.appendChild(icon);
     }
   }
-
-
 
   // datechlick
   function handleDateClick(info) {
@@ -446,8 +479,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
   
   function showModal(data) {
-    let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-    modal.show();
+    eventDetailsModal.show();
     document.getElementById('delete-event').setAttribute('data-event-id', data.id);
   }
   
