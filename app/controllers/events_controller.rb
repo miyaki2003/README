@@ -36,12 +36,10 @@ class EventsController < ApplicationController
         render json: @event, status: :created
       else
         #render json: @event.errors, status: :unprocessable_entity
-        Rails.logger.info(@event.errors.full_messages)
         render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
       end
     else
       #render json: @event.errors, status: :unprocessable_entity
-      Rails.logger.info(@event.errors.full_messages)
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
   end
