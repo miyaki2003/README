@@ -353,30 +353,32 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // 編集モーダル
-      if (eventDetailsModal && editEventModal) {
-          document.getElementById('editEventBtn').addEventListener('click', function() {
-            
-            document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
-            document.getElementById('edit-start_time').value = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
-            document.getElementById('edit-end_time').value = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
+    if (eventDetailsModal && editEventModal) {
+        document.getElementById('editEventBtn').addEventListener('click', function() {
 
-            let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
-            document.getElementById('edit-notify_time').value = notifyTimeDisplay !== 'none' ? document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '') : '';
+          document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
+          document.getElementById('edit-start_time').value = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
+          document.getElementById('edit-end_time').value = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
 
-            let lineNotifyCheckbox = document.getElementById('edit-line-notify-switch');
-            lineNotifyCheckbox.checked = notifyTimeDisplay !== 'none';
+          document.getElementById('edit-memo').value = '';
+          let memoContent = document.getElementById('memoContent').textContent.trim();
+          document.getElementById('edit-memo').value = memoContent;
+          
+          let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
+          document.getElementById('edit-notify_time').value = notifyTimeDisplay !== 'none' ? document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '') : '';
 
-            let memoContent = document.getElementById('memoContent').textContent;
-            document.getElementById('edit-memo').value = memoContent; 
+          let lineNotifyCheckbox = document.getElementById('edit-line-notify-switch');
+          lineNotifyCheckbox.checked = notifyTimeDisplay !== 'none';
 
-            eventDetailsModal.hide();
-            editEventModal.show();
-          });
-      } else {
-          console.error('Modal elements not found in the DOM');
-      }
-  
-    
+          eventDetailsModal.hide();
+          editEventModal.show();
+        });
+    } else {
+        console.error('Modal elements not found in the DOM');
+    }
+      
+      
+
     let lineButtonEl = document.querySelector('.fc-lineButton-button');
     if (lineButtonEl) {
       let icon = document.createElement("i");
