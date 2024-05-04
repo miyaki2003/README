@@ -353,15 +353,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // 編集モーダル
-
     document.getElementById('editEventBtn').addEventListener('click', function() {
+
 
       document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
       document.getElementById('edit-start_time').value = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       document.getElementById('edit-end_time').value = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
 
       let memoContent = document.getElementById('memoContent').textContent.trim();
-      document.getElementById('memoContent').value = memoContent;
+      document.getElementById('edit-memo').value = memoContent;
           
       let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
       document.getElementById('edit-notify_time').value = notifyTimeDisplay !== 'none' ? document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '') : '';
@@ -375,10 +375,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
-      document.getElementById('memoContent').value = '';
+      document.getElementById('memoContent').textContent = '';
     });
 
-
+  
     let lineButtonEl = document.querySelector('.fc-lineButton-button');
     if (lineButtonEl) {
       let icon = document.createElement("i");
