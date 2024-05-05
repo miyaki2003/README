@@ -32,7 +32,7 @@
           <%= f.hidden_field :notify_date %>
           <div class="mb-3" id="edit-notify-time-input" style="display: <%= @event.line_notify ? 'block' : 'none' %>;">
             <%= f.label :notify_time, "通知時間", class: "form-label" %>
-            <%= f.time_field :notify_time, id: "edit-notify_time", class: "form-control" %>
+            <%= f.time_field :notify_time, id: "edit-notify_time", class: "form-control", value: '06:00' %>
           </div>
           <div class="mb-3">
             <%= f.label :memo, "メモ" %>
