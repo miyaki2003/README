@@ -119,8 +119,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
   }
 
+  // edit通知時間設定
   function toggleEditNotifyTimeInput() {
-    editNotifyTimeInput.style.display = editNotifySwitch.checked ? 'block' : 'none';
+    if (editNotifySwitch.checked) {
+        editNotifyTimeInput.style.display = 'block';
+        if (!editNotifyTimeInput.value) {
+            editNotifyTimeInput.value = '06:00';
+        }
+    } else {
+        editNotifyTimeInput.style.display = 'none';
+        editNotifyTimeInput.value = '06:00';
+    }
   }
 
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
@@ -133,7 +142,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   // edit　Modal
   editNotifySwitch.addEventListener('change', toggleEditNotifyTimeInput);
   $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
-
   
 
   if (calendarEl) {
@@ -369,17 +377,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       let memoContent = document.getElementById('memoContent').textContent.trim();
       document.getElementById('edit-memo').value = memoContent;
-          
-      let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
-      document.getElementById('edit-notify_time').value = notifyTimeDisplay !== 'none' ? document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '') : '';
 
       let lineNotifyCheckbox = document.getElementById('edit-line-notify-switch');
       lineNotifyCheckbox.checked = notifyTimeDisplay !== 'none';
+          
+      let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
+      
+      if (notifyTimeDisplay !== 'none') {
+        let notifyTimeText = document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '');
+        document.getElementById('edit-notify_time').value = notifyTimeText;
+      } else {
+        document.getElementById('edit-notify_time').value = '06:00';
+      }
 
       eventDetailsModal.hide();
       editEventModal.show();
     });
-
 
     document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
       document.getElementById('memoContent').textContent = '';
