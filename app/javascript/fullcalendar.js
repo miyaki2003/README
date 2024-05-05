@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   let form = document.getElementById('event-form');
   let addForm = document.getElementById('event-form-add');
 
-
+  let editNotifySwitch = document.getElementById('edit-line-notify-switch');
+  let editNotifyTimeInput = document.getElementById('edit-notify-time-input');
   let notifySwitch = document.getElementById('line-notify-switch');
   let notifyTimeInput = document.getElementById('notify-time-input');
   let notifySwitchAdd = document.getElementById('line-notify-switch-add');
@@ -118,12 +119,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
   }
 
+  function toggleEditNotifyTimeInput() {
+    editNotifyTimeInput.style.display = editNotifySwitch.checked ? 'block' : 'none';
+  }
+
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
   // AddEvent Modal用スイッチ
   document.getElementById('line-notify-switch-add').addEventListener('change', toggleNotifyTimeInputAdd);
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
+
+  // edit　Modal
+  editNotifySwitch.addEventListener('change', toggleEditNotifyTimeInput);
+  $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
 
   
 
@@ -354,8 +363,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 編集モーダル
     document.getElementById('editEventBtn').addEventListener('click', function() {
-
-
       document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
       document.getElementById('edit-start_time').value = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       document.getElementById('edit-end_time').value = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
