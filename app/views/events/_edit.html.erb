@@ -6,7 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <%= form_with(model: @event, local: true, id: "edit-event-form") do |f| %>
+        <%= form_with(url: "", method: :patch, local: true, id: "edit-event-form") do |f| %>
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
             <%= f.text_field :title, id: "edit-title", class: "form-control", maxlength: "12" %>
@@ -38,7 +38,7 @@
             <%= f.label :memo, "メモ" %>
             <%= f.text_area :memo, id: "edit-memo", class: "form-control", rows: "3" %>
           </div>
-          <%= f.submit "更新", class: "btn btn-primary" %>
+          <%= f.submit "保存", class: "btn btn-primary" %>
         <% end %>
       </div>
     </div>

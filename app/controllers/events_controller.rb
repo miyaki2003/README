@@ -44,11 +44,14 @@ class EventsController < ApplicationController
     end
   end
 
-  # def edit
-  #   #@event = current_user.events.find_by(id: params[:id])
-  #   @event = Event.find(params[:id])
-  #   @event.notify_time ||= "06:00"
-  # end
+  def update
+    @event = Event.find(params[:id])
+    if @event.update(event_params)
+      # 成功時の処理
+    else
+      # 失敗時の処理
+    end
+  end
 
   def details
     #@event = current_user.events.find_by(id: params[:id])
