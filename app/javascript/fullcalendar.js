@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', async function() {
   let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
   let notifyTime = document.getElementById('notify_time');
   let notifyTimeAdd = document.getElementById('notify_time-add');
+  // 追加
+  let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
+  let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
+
   // 不要
   // let eventForm = document.getElementById('event-form');
 
@@ -119,18 +123,23 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
   }
 
-  // edit通知時間設定
+  // 追加
   function toggleEditNotifyTimeInput() {
-    if (editNotifySwitch.checked) {
-        editNotifyTimeInput.style.display = 'block';
-        if (!editNotifyTimeInput.value) {
-            editNotifyTimeInput.value = '06:00';
-        }
-    } else {
-        editNotifyTimeInput.style.display = 'none';
-        editNotifyTimeInput.value = '06:00';
-    }
+    notifyTimeInputEdit.style.display = notifySwitchEdit.checked ? 'block' : 'none';
   }
+
+  // // edit通知時間設定
+  // function toggleEditNotifyTimeInput() {
+  //   if (editNotifySwitch.checked) {
+  //       editNotifyTimeInput.style.display = 'block';
+  //       if (!editNotifyTimeInput.value) {
+  //           editNotifyTimeInput.value = '06:00';
+  //       }
+  //   } else {
+  //       editNotifyTimeInput.style.display = 'none';
+  //       editNotifyTimeInput.value = '06:00';
+  //   }
+  // }
 
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
@@ -370,29 +379,41 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // 編集モーダル
-    document.getElementById('editEventBtn').addEventListener('click', function() {
+    document.getElementById('editEventBtn').addEventListener('click', function () {
+      let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
+      let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
+    
+      document.getElementById('edit-start_time').value = formatTimeToInputValue(startTimeText);
+      document.getElementById('edit-end_time').value = formatTimeToInputValue(endTimeText);
+    
       document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
-      document.getElementById('edit-start_time').value = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
-      document.getElementById('edit-end_time').value = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
-
       let memoContent = document.getElementById('memoContent').textContent.trim();
       document.getElementById('edit-memo').value = memoContent;
-
-      let lineNotifyCheckbox = document.getElementById('edit-line-notify-switch');
-      lineNotifyCheckbox.checked = notifyTimeDisplay !== 'none';
-          
+    
       let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
-      
+      let notifyTimeField = document.getElementById('edit-notify_time');
+    
       if (notifyTimeDisplay !== 'none') {
         let notifyTimeText = document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '');
-        document.getElementById('edit-notify_time').value = notifyTimeText;
+        notifyTimeField.value = formatTimeToInputValue(notifyTimeText);
       } else {
-        document.getElementById('edit-notify_time').value = '06:00';
+        notifyTimeField.value = '06:00';
       }
+    
+      let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
+      notifySwitchEdit.checked = notifyTimeDisplay !== 'none';
 
       eventDetailsModal.hide();
       editEventModal.show();
     });
+    
+    // 時刻を2桁にゼロパディングする関数
+    function formatTimeToInputValue(timeText) {
+      let [hours, minutes] = timeText.split(':');
+      hours = hours.padStart(2, '0'); // 1桁の時間を2桁に揃える
+      return `${hours}:${minutes}`;
+    }
+    
 
     document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
       document.getElementById('memoContent').textContent = '';
@@ -470,7 +491,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   function updateUIWithEventDetails(data) {
     document.getElementById('eventDetailsTitle').textContent = `タイトル： ${data.title}`;
     document.getElementById('eventDetailsStart').textContent = `開始時間： ${formatTime(data.start)}`;
-    document.getElementById('eventDetailsEnd').textContent = `終了時間： ${data.end ? formatTime(data.end) : '終了時間未設定'}`;
+    document.getElementById('eventDetailsEnd').textContent = `終了時間： ${formatTime(data.end)}`;
     let memoElement = document.getElementById('eventMemo');
     let memoContent = document.getElementById('memoContent');
     if (data.memo) {
