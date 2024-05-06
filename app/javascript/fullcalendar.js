@@ -380,6 +380,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 編集モーダル
     document.getElementById('editEventBtn').addEventListener('click', function () {
+      const eventId = document.getElementById('eventDetailsId').value;
+      const editForm = document.getElementById('edit-event-form');
+      editForm.action = `/events/${eventId}`;
       let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
     
