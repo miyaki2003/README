@@ -21,12 +21,12 @@ class EventsController < ApplicationController
     set_datetime_params
 
     #if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-      #render json: { error: "この日は既に4件のイベントが予定されています。" }, status: :unprocessable_entity
+      #render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
       #return
     #end
 
     if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-      render json: { error: "この日は既に4件のイベントが予定されています。" }, status: :unprocessable_entity
+      render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
       return
     end
 
@@ -47,9 +47,9 @@ class EventsController < ApplicationController
   def update
     @event = Event.find(params[:id])
     if @event.update(event_params)
-      # 成功時の処理
+      render json: @event, status: :ok
     else
-      # 失敗時の処理
+      render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -83,7 +83,7 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :line_notify, :event_date, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time, :memo)
+    params.require(:event).permit(:id, :title, :line_notify, :event_date, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time, :memo)
   end
 
   def set_datetime_params
