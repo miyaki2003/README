@@ -379,10 +379,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // 編集モーダル
+    document.querySelectorAll('.event-item').forEach(item => {
+      item.addEventListener('click', function(event) {
+        const eventId = this.dataset.eventId;
+        fetch(`/events/${eventId}/details`)
+          .then(handleResponse)
+          .then(showEditForm)
+          .catch(handleError);
+      });
+    });
+
     document.getElementById('editEventBtn').addEventListener('click', function () {
-      const eventId = document.getElementById('eventDetailsId').value;
-      const editForm = document.getElementById('edit-event-form');
-      editForm.action = `/events/${eventId}`;
       let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
     
@@ -410,13 +417,67 @@ document.addEventListener('DOMContentLoaded', async function() {
       editEventModal.show();
     });
     
-    // 時刻を2桁にゼロパディングする関数
     function formatTimeToInputValue(timeText) {
       let [hours, minutes] = timeText.split(':');
-      hours = hours.padStart(2, '0'); // 1桁の時間を2桁に揃える
+      hours = hours.padStart(2, '0');
       return `${hours}:${minutes}`;
     }
+
+    document.getElementById('edit-event-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+      const eventId = formData.get('event[id]');
+      console.log("Event ID:", eventId);
+
+      if (!eventId) {
+        console.error("Event ID is missing.");
+        return;
+      }
+
+      const eventData = {};
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+        eventData[key] = value;
+      }
+      submitEventUpdate(eventId, eventData);
+    });
+
+
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    function submitEventUpdate(eventId, eventData) {
+      fetch(`/events/${eventId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(eventData)
+      })
+      .then(handleResponse)
+      .then(handleUpdateSuccess)
+      .catch(handleError);
+    }
+
+    function handleUpdateSuccess(data) {
+      editEventModal.hide();
+    }
+
+    function handleResponse(response) {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }
     
+    function handleError(error) {
+      console.error('Error:', error);
+    }
+
+
+
+
+
 
     document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
       document.getElementById('memoContent').textContent = '';
