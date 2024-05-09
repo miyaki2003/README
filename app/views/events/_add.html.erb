@@ -9,6 +9,8 @@
         <%= form_with(model: event, url: events_path, id: "event-form-add", local: true) do |f| %>
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力が必須です">
+              <i class="fa-solid fa-circle-exclamation tooltip-icon"></i>
             <%= f.text_field :title, id: "title-add", class: "form-control", maxlength: "12" %>
           </div>
           <div class="mb-3">
