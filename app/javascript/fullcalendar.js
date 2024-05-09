@@ -379,17 +379,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // 編集モーダル
-    document.querySelectorAll('.event-item').forEach(item => {
-      item.addEventListener('click', function(event) {
-        const eventId = this.dataset.eventId;
-        fetch(`/events/${eventId}/details`)
-          .then(handleResponse)
-          .then(showEditForm)
-          .catch(handleError);
-      });
-    });
-
     document.getElementById('editEventBtn').addEventListener('click', function () {
+      let eventId = this.getAttribute('data-event-id');
+      console.log('Editing event ID:', eventId); 
       let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
     
@@ -413,6 +405,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
       notifySwitchEdit.checked = notifyTimeDisplay !== 'none';
 
+      document.getElementById('save-event-button').setAttribute('data-event-id', eventId);
+
       eventDetailsModal.hide();
       editEventModal.show();
     });
@@ -423,56 +417,36 @@ document.addEventListener('DOMContentLoaded', async function() {
       return `${hours}:${minutes}`;
     }
 
-    document.getElementById('edit-event-form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const formData = new FormData(this);
-      const eventId = formData.get('event[id]');
-      console.log("Event ID:", eventId);
-
-      if (!eventId) {
-        console.error("Event ID is missing.");
-        return;
-      }
-
-      const eventData = {};
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-        eventData[key] = value;
-      }
-      submitEventUpdate(eventId, eventData);
-    });
-
-
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    function submitEventUpdate(eventId, eventData) {
+    // update
+    document.getElementById('save-event-button').addEventListener('click', function () {
+      let eventId = this.getAttribute('data-event-id');
+      let form = document.getElementById('edit-event-form');
+      let formData = new FormData(form);
+      
+    
       fetch(`/events/${eventId}`, {
         method: 'PATCH',
+        body: formData,
         headers: {
-          'Content-Type': 'application/json',
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify(eventData)
+        }
       })
-      .then(handleResponse)
-      .then(handleUpdateSuccess)
-      .catch(handleError);
-    }
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok.');
+        return response.json();
+      })
+      .then(data => {
+        console.log('Success:', data);
+        $('#editEventModal').modal('hide');
+        calendar.refetchEvents();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('イベントの更新に失敗しました');
+      });
+    });
 
-    function handleUpdateSuccess(data) {
-      editEventModal.hide();
-    }
-
-    function handleResponse(response) {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }
     
-    function handleError(error) {
-      console.error('Error:', error);
-    }
 
 
 
@@ -587,6 +561,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   function showModal(data) {
     eventDetailsModal.show();
     document.getElementById('delete-event').setAttribute('data-event-id', data.id);
+    document.getElementById('editEventBtn').setAttribute('data-event-id', data.id);
   }
   
   function handleEventError(error) {
