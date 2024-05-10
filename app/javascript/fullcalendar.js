@@ -125,19 +125,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputEdit.style.display = notifySwitchEdit.checked ? 'block' : 'none';
   }
 
-  // // edit通知時間設定
-  // function toggleEditNotifyTimeInput() {
-  //   if (editNotifySwitch.checked) {
-  //       editNotifyTimeInput.style.display = 'block';
-  //       if (!editNotifyTimeInput.value) {
-  //           editNotifyTimeInput.value = '06:00';
-  //       }
-  //   } else {
-  //       editNotifyTimeInput.style.display = 'none';
-  //       editNotifyTimeInput.value = '06:00';
-  //   }
-  // }
-
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
