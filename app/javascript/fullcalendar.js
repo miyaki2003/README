@@ -112,9 +112,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
   let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
 
-  // 不要
-  // let eventForm = document.getElementById('event-form');
-
   function toggleNotifyTimeInput() {
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
   }
