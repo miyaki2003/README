@@ -16,6 +16,7 @@ class EventsController < ApplicationController
   def create
     #@event = current_user.events.build(event_params)
     @event = Event.new(event_params)
+    puts "Received notify_time: #{@event.notify_time}"
 
     #@event.line_user_id = current_user.line_user_id
     set_datetime_params

@@ -311,13 +311,8 @@ document.addEventListener('DOMContentLoaded', async function() {
       event.preventDefault();
       let formData = new FormData(addForm);
       let eventDateAdd = document.getElementById('event_date-add').value;
-      console.log(eventDateAdd);
-      console.log(notifyTimeAdd);
       if (document.getElementById('line-notify-switch-add').checked) {
         const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
-        console.log("Full Notify DateTime:", fullNotifyDateTime);
-  
-        console.log(fullNotifyDateTime);
         if (isNaN(fullNotifyDateTime.getTime())) {
           alert('指定された通知時間が無効です');
           return;
@@ -326,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
-        formData.set('notify_time', fullNotifyDateTime.toISOString());
+        formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
       }
 
       fetch(addForm.action, {
@@ -356,6 +351,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         alert('通信エラーが発生しました');
       });
     });
+
 
 
     // イベント削除
