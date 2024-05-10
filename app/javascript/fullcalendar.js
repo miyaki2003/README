@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   
         console.log(fullNotifyDateTime);
         if (isNaN(fullNotifyDateTime.getTime())) {
-          alert('指定された通知時間が無効です。');
+          alert('指定された通知時間が無効です');
           return;
         }
         if (fullNotifyDateTime <= new Date()) {
@@ -333,19 +333,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         method: 'POST',
         body: formData,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.errors) {
           alert('エラーが発生しました: ' + data.errors.join(', '));
         } else {
-          alert('イベントが正常に追加されました');
-          calendar.refetchEvents(); // カレンダーを更新
-          this.reset(); // フォームをリセット
-          addEventModal.hide(); // モーダルを閉じる
+          calendar.refetchEvents(); 
+          this.reset(); 
+          addEventModal.hide(); 
         }
       })
       .catch(error => {
@@ -353,6 +356,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         alert('通信エラーが発生しました');
       });
     });
+
 
     // イベント削除
     document.getElementById('delete-event').addEventListener('click', function() {
