@@ -108,12 +108,15 @@ document.addEventListener('DOMContentLoaded', async function() {
   let notifySwitchAdd = document.getElementById('line-notify-switch-add');
   let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
   let notifyTimeAdd = document.getElementById('notify_time-add').value;
+
+
+  let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
+  let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
+  
   
 
   
-  // 追加
-  let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
-  let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
+
 
   function toggleNotifyTimeInput() {
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
@@ -123,10 +126,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
   }
 
-  // 追加
   function toggleEditNotifyTimeInput() {
     notifyTimeInputEdit.style.display = notifySwitchEdit.checked ? 'block' : 'none';
   }
+
+
 
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
@@ -398,8 +402,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         notifyTimeField.value = '06:00';
       }
     
-      let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
       notifySwitchEdit.checked = notifyTimeDisplay !== 'none';
+      toggleEditNotifyTimeInput();
+
+      // スイッチを切り替える
+      document.getElementById('edit-line-notify-switch').addEventListener('change', function() {
+        let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
+        notifyTimeInputEdit.style.display = this.checked ? 'block' : 'none';
+      });
 
       document.getElementById('save-event-button').setAttribute('data-event-id', eventId);
 
@@ -441,12 +451,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         alert('イベントの更新に失敗しました');
       });
     });
-
-    
-
-
-
-
 
 
     document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
