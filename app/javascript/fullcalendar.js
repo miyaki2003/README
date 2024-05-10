@@ -100,14 +100,17 @@ document.addEventListener('DOMContentLoaded', async function() {
   let form = document.getElementById('event-form');
   let addForm = document.getElementById('event-form-add');
 
-  let editNotifySwitch = document.getElementById('edit-line-notify-switch');
-  let editNotifyTimeInput = document.getElementById('edit-notify-time-input');
   let notifySwitch = document.getElementById('line-notify-switch');
   let notifyTimeInput = document.getElementById('notify-time-input');
+  let notifyTime = document.getElementById('notify_time');
+
+
   let notifySwitchAdd = document.getElementById('line-notify-switch-add');
   let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
-  let notifyTime = document.getElementById('notify_time');
-  let notifyTimeAdd = document.getElementById('notify_time-add');
+  let notifyTimeAdd = document.getElementById('notify_time-add').value;
+  
+
+  
   // 追加
   let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
   let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
@@ -133,8 +136,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
 
   // edit　Modal
-  editNotifySwitch.addEventListener('change', toggleEditNotifyTimeInput);
-  $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
+  // notifySwitchEdit.addEventListener('change', toggleEditNotifyTimeInput);
+  // $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
   
 
   if (calendarEl) {
@@ -307,39 +310,48 @@ document.addEventListener('DOMContentLoaded', async function() {
     addForm.addEventListener('submit', function(event) {
       event.preventDefault();
       let formData = new FormData(addForm);
-
+      let eventDateAdd = document.getElementById('event_date-add').value;
+      console.log(eventDateAdd);
+      console.log(notifyTimeAdd);
       if (document.getElementById('line-notify-switch-add').checked) {
-        let notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time-add'));
-        if (notifyDateTime <= new Date()) {
+        const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
+        console.log("Full Notify DateTime:", fullNotifyDateTime);
+  
+        console.log(fullNotifyDateTime);
+        if (isNaN(fullNotifyDateTime.getTime())) {
+          alert('指定された通知時間が無効です。');
+          return;
+        }
+        if (fullNotifyDateTime <= new Date()) {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
-      }
-
-      let searchParams = new URLSearchParams();
-      for (let pair of formData.entries()) {
-        searchParams.append(pair[0], pair[1]);
+        formData.set('notify_time', fullNotifyDateTime.toISOString());
       }
 
       fetch(addForm.action, {
         method: 'POST',
+        body: formData,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
-        body: searchParams
       })
       .then(response => response.json())
       .then(data => {
         if (data.errors) {
-          alert('エラーが発生しました');
+          alert('エラーが発生しました: ' + data.errors.join(', '));
         } else {
-          calendar.refetchEvents();
-          addForm.reset();
-          addEventModal.hide();
+          alert('イベントが正常に追加されました');
+          calendar.refetchEvents(); // カレンダーを更新
+          this.reset(); // フォームをリセット
+          addEventModal.hide(); // モーダルを閉じる
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        alert('通信エラーが発生しました');
+      });
     });
 
     // イベント削除
