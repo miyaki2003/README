@@ -132,16 +132,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
 
+  // スイッチ切り替え
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
-  // AddEvent Modal用スイッチ
   document.getElementById('line-notify-switch-add').addEventListener('change', toggleNotifyTimeInputAdd);
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
 
-  // edit　Modal
-  // notifySwitchEdit.addEventListener('change', toggleEditNotifyTimeInput);
-  // $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
+
+  document.getElementById('edit-line-notify-switch').addEventListener('change', toggleEditNotifyTimeInput);
+  $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
   
 
   if (calendarEl) {
@@ -404,12 +404,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     
       notifySwitchEdit.checked = notifyTimeDisplay !== 'none';
       toggleEditNotifyTimeInput();
-
-      // スイッチを切り替える
-      document.getElementById('edit-line-notify-switch').addEventListener('change', function() {
-        let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
-        notifyTimeInputEdit.style.display = this.checked ? 'block' : 'none';
-      });
 
       document.getElementById('save-event-button').setAttribute('data-event-id', eventId);
 
