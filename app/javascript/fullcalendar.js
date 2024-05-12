@@ -10,6 +10,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
+var selectedDate;
+
 document.addEventListener('DOMContentLoaded', async function() {
   // ツールチップ
   let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -31,6 +33,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     keyboard: true
   });
 
+  let eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'), {
+    keyboard: true
+  });
+
+  let editEventModal = new bootstrap.Modal(document.getElementById('editEventModal'), {
+    keyboard: true
+  });
+
+  
  // 祝日
  let holidays = {};
   
@@ -91,15 +102,19 @@ document.addEventListener('DOMContentLoaded', async function() {
   let form = document.getElementById('event-form');
   let addForm = document.getElementById('event-form-add');
 
-
   let notifySwitch = document.getElementById('line-notify-switch');
   let notifyTimeInput = document.getElementById('notify-time-input');
+  let notifyTime = document.getElementById('notify_time');
+
+
   let notifySwitchAdd = document.getElementById('line-notify-switch-add');
   let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
-  let notifyTime = document.getElementById('notify_time');
-  let notifyTimeAdd = document.getElementById('notify_time-add');
-  // 不要
-  // let eventForm = document.getElementById('event-form');
+  let notifyTimeAdd = document.getElementById('notify_time-add').value;
+
+
+  let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
+  let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
+  
 
   function toggleNotifyTimeInput() {
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
@@ -109,13 +124,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
   }
 
+  function toggleEditNotifyTimeInput() {
+    notifyTimeInputEdit.style.display = notifySwitchEdit.checked ? 'block' : 'none';
+  }
+
+
+
+  // スイッチ切り替え
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
-  // AddEvent Modal用スイッチ
   document.getElementById('line-notify-switch-add').addEventListener('change', toggleNotifyTimeInputAdd);
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
 
+
+  document.getElementById('edit-line-notify-switch').addEventListener('change', toggleEditNotifyTimeInput);
+  $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
   
 
   if (calendarEl) {
@@ -204,6 +228,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       eventClick: function(info) {
         info.jsEvent.preventDefault();
+        selectedDate = info.event.startStr.split('T')[0];
+        document.getElementById('selected-date-display').textContent = selectedDate;
         if (lastClickedElement) {
           lastClickedElement.style.backgroundColor = '';
           lastClickedElement = null;
@@ -288,39 +314,46 @@ document.addEventListener('DOMContentLoaded', async function() {
     addForm.addEventListener('submit', function(event) {
       event.preventDefault();
       let formData = new FormData(addForm);
-
+      let eventDateAdd = document.getElementById('event_date-add').value;
       if (document.getElementById('line-notify-switch-add').checked) {
-        let notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time-add'));
-        if (notifyDateTime <= new Date()) {
+        const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
+        if (isNaN(fullNotifyDateTime.getTime())) {
+          alert('指定された通知時間が無効です');
+          return;
+        }
+        if (fullNotifyDateTime <= new Date()) {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
-      }
-
-      let searchParams = new URLSearchParams();
-      for (let pair of formData.entries()) {
-        searchParams.append(pair[0], pair[1]);
+        formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
       }
 
       fetch(addForm.action, {
         method: 'POST',
+        body: formData,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
-        body: searchParams
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.errors) {
-          alert('エラーが発生しました');
+          alert('エラーが発生しました: ' + data.errors.join(', '));
         } else {
-          calendar.refetchEvents();
-          addForm.reset();
-          addEventModal.hide();
+          calendar.refetchEvents(); 
+          this.reset(); 
+          addEventModal.hide(); 
         }
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        alert('通信エラーが発生しました');
+      });
     });
 
     // イベント削除
@@ -341,6 +374,76 @@ document.addEventListener('DOMContentLoaded', async function() {
         }).catch(error => {
           console.error('Error:', error);
         });
+    });
+
+    // 編集モーダル
+    document.getElementById('editEventBtn').addEventListener('click', function () {
+      let eventId = this.getAttribute('data-event-id');
+      let selectedDate = document.getElementById('selected-date-display').textContent;
+      let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
+      let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
+
+      document.getElementById('edit-event_date').value = selectedDate;
+      document.getElementById('edit-start_time').value = formatTimeToInputValue(startTimeText);
+      document.getElementById('edit-end_time').value = formatTimeToInputValue(endTimeText);
+    
+      document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
+      let memoContent = document.getElementById('memoContent').textContent.trim();
+      document.getElementById('edit-memo').value = memoContent;
+    
+      let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
+      let notifyTimeField = document.getElementById('edit-notify_time');
+    
+      if (notifyTimeDisplay !== 'none') {
+        let notifyTimeText = document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '');
+        notifyTimeField.value = formatTimeToInputValue(notifyTimeText);
+      } else {
+        notifyTimeField.value = '06:00';
+      }
+      notifySwitchEdit.checked = notifyTimeDisplay !== 'none';
+      toggleEditNotifyTimeInput();
+
+      document.getElementById('save-event-button').setAttribute('data-event-id', eventId);
+
+      eventDetailsModal.hide();
+      editEventModal.show();
+    });
+    
+    function formatTimeToInputValue(timeText) {
+      let [hours, minutes] = timeText.split(':');
+      hours = hours.padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+
+    // update
+    document.getElementById('save-event-button').addEventListener('click', function () {
+      let eventId = this.getAttribute('data-event-id');
+      let form = document.getElementById('edit-event-form');
+      let formData = new FormData(form);
+      
+      fetch(`/events/${eventId}`, {
+        method: 'PATCH',
+        body: formData,
+        headers: {
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok.');
+        return response.json();
+      })
+      .then(data => {
+        $('#editEventModal').modal('hide');
+        calendar.refetchEvents();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('イベントの更新に失敗しました');
+      });
+    });
+
+    document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
+      document.getElementById('memoContent').textContent = '';
     });
 
     let lineButtonEl = document.querySelector('.fc-lineButton-button');
@@ -367,8 +470,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       CalendarButtonEl.appendChild(icon);
     }
   }
-
-
 
   // datechlick
   function handleDateClick(info) {
@@ -416,7 +517,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   function updateUIWithEventDetails(data) {
     document.getElementById('eventDetailsTitle').textContent = `タイトル： ${data.title}`;
     document.getElementById('eventDetailsStart').textContent = `開始時間： ${formatTime(data.start)}`;
-    document.getElementById('eventDetailsEnd').textContent = `終了時間： ${data.end ? formatTime(data.end) : '終了時間未設定'}`;
+    document.getElementById('eventDetailsEnd').textContent = `終了時間： ${formatTime(data.end)}`;
     let memoElement = document.getElementById('eventMemo');
     let memoContent = document.getElementById('memoContent');
     if (data.memo) {
@@ -446,9 +547,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
   
   function showModal(data) {
-    let modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
-    modal.show();
+    eventDetailsModal.show();
     document.getElementById('delete-event').setAttribute('data-event-id', data.id);
+    document.getElementById('editEventBtn').setAttribute('data-event-id', data.id);
   }
   
   function handleEventError(error) {

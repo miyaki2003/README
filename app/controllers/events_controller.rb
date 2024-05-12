@@ -2,56 +2,62 @@ class EventsController < ApplicationController
   def index
     if params[:date]
       date = Date.parse(params[:date])
-      events = current_user.events.where("DATE(start_time) = ?", date)
-      #events = Event.where("DATE(start_time) = ?", date)
+      #events = current_user.events.where("DATE(start_time) = ?", date)
+      events = Event.where("DATE(start_time) = ?", date)
       render json: events, status: :ok
     else
-      @events = current_user.events
-      #@events = Event.all
-      #@event = Event.new
-      @event = current_user.events.build
+      #@events = current_user.events
+      #@event = current_user.events.build
+      @events = Event.all
+      @event = Event.new
     end
   end
 
   def create
-    Rails.logger.info "#{params.inspect}"
-    @event = current_user.events.build(event_params)
-    #@event = Event.new(event_params)
+    #@event = current_user.events.build(event_params)
+    @event = Event.new(event_params)
 
-    @event.line_user_id = current_user.line_user_id
+    #@event.line_user_id = current_user.line_user_id
     set_datetime_params
 
-    if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-      render json: { error: "この日は既に4件のイベントが予定されています。" }, status: :unprocessable_entity
-      return
-    end
-
-    #if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-      #render json: { error: "この日は既に4件のイベントが予定されています。" }, status: :unprocessable_entity
+    #if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
+      #render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
       #return
     #end
+
+    if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
+      render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
+      return
+    end
 
     if @event.valid?
       if @event.save
         schedule_line_notification if params[:event][:line_notify] == "1"
         render json: @event, status: :created
       else
-        render json: @event.errors, status: :unprocessable_entity
+        #render json: @event.errors, status: :unprocessable_entity
+        render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
       end
     else
-      render json: @event.errors, status: :unprocessable_entity
+      #render json: @event.errors, status: :unprocessable_entity
+      render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  def edit
-    @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
-    render json: @event
+  def update
+    @event = Event.find(params[:id])
+    @event.assign_attributes(event_params)
+    set_datetime_params
+    if @event.save
+      render json: @event, status: :ok
+    else
+      render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def details
-    @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
+    #@event = current_user.events.find_by(id: params[:id])
+    @event = Event.find(params[:id])
       render json: {
       id: @event.id,
       title: @event.title,
@@ -65,8 +71,8 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
+    #@event = current_user.events.find_by(id: params[:id])
+    @event = Event.find(params[:id])
     if @event.nil?
       render json: { error: "Event not found." }, status: :not_found
     elsif @event.destroy
@@ -87,6 +93,9 @@ class EventsController < ApplicationController
       date = Time.zone.parse(params[:event][:event_date])
       @event.start_time = combine_date_and_time(date, params[:event][:start_time]) if params[:event][:start_time].present?
       @event.end_time = combine_date_and_time(date, params[:event][:end_time]) if params[:event][:end_time].present?
+      if params[:event][:notify_time].present?
+        @event.notify_time = combine_date_and_time(date, params[:event][:notify_time])
+      end
     else
       if params[:event][:start_date].present? && params[:event][:start_time].present?
         @event.start_time = Time.zone.parse("#{params[:event][:start_date]} #{params[:event][:start_time]}")
