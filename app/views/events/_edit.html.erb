@@ -12,6 +12,11 @@
             <%= f.label :title, "タイトル" %>
             <%= f.text_field :title, id: "edit-title", class: "form-control", maxlength: "12" %>
           </div>
+          <%= f.hidden_field :event_date %>
+          <div class="mb-3">
+            <%= f.label :event_date, "イベント日" %>
+            <%= f.date_field :event_date, id: "edit-event_date", class: "form-control", value: Date.today.to_s %>
+          </div>
           <%= f.hidden_field :start_date %>
           <div class="mb-3">
             <%= f.label :start_time, "開始時間" %>

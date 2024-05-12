@@ -10,6 +10,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap-icons/font/bootstrap-icons.css';
 
+var selectedDate;
+
 document.addEventListener('DOMContentLoaded', async function() {
   // ツールチップ
   let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -113,10 +115,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
   let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
   
-  
-
-  
-
 
   function toggleNotifyTimeInput() {
     notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
@@ -230,6 +228,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       eventClick: function(info) {
         info.jsEvent.preventDefault();
+        selectedDate = info.event.startStr;
+        console.log("イベント日", selectedDate);
+        console.log("イベントID", info.event.id);
+        document.getElementById('selected-date-display').textContent = selectedDate;
         if (lastClickedElement) {
           lastClickedElement.style.backgroundColor = '';
           lastClickedElement = null;
@@ -356,8 +358,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       });
     });
 
-
-
     // イベント削除
     document.getElementById('delete-event').addEventListener('click', function() {
       let eventId = this.getAttribute('data-event-id');
@@ -381,10 +381,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 編集モーダル
     document.getElementById('editEventBtn').addEventListener('click', function () {
       let eventId = this.getAttribute('data-event-id');
-      console.log('Editing event ID:', eventId); 
+      let selectedDate = document.getElementById('selected-date-display').textContent;
+      console.log("イベント日", selectedDate);
+      console.log('イベントID', eventId);
       let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
-    
+
+      document.getElementById('edit-event_date').value = selectedDate;
       document.getElementById('edit-start_time').value = formatTimeToInputValue(startTimeText);
       document.getElementById('edit-end_time').value = formatTimeToInputValue(endTimeText);
     
@@ -436,7 +439,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return response.json();
       })
       .then(data => {
-        console.log('Success:', data);
+        console.log(data);
         $('#editEventModal').modal('hide');
         calendar.refetchEvents();
       })
