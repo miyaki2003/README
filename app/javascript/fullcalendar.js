@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       eventClick: function(info) {
         info.jsEvent.preventDefault();
-        selectedDate = info.event.startStr;
+        selectedDate = info.event.startStr.split('T')[0];
         console.log("イベント日", selectedDate);
         console.log("イベントID", info.event.id);
         document.getElementById('selected-date-display').textContent = selectedDate;
