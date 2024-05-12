@@ -16,7 +16,6 @@ class EventsController < ApplicationController
   def create
     #@event = current_user.events.build(event_params)
     @event = Event.new(event_params)
-    puts "Received notify_time: #{@event.notify_time}"
 
     #@event.line_user_id = current_user.line_user_id
     set_datetime_params
@@ -47,7 +46,9 @@ class EventsController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
-    if @event.update(event_params)
+    @event.assign_attributes(event_params)
+    set_datetime_params
+    if @event.save
       render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
@@ -92,6 +93,9 @@ class EventsController < ApplicationController
       date = Time.zone.parse(params[:event][:event_date])
       @event.start_time = combine_date_and_time(date, params[:event][:start_time]) if params[:event][:start_time].present?
       @event.end_time = combine_date_and_time(date, params[:event][:end_time]) if params[:event][:end_time].present?
+      if params[:event][:notify_time].present?
+        @event.notify_time = combine_date_and_time(date, params[:event][:notify_time])
+      end
     else
       if params[:event][:start_date].present? && params[:event][:start_time].present?
         @event.start_time = Time.zone.parse("#{params[:event][:start_date]} #{params[:event][:start_time]}")
