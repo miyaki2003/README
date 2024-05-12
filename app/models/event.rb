@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  belongs_to :user
+  #belongs_to :user
   attr_accessor :start_date, :start_time_part, :end_date, :end_time_part, :notify_date, :notify_time_part
 
   before_validation :set_datetime_attributes
@@ -13,7 +13,7 @@ class Event < ApplicationRecord
   def set_datetime_attributes
     self.start_time = Time.zone.parse("#{start_date} #{start_time_part}") if start_date.present? && start_time_part.present?
     self.end_time = Time.zone.parse("#{end_date} #{end_time_part}") if end_date.present? && end_time_part.present?
-    self.notify_time = Time.zone..parse("#{notify_date} #{notify_time_part}") if notify_date.present? && notify_time_part.present?
+    self.notify_time = Time.zone.parse("#{notify_date} #{notify_time_part}") if notify_date.present? && notify_time_part.present?
   end
 
   def start_must_be_before_end_time
@@ -21,6 +21,6 @@ class Event < ApplicationRecord
   end
 
   def notification_time_must_be_in_the_future
-    errors.add(:notify_time, 'must be set at least one minute in the future') if notify_time <= Time.current + 1.minute
+    errors.add(:notify_time, 'must be set at least one minute in the future') if notify_time <= Time.current
   end
 end

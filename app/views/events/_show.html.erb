@@ -7,6 +7,7 @@
       </div>
       <div class="modal-body">
         <p id="eventDetailsTitle"></p>
+        <p id="selected-date-display" style="display: none;"></p>
         <p id="eventDetailsStart"></p>
         <p id="eventDetailsEnd"></p>
         <p id="eventNotifyTime" style="display: none;"></p>
@@ -21,3 +22,4 @@
     </div>
   </div>
 </div>
+<%= render 'edit', event: @event %>
