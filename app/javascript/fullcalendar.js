@@ -414,6 +414,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       editEventModal.show();
     });
     
+    
     function formatTimeToInputValue(timeText) {
       let [hours, minutes] = timeText.split(':');
       hours = hours.padStart(2, '0');
