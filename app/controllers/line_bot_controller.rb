@@ -261,7 +261,7 @@ class LineBotController < ApplicationController
       formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
       return nil if formatted_datetime.nil? || formatted_datetime.strip.empty?
       datetime = DateTime.parse(formatted_datetime)
-      datetime.strftime('%Y-%m-%d %H:%M')
+      datetime.strftime('%Y-%m-%d %H:%M:%S')
     rescue ArgumentError
       nil
     end
