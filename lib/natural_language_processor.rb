@@ -48,7 +48,7 @@ class NaturalLanguageProcessor
   private
 
   def self.format_datetime(datetime)
-    datetime.strftime('%Y-%m-%d %H:%M')
+    datetime.strftime('%Y-%m-%d %H:%M:%S')
   end
 
   def self.translate_relative_day_time(day, period, hour, minutes)
