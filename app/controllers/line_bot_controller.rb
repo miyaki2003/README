@@ -40,7 +40,7 @@ class LineBotController < ApplicationController
     when '取り消し'
       cancel_last_reminder(user, event['replyToken'])
     else
-      if user.status == 'awaiting_time'
+      if user.status == 'awaiting_time' || user.status == 'awaiting_image_time'
         process_user_message(user, user_message, event['replyToken'])
       else
         start_reminder_setting(user, user_message, event['replyToken'])
@@ -51,7 +51,7 @@ class LineBotController < ApplicationController
   def handle_image_message(event)
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
-    user.update(status: 'awaiting_time', temporary_data: event.message['id'], data_type: 'image')
+    user.update(status: 'awaiting_image_time', temporary_data: event.message['id'])
     ask_for_time(event['replyToken'])
   end
   
@@ -64,12 +64,13 @@ class LineBotController < ApplicationController
     parsed_datetime = parse_message(text)
     if parsed_datetime.nil?
       send_error_message(reply_token, "日時情報を正しく認識できませんでした\n再度日時を入力してください")
-      user.update(status: 'awaiting_time')
+      user.update(status: user.status) 
     elsif Time.parse(parsed_datetime) <= Time.now
       send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
-      user.update(status: 'awaiting_time')
+      user.update(status: user.status)
     else
-      if user.data_type == 'image'
+      reminder_type = user.status == 'awaiting_image_time' ? 'image' : 'text'
+      if reminder_type == 'image'
         set_and_confirm_image_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
       else
         set_and_confirm_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
