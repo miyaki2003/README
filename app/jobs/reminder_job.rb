@@ -15,7 +15,11 @@ class ReminderJob < ApplicationJob
 
     message = prepare_message(reminder)
     response = client.push_message(reminder.user.line_user_id, message)
-    Rails.logger.info("Message sent to #{reminder.user.line_user_id}: #{response.body}") if response.is_a?(Net::HTTPSuccess)
+    if response.is_a?(Net::HTTPSuccess)
+      Rails.logger.info("Message sent to #{reminder.user.line_user_id}: #{response.body}")
+    else
+      Rails.logger.error("Failed to send message: #{response.body}")
+    end
   end
 
     private
@@ -28,7 +32,7 @@ class ReminderJob < ApplicationJob
     when 'image'
       # 画像の場合
       if reminder.image_id.present?
-        { type: 'image', originalContentUrl: reminder.image_id, previewImageUrl: reminder.image_id }
+        { type: 'image', originalContentUrl: reminder.image_url, previewImageUrl: reminder.image_url }
       else
         # 画像URLが見つからない場合
         { type: 'text', text: "画像リマインダーのURLが見つかりませんでした" }
