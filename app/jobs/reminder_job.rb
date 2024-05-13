@@ -24,11 +24,12 @@ class ReminderJob < ApplicationJob
     case reminder.reminder_type
     when 'text'
       # テキストの場合
-      { type: 'text', text: "「#{reminder.title}」の時間です" }
+      image_url = { type: 'text', text: "「#{reminder.title}」の時間です" }
     when 'image'
       # 画像の場合
+      https://plus.unsplash.com/premium_photo-1669058431851-aae101e63b61?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
       if reminder.image_id.present?
-        { type: 'image', originalContentUrl: reminder.image_id, previewImageUrl: reminder.image_id }
+        { type: 'image', originalContentUrl: image_url, previewImageUrl: image_url }
       else
         # 画像URLが見つからない場合
         { type: 'text', text: "画像リマインダーのURLが見つかりませんでした" }
