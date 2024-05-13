@@ -1,7 +1,7 @@
 class LineBotController < ApplicationController
   require 'line/bot'
-  #skip_before_action :verify_authenticity_token, only: [:callback]
-  #skip_before_action :require_login
+  skip_before_action :verify_authenticity_token, only: [:callback]
+  skip_before_action :require_login
 
   def callback
     body = request.body.read
@@ -13,8 +13,11 @@ class LineBotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each do |event|
-      if event.type == Line::Bot::Event::MessageType::Text
+      case event.type
+      when Line::Bot::Event::MessageType::Text
         handle_text_message(event)
+      when Line::Bot::Event::MessageType::Image
+        handle_image_message(event)
       end
     end
     head :ok
@@ -44,6 +47,13 @@ class LineBotController < ApplicationController
       end
     end
   end
+
+  def handle_image_message(event)
+    user_id = event['source']['userId']
+    user = User.find_or_create_by(line_user_id: user_id)
+    user.update(status: 'awaiting_time', temporary_data: event.message['id'], data_type: 'image')
+    ask_for_time(event['replyToken'])
+  end
   
   def start_reminder_setting(user, text, reply_token)
     user.update(status: 'awaiting_time', temporary_data: text)
@@ -59,7 +69,11 @@ class LineBotController < ApplicationController
       send_error_message(reply_token, "過去の時間はリマインドできません\n再度日時を入力してください")
       user.update(status: 'awaiting_time')
     else
-      set_and_confirm_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
+      if user.data_type == 'image'
+        set_and_confirm_image_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
+      else
+        set_and_confirm_reminder(user, user.temporary_data, Time.parse(parsed_datetime), reply_token)
+      end
       user.update(status: nil, temporary_data: nil)
     end
   end
@@ -69,6 +83,16 @@ class LineBotController < ApplicationController
     
     if reminder.persisted?
       confirm_reminder_set(reply_token, title, reminder.reminder_time)
+    else
+      send_error_message(reply_token, "リマインダーを設定できませんでした")
+    end
+  end
+
+  def set_and_confirm_image_reminder(user, image_id, reminder_time, reply_token)
+    reminder = ReminderService.create(user: user, image_id: image_id, reminder_time: reminder_time, reminder_type: 'image')
+    confirm_reminder_set(reply_token, "画像", reminder_time)
+    if reminder.persisted?
+      confirm_image_reminder_set(reply_token, reminder.reminder_time)
     else
       send_error_message(reply_token, "リマインダーを設定できませんでした")
     end
@@ -103,6 +127,22 @@ class LineBotController < ApplicationController
     message = {
       type: 'text',
       text: "#{date_str}に「#{title}」をリマインドします"
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def confirm_image_reminder_set(reply_token, reminder_time)
+    year = reminder_time.year
+    month = reminder_time.month
+    day = reminder_time.day
+    hour = reminder_time.hour
+    minute = reminder_time.min
+
+    date_str = "#{year}年#{month}月#{day}日#{hour}時#{minute}分"
+
+    message = {
+      type: 'text',
+      text: "#{date_str}に画像をリマインドします"
     }
     client.reply_message(reply_token, message)
   end
