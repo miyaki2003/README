@@ -91,7 +91,6 @@ class LineBotController < ApplicationController
 
   def set_and_confirm_image_reminder(user, image_id, reminder_time, reply_token)
     reminder = ReminderService.create(user: user, image_id: image_id, reminder_time: reminder_time, reminder_type: 'image')
-    confirm_reminder_set(reply_token, "画像", reminder_time)
     if reminder.persisted?
       confirm_image_reminder_set(reply_token, reminder.reminder_time)
     else
