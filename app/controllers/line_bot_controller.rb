@@ -2,6 +2,7 @@ class LineBotController < ApplicationController
   require 'line/bot'
   skip_before_action :verify_authenticity_token, only: [:callback]
   skip_before_action :require_login
+  protect_from_forgery with: :null_session, only: [:callback]
 
   def callback
     body = request.body.read
