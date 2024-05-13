@@ -229,8 +229,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       eventClick: function(info) {
         info.jsEvent.preventDefault();
         selectedDate = info.event.startStr.split('T')[0];
-        console.log("イベント日", selectedDate);
-        console.log("イベントID", info.event.id);
         document.getElementById('selected-date-display').textContent = selectedDate;
         if (lastClickedElement) {
           lastClickedElement.style.backgroundColor = '';
@@ -382,8 +380,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('editEventBtn').addEventListener('click', function () {
       let eventId = this.getAttribute('data-event-id');
       let selectedDate = document.getElementById('selected-date-display').textContent;
-      console.log("イベント日", selectedDate);
-      console.log('イベントID', eventId);
       let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
       let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
 
@@ -437,7 +433,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         return response.json();
       })
       .then(data => {
-        console.log(data);
         $('#editEventModal').modal('hide');
         calendar.refetchEvents();
       })
