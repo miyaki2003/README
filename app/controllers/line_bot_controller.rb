@@ -1,7 +1,7 @@
 class LineBotController < ApplicationController
   require 'line/bot'
-  skip_before_action :verify_authenticity_token, only: [:callback]
-  skip_before_action :require_login
+  #skip_before_action :verify_authenticity_token, only: [:callback]
+  #skip_before_action :require_login
 
   def callback
     body = request.body.read
@@ -52,7 +52,34 @@ class LineBotController < ApplicationController
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
     user.update(status: 'awaiting_image_time', temporary_data: event.message['id'])
+    retrieve_image_data(event)
     ask_for_time(event['replyToken'])
+  end
+
+  def retrieve_image_data(event)
+    image_id = event.message['id']
+    response = client.get_message_content(image_id)
+    return unless response.is_a?(Net::HTTPSuccess)
+  
+    file_path = Rails.root.join('public', 'uploads', "#{image_id}.jpg")
+    FileUtils.mkdir_p(File.dirname(file_path))
+  
+    File.open(file_path, 'wb') do |file|
+      file.write(response.body.read)
+    end
+  
+    public_url = generate_public_url(file_path.to_s)
+  
+    update_image_url_in_database(event['source']['userId'], public_url)
+  end
+  
+  def generate_public_url(file_path)
+    "https://yourdomain.com/#{file_path.sub(Rails.root.join('public').to_s, '')}"
+  end
+  
+  def update_image_url_in_database(user_id, image_url)
+    user = User.find_by(line_user_id: user_id)
+    user.update(image_url: image_url)
   end
   
   def start_reminder_setting(user, text, reply_token)
