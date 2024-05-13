@@ -18,7 +18,7 @@ class ReminderJob < ApplicationJob
     Rails.logger.info("Message sent to #{reminder.user.line_user_id}: #{response.body}") if response.is_a?(Net::HTTPSuccess)
   end
 
-    private
+  private
 
   def prepare_message(reminder)
     case reminder.reminder_type
@@ -27,9 +27,8 @@ class ReminderJob < ApplicationJob
       { type: 'text', text: "「#{reminder.title}」の時間です" }
     when 'image'
       # 画像の場合
-      image_url = https://plus.unsplash.com/premium_photo-1669058431851-aae101e63b61?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
       if reminder.image_id.present?
-        { type: 'image', originalContentUrl: image_url, previewImageUrl: image_url }
+        { type: 'image', originalContentUrl: reminder.image_id, previewImageUrl: reminder.image_id }
       else
         # 画像URLが見つからない場合
         { type: 'text', text: "画像リマインダーのURLが見つかりませんでした" }
