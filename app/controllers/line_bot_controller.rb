@@ -259,10 +259,12 @@ class LineBotController < ApplicationController
   def parse_message(message)
     begin
       formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
+      Rails.logger.info("Formatted datetime: #{formatted_datetime}")
       return nil if formatted_datetime.nil? || formatted_datetime.strip.empty?
       datetime = DateTime.parse(formatted_datetime)
       datetime.strftime('%Y-%m-%d %H:%M:%S')
     rescue ArgumentError
+      Rails.logger.error("Date parsing error: #{e.message}")
       nil
     end
   end
