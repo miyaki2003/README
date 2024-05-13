@@ -84,10 +84,19 @@ class LineBotController < ApplicationController
   
   def update_image_url_in_database(user_id, image_url)
     user = User.find_by(line_user_id: user_id)
-    if user.update(image_url: image_url)
-      Rails.logger.info("Updated image URL for user: #{user_id}")
+    if user
+      reminder = Reminder.find_by(user_id: user.id)
+      if reminder
+        if reminder.update(image_url: image_url)
+          Rails.logger.info("Updated image URL for reminder: #{reminder.id}")
+        else
+          Rails.logger.error("Failed to update image URL: #{reminder.errors.full_messages.join(', ')}")
+        end
+      else
+        Rails.logger.error("No reminder found for user: #{user_id}")
+      end
     else
-      Rails.logger.error("Failed to update image URL: #{user.errors.full_messages.join(', ')}")
+      Rails.logger.error("No user found with ID: #{user_id}")
     end
   end
   
