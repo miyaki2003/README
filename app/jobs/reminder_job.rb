@@ -27,8 +27,8 @@ class ReminderJob < ApplicationJob
       { type: 'text', text: "「#{reminder.title}」の時間です" }
     when 'image'
       # 画像の場合
-      originalContentUrl = "https://example.com/image.jpg?fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      { type: 'image', originalContentUrl: originalContentUrl, previewImageUrl: originalContentUrl }
+      if reminder.image_id.present?
+        { type: 'image', originalContentUrl: reminder.image_id, previewImageUrl: reminder.image_id }
       else
         # 画像URLが見つからない場合
         { type: 'text', text: "画像リマインダーのURLが見つかりませんでした" }
