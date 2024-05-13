@@ -15,7 +15,7 @@ class ReminderJob < ApplicationJob
 
     message = prepare_message(reminder)
     response = client.push_message(reminder.user.line_user_id, message)
-    Rails.logger.info("Message sent to #{reminder.user.line_user_id}: #{response.body}") if response.success?
+    Rails.logger.info("Message sent to #{reminder.user.line_user_id}: #{response.body}") if response.is_a?(Net::HTTPSuccess)
   end
 
     private
