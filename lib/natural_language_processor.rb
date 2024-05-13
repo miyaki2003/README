@@ -83,9 +83,19 @@ class NaturalLanguageProcessor
 
   def self.translate_relative_time(text)
     case text
+    when /(\d+)秒後/
+      seconds = $1.to_i
+      time = Time.current + seconds.seconds
     when /(\d+)分後/
       minutes = $1.to_i
       time = Time.current + minutes.minutes
+    when /(\d+)分(\d+)秒後/
+      minutes = $1.to_i
+      seconds = $2.to_i
+      time = Time.current + minutes.minutes + seconds.seconds
+    when /(\d+)分半後/
+      minutes = $1.to_i
+      time = Time.current + minutes.minutes + 30.seconds
     when /(\d+)時間後/
       hours = $1.to_i
       time = Time.current + hours.hours
