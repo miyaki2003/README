@@ -20,15 +20,15 @@ class EventsController < ApplicationController
     @event.line_user_id = current_user.line_user_id
     set_datetime_params
 
-     if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-       render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
-       return
-     end
+      if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
+        render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
+        return
+      end
 
-    # if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-    #   render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
-    #   return
-    # end
+    #  if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
+    #    render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
+    #    return
+    #  end
 
     if @event.valid?
       if @event.save
@@ -43,7 +43,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    @event = current_user.events.build(event_params)
+    @event = current_user.events.find_by(id: params[:id])
     #@event = Event.find(params[:id])
     @event.assign_attributes(event_params)
     set_datetime_params
@@ -70,8 +70,8 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
+    #@event = current_user.events.find_by(id: params[:id])
+    @event = Event.find(params[:id])
     if @event.nil?
       render json: { error: "Event not found." }, status: :not_found
     elsif @event.destroy
