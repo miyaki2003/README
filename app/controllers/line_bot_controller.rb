@@ -61,16 +61,20 @@ class LineBotController < ApplicationController
     image_id = event.message['id']
     response = client.get_message_content(image_id)
     return unless response.is_a?(Net::HTTPSuccess)
+
+    Rails.logger.info("Response body size: #{response.body.size}")
   
     file_path = Rails.root.join('public', 'uploads', "#{image_id}.jpg")
     FileUtils.mkdir_p(File.dirname(file_path))
   
     File.open(file_path, 'wb') do |file|
-      file.write(response.body.read)
+      begin
+        file.write(response.body)
+      rescue => e
+        Rails.logger.error("Failed to write image data: #{e.message}")
+      end
     end
-  
     public_url = generate_public_url(file_path.to_s)
-  
     update_image_url_in_database(event['source']['userId'], public_url)
   end
   
@@ -80,7 +84,11 @@ class LineBotController < ApplicationController
   
   def update_image_url_in_database(user_id, image_url)
     user = User.find_by(line_user_id: user_id)
-    user.update(image_url: image_url)
+    if user.update(image_url: image_url)
+      Rails.logger.info("Updated image URL for user: #{user_id}")
+    else
+      Rails.logger.error("Failed to update image URL: #{user.errors.full_messages.join(', ')}")
+    end
   end
   
   def start_reminder_setting(user, text, reply_token)
