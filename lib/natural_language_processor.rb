@@ -25,7 +25,7 @@ class NaturalLanguageProcessor
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_relative_day_time($1, $2, $3, minutes)
-              when /(\d+)分後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
+              when /(\d+)秒後|(\d+)分後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
                 translate_relative_time(text)
               when /(\d{1,2})月/
                 translate_specific_date_time($1, 1, nil, nil, nil)
@@ -48,7 +48,7 @@ class NaturalLanguageProcessor
   private
 
   def self.format_datetime(datetime)
-    datetime.strftime('%Y-%m-%d %H:%M')
+    datetime.strftime('%Y-%m-%d %H:%M:%S')
   end
 
   def self.translate_relative_day_time(day, period, hour, minutes)
@@ -83,9 +83,19 @@ class NaturalLanguageProcessor
 
   def self.translate_relative_time(text)
     case text
+    when /(\d+)秒後/
+      seconds = $1.to_i
+      time = Time.current + seconds.seconds
     when /(\d+)分後/
       minutes = $1.to_i
       time = Time.current + minutes.minutes
+    when /(\d+)分(\d+)秒後/
+      minutes = $1.to_i
+      seconds = $2.to_i
+      time = Time.current + minutes.minutes + seconds.seconds
+    when /(\d+)分半後/
+      minutes = $1.to_i
+      time = Time.current + minutes.minutes + 30.seconds
     when /(\d+)時間後/
       hours = $1.to_i
       time = Time.current + hours.hours
