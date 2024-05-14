@@ -5,7 +5,6 @@ class ReminderService
     if reminder.save
       ReminderJob.set(wait_until: reminder.reminder_time).perform_later(reminder.id)
     end
-
     reminder
   end
 end
