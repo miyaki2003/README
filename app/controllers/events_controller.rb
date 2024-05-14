@@ -48,6 +48,7 @@ class EventsController < ApplicationController
     @event.assign_attributes(event_params)
     set_datetime_params
     if @event.save
+      schedule_line_notification if params[:event][:line_notify] == "1"
       render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
