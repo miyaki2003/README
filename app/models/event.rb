@@ -9,6 +9,13 @@ class Event < ApplicationRecord
   validate :start_must_be_before_end_time
   validate :notification_time_must_be_in_the_future, if: -> { line_notify && notify_time.present? }
 
+  def schedule_line_notification
+    if line_notify?
+      logger.info "Scheduling NotificationJob for event #{id} at #{notify_time}"
+      NotificationJob.set(wait_until: notify_time).perform_later(id)
+    end
+  end
+
   private
 
   def set_datetime_attributes
@@ -32,5 +39,9 @@ class Event < ApplicationRecord
     if notify_time.present?
       NotificationJob.set(wait_until: notify_time).perform_later(self.id)
     end
+  end
+
+  def line_notify?
+    line_notify
   end
 end
