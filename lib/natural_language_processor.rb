@@ -43,16 +43,30 @@ class NaturalLanguageProcessor
               when /(令和)(\d+)年[\s　の]*(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 year = ERA_START_YEARS[$1] + $2.to_i - 1
                 parse_date_time_components(year, $3, $4, $5, $6, $7)
+              when /(\d{4})年[\s　の]*(\d+)月/
+                parse_date_time_components($1, $2, 1, nil, 6, 0)
+              when /(令和)(\d+)年[\s　の]*(\d+)月/
+                year = ERA_START_YEARS[$1] + $2.to_i - 1
+                parse_date_time_components(year, $3, 1, nil, 6, 0)
+              when /来年[\s　の]*(\d+)月/
+                parse_date_time_components(Time.current.year + 1, $1, 1, nil, 6, 0)
+              when /来年/
+                parse_date_time_components(Time.current.year + 1, 1, 1, nil, 6, 0)
+              when /(\d{4})年/
+                parse_date_time_components($1, 1, 1, nil, 6, 0)
+              when /(令和)(\d+)年/
+                year = ERA_START_YEARS[$1] + $2.to_i - 1
+                parse_date_time_components(year, 1, 1, nil, 6, 0)
               when /(\d+)秒後|(\d+)分後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
                 translate_relative_time(text)
-              when /(\d{1,2})月/
-                translate_specific_date_time($1, 1, nil, nil, nil)
-              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                minutes = $5 == "半" ? 30 : $5
-                translate_specific_date_time($1, $2, $3, $4, minutes)
               when /(\d{1,2})月(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $5 == "半" ? 30 : $5
                 translate_specific_date_time($1, $2, $3, $4, minutes)
+              when /(\d{1,2})\/(\d{1,2})[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                minutes = $5 == "半" ? 30 : $5
+                translate_specific_date_time($1, $2, $3, $4, minutes)
+              when /(\d{1,2})月/
+                translate_specific_date_time($1, 1, nil, nil, nil)
               when /(\d{1,2})日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_specific_date_time(nil, $1, $2, $3, minutes)
