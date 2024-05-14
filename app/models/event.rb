@@ -3,7 +3,7 @@ class Event < ApplicationRecord
   attr_accessor :start_date, :start_time_part, :end_date, :end_time_part, :notify_date, :notify_time_part
 
   before_validation :set_datetime_attributes
-  after_save :update_notification_job
+  after_save :update_notification_job, if: -> { saved_change_to_notify_time? }
 
   validates :title, presence: true
   validate :start_must_be_before_end_time
@@ -26,8 +26,10 @@ class Event < ApplicationRecord
   end
 
   def update_notification_job
-    if line_notify_changed? || notify_time_changed?
-      NotificationJob.set(wait_until: notify_time).perform_later(id)
-    end
+    Sidekiq::ScheduledSet.new.select do |job|
+      job.args[0] == self.id && job.klass == 'NotificationJob'
+    end.each(&:delete)
+
+    NotificationJob.set(wait_until: notify_time).perform_later(self.id) if notify_time.present?
   end
 end
