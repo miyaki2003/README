@@ -36,6 +36,8 @@ class LineBotController < ApplicationController
       send_current_date_and_time(event['replyToken'])
     when '取り消し'
       cancel_last_reminder(user, event['replyToken'])
+    when 'カレンダー'
+      send_calendar_link(event['replyToken'])
     else
       if user.status == 'awaiting_time'
         process_user_message(user, user_message, event['replyToken'])
@@ -168,6 +170,26 @@ class LineBotController < ApplicationController
         text: 'リマインダーが見つかりませんでした'
       }
     end
+    client.reply_message(reply_token, message)
+  end
+
+  def send_calendar_link(reply_token)
+    message = {
+      type: 'text',
+      text: 'カレンダーを見るには以下のボタンをタップしてください',
+      quickReply: {
+        items: [
+          {
+            type: 'action',
+            action: {
+              type: 'uri',
+              label: 'カレンダーを開く',
+              uri: 'https://liff.line.me/2003779201-OwqpG72P'
+            }
+          }
+        ]
+      }
+    }
     client.reply_message(reply_token, message)
   end
 
