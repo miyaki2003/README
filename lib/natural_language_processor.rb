@@ -25,7 +25,7 @@ class NaturalLanguageProcessor
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_relative_day_time($1, $2, $3, minutes)
-              when /(\d+)秒後|(\d+)分後|(\d+)分(\d+)秒後|(\d+)分半後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
+              when /(\d+)秒後|(\d+)分後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
                 translate_relative_time(text)
               when /(\d{1,2})月/
                 translate_specific_date_time($1, 1, nil, nil, nil)
@@ -76,7 +76,6 @@ class NaturalLanguageProcessor
     hour = hour.nil? ? 6 : hour.to_i
     minutes = minutes.to_i
     hour = adjust_hour_for_period(hour, period)
-
     date = Time.new(year, month, day, hour, minutes)
     format_datetime(date)
   end
@@ -132,8 +131,6 @@ class NaturalLanguageProcessor
 
     target_date = Time.current.beginning_of_week(:monday) + wday.days + week_modifier
 
-    
-    
     hour = time_match ? time_match[1].to_i : 6
 
     minute = time_match && time_match[2] ? time_match[2].to_i : 0
