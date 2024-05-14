@@ -5,6 +5,10 @@ class NaturalLanguageProcessor
     "金" => 4, "土" => 5, "日" => 6
   }.freeze
 
+  ERA_START_YEARS = {
+    "令和" => 2019
+  }.freeze
+
   def self.full_to_half(text)
     text.tr('０-９', '0-9').tr('：', ':').tr('／', '/')
   end
@@ -41,8 +45,29 @@ class NaturalLanguageProcessor
               when /(朝|午前|午後)?[\s　の]*(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $3 == "半" ? 30 : $3
                 translate_specific_date_time(nil, nil, $1, $2, minutes)
+              when /来年の(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components(Time.current.year + 1, $1, $2, $3, $4, $5)
+              when /来年の(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components(Time.current.year + 1, $1, $2, $3, $4, $5)
+              when /(\d{4})年の(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components($1, $2, $3, $4, $5, $6)
+              when /(\d{4})年の(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components($1, $2, $3, $4, $5, $6)
+              when /(令和)(\d+)年の(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                year = ERA_START_YEARS[$1] + $2.to_i - 1
+                parse_date_time_components(year, $3, $4, $5, $6, $7)
+              when /(令和)(\d+)年の(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                year = ERA_START_YEARS[$1] + $2.to_i - 1
+                parse_date_time_components(year, $3, $4, $5, $6, $7)
               end
     datetime || "Unrecognized format"
+  end
+
+  def self.parse_date_time_components(year, month, day, period, hour, minute)
+    hour = hour.nil? ? (period == "午後" ? 12 : 6) : hour.to_i
+    minute = (minute == "半" ? 30 : minute.to_i)
+    hour = adjust_hour_for_period(hour, period)
+    Time.new(year.to_i, month.to_i, day.to_i, hour, minute).strftime('%Y-%m-%d %H:%M:%S')
   end
 
   private
