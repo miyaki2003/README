@@ -27,5 +27,19 @@
 
   <body data-turbolinks="false">
     <%= yield %>
+      <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        liff.init({
+          liffId: "2003779201-OwqpG72P"
+        }).then(() => {
+          console.log('LIFF');
+          if (!liff.isLoggedIn()) {
+            liff.login();
+          }
+        }).catch((err) => {
+          console.error('LIFF failed', err);
+        });
+      });
+    </script>
   </body>
 </html>
