@@ -29,6 +29,20 @@ class NaturalLanguageProcessor
               when /(今日|明日|明後日)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $4 == "半" ? 30 : $4
                 translate_relative_day_time($1, $2, $3, minutes)
+              when /来年[\s　の]*(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components(Time.current.year + 1, $1, $2, $3, $4, $5)
+              when /来年[\s　の]*(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components(Time.current.year + 1, $1, $2, $3, $4, $5)
+              when /(\d{4})年[\s　の]*(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components($1, $2, $3, $4, $5, $6)
+              when /(\d{4})年[\s　の]*(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                parse_date_time_components($1, $2, $3, $4, $5, $6)
+              when /(令和)(\d+)年[\s　の]*(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                year = ERA_START_YEARS[$1] + $2.to_i - 1
+                parse_date_time_components(year, $3, $4, $5, $6, $7)
+              when /(令和)(\d+)年[\s　の]*(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
+                year = ERA_START_YEARS[$1] + $2.to_i - 1
+                parse_date_time_components(year, $3, $4, $5, $6, $7)
               when /(\d+)秒後|(\d+)分後|(\d+)時間後|(\d+)時間(\d+)分後|(\d+)時間半後|半日後|(\d+)日後|(\d+)週間後|(\d+)ヶ月後/
                 translate_relative_time(text)
               when /(\d{1,2})月/
@@ -45,35 +59,26 @@ class NaturalLanguageProcessor
               when /(朝|午前|午後)?[\s　の]*(\d{1,2})(?:時|:)?(\d{1,2}|半)?分?/
                 minutes = $3 == "半" ? 30 : $3
                 translate_specific_date_time(nil, nil, $1, $2, minutes)
-              when /来年の(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                parse_date_time_components(Time.current.year + 1, $1, $2, $3, $4, $5)
-              when /来年の(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                parse_date_time_components(Time.current.year + 1, $1, $2, $3, $4, $5)
-              when /(\d{4})年の(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                parse_date_time_components($1, $2, $3, $4, $5, $6)
-              when /(\d{4})年の(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                parse_date_time_components($1, $2, $3, $4, $5, $6)
-              when /(令和)(\d+)年の(\d+)月(\d+)日[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                year = ERA_START_YEARS[$1] + $2.to_i - 1
-                parse_date_time_components(year, $3, $4, $5, $6, $7)
-              when /(令和)(\d+)年の(\d+)\/(\d+)[\s　の]*(朝|午前|午後)?(\d{1,2})?(?:時|:)?(\d{1,2}|半)?分?/
-                year = ERA_START_YEARS[$1] + $2.to_i - 1
-                parse_date_time_components(year, $3, $4, $5, $6, $7)
               end
     datetime || "Unrecognized format"
-  end
-
-  def self.parse_date_time_components(year, month, day, period, hour, minute)
-    hour = hour.nil? ? (period == "午後" ? 12 : 6) : hour.to_i
-    minute = (minute == "半" ? 30 : minute.to_i)
-    hour = adjust_hour_for_period(hour, period)
-    Time.new(year.to_i, month.to_i, day.to_i, hour, minute).strftime('%Y-%m-%d %H:%M:%S')
   end
 
   private
 
   def self.format_datetime(datetime)
     datetime.strftime('%Y-%m-%d %H:%M:%S')
+  end
+
+  def self.parse_date_time_components(year, month, day, period, hour, minute)
+    year = year.to_i
+    month = month.to_i
+    day = day || 1
+    hour = hour ? hour.to_i : (period == "午後" ? 12 : 6)
+    minute = minute == "半" ? 30 : (minute.to_i || 0)
+
+    hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, hour, minute)
+    format_datetime(date)
   end
 
   def self.translate_relative_day_time(day, period, hour, minutes)
