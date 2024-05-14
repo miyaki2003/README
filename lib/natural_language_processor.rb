@@ -83,18 +83,6 @@ class NaturalLanguageProcessor
     datetime.strftime('%Y-%m-%d %H:%M:%S')
   end
 
-  def self.parse_date_time_components(year, month, day, period, hour, minute)
-    year = year.to_i
-    month = month.to_i
-    day = day || 1
-    hour = hour ? hour.to_i : (period == "午後" ? 12 : 6)
-    minute = minute == "半" ? 30 : (minute.to_i || 0)
-
-    hour = adjust_hour_for_period(hour, period)
-    date = Time.new(year, month, day, hour, minute)
-    format_datetime(date)
-  end
-
   def self.translate_relative_day_time(day, period, hour, minutes)
     date = case day
            when "今日" then Time.current
@@ -203,6 +191,18 @@ class NaturalLanguageProcessor
 
     datetime = Time.new(target_time.year, target_time.month, day, hour, minutes)
     format_datetime(datetime)
+  end
+
+  def self.parse_date_time_components(year, month, day, period, hour, minute)
+    year = year.to_i
+    month = month.to_i
+    day = day || 1
+    hour = hour ? hour.to_i : (period == "午後" ? 12 : 6)
+    minute = minute == "半" ? 30 : (minute.to_i || 0)
+
+    hour = adjust_hour_for_period(hour, period)
+    date = Time.new(year, month, day, hour, minute)
+    format_datetime(date)
   end
 
   def self.adjust_hour_for_period(hour, period)
