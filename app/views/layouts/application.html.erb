@@ -65,6 +65,7 @@
         }
         const base64Url = tokenParts[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const paddedBase64 = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
         const tokenData = JSON.parse(atob(base64));
         const expiryTime = tokenData.exp * 1000;
         const currentTime = new Date().getTime();
