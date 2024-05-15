@@ -56,11 +56,15 @@
       document.cookie = name + '=; Max-Age=-99999999;';
     }
 
-    const base64Decode = (str) => {
-      return decodeURIComponent(Array.prototype.map.call(window.atob(str), function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-    };
+    function base64Decode(str) {
+      const binaryString = window.atob(str);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const decodedString = new TextDecoder().decode(bytes);
+      return decodedString;
+    }
 
 
     function isTokenValid(token) {
