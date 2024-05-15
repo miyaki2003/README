@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   get "oauth/:provider" => "oauths#oauth", :as => :auth_at_provider
 
-  delete '/logout', to: 'oauths#destroy'
+  delete '/logout', to: 'oauths#destroy', as: :logout
 
   post '/callback', to: 'line_bot#callback'
 
