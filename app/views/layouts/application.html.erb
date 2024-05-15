@@ -56,7 +56,6 @@
       document.cookie = name + '=; Max-Age=-99999999;';
     }
 
-    // トークンが有効かどうか確認する関数
     function isTokenValid(token) {
       const tokenData = JSON.parse(atob(token.split('.')[1]));
       const expiryTime = tokenData.exp * 1000;
