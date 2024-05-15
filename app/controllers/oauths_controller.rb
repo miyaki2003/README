@@ -83,5 +83,6 @@ class OauthsController < ApplicationController
     rescue JWT::DecodeError => e
       Rails.logger.error("Token decode error: #{e.message}")
       nil
+    end
   end
 end
