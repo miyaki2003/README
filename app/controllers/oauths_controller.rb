@@ -77,7 +77,11 @@ class OauthsController < ApplicationController
   end
 
   def decode_id_token(id_token, client_secret)
-    decoded_token = JWT.decode(id_token, client_secret, true, { algorithm: 'HS256' })
-    decoded_token[0]['sub']
+    begin
+      decoded_token = JWT.decode(id_token, client_secret, true, { algorithm: 'HS256' })
+      decoded_token[0]['sub']
+    rescue JWT::DecodeError => e
+      Rails.logger.error("Token decode error: #{e.message}")
+      nil
   end
 end
