@@ -69,8 +69,10 @@
         console.log('Base64 part:', base64);
         const paddedBase64 = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
         console.log('Padded Base64 part:', paddedBase64);
-        const decodedString = decodeURIComponent(escape(window.atob(paddedBase64)));
+        const decodedString = atob(paddedBase64);
         console.log('Decoded string:', decodedString);
+        console.log('Decoded string start:', decodedString.slice(0, 20));
+        console.log('Decoded string end:', decodedString.slice(-20));
         const tokenData = JSON.parse(decodedString);
         console.log('Decoded token data:', tokenData);
         const expiryTime = tokenData.exp * 1000;
