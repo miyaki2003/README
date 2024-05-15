@@ -28,101 +28,126 @@
   <body data-turbolinks="false">
     <%= yield %>
     <script>
-    // クッキーを設定する関数
-    function setCookie(name, value, days) {
-      let expires = "";
-      if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-      }
-      document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
+      document.addEventListener('DOMContentLoaded', function () {
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+          logoutButton.addEventListener('click', function () {
+            eraseCookie("sessionToken");
 
-    // クッキーを取得する関数
-    function getCookie(name) {
-      const nameEQ = name + "=";
-      const ca = document.cookie.split(';');
-      for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-      }
-      return null;
-    }
-
-    // クッキーを削除する関数
-    function eraseCookie(name) {
-      document.cookie = name + '=; Max-Age=-99999999;';
-    }
-
-    function isTokenValid(token) {
-      try {
-        const tokenParts = token.split('.');
-        if (tokenParts.length !== 3) {
-          console.error('Invalid token format');
-          return false;
+            fetch('/logout', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+              }
+            }).then(response => {
+              if (response.ok) {
+                if (typeof liff !== 'undefined') {
+                  liff.logout().then(() => {
+                    location.reload();
+                  }).catch((err) => {
+                    console.error('LIFF logout failed', err);
+                    location.reload();
+                  });
+                } else {
+                  location.reload();
+                }
+              } else {
+                console.error('Logout failed');
+              }
+            });
+          });
         }
-        const tokenData = JSON.parse(atob(tokenParts[1]));
-        const expiryTime = tokenData.exp * 1000;
-        const currentTime = new Date().getTime();
-        return currentTime < expiryTime;
-      } catch (e) {
-        console.error('Invalid token format', e);
-        return false;
-      }
-    }
 
-    function displayCalendarWithToken(token) {
-      console.log("Displaying calendar with token:", token);
-    }
-
-    document.getElementById('logoutButton').addEventListener('click', function () {
-      eraseCookie("sessionToken");
-
-      fetch('/logout', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-        }
-      }).then(response => {
-        if (response.ok) {
-          if (typeof liff !== 'undefined') {
-            liff.logout();
+        function setCookie(name, value, days) {
+          let expires = "";
+          if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
           }
-          location.reload();
+          document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+          const nameEQ = name + "=";
+          const ca = document.cookie.split(';');
+          for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+          }
+          return null;
+        }
+
+        function eraseCookie(name) {
+          document.cookie = name + '=; Max-Age=-99999999;';
+        }
+
+        function isTokenValid(token) {
+          try {
+            const tokenParts = token.split('.');
+            if (tokenParts.length !== 3) {
+              console.error('Invalid token format');
+              return false;
+            }
+            const tokenData = JSON.parse(atob(tokenParts[1]));
+            const expiryTime = tokenData.exp * 1000;
+            const currentTime = new Date().getTime();
+            console.log(`Token expiry time: ${expiryTime}, current time: ${currentTime}`);
+            return currentTime < expiryTime;
+          } catch (e) {
+            console.error('Invalid token format', e);
+            return false;
+          }
+        }
+
+        function displayCalendarWithToken(token) {
+          console.log("Displaying calendar with token:", token);
+        }
+
+        const sessionToken = getCookie("sessionToken");
+        console.log("Session Token:", sessionToken);
+
+        if (sessionToken && isTokenValid(sessionToken)) {
+          console.log("Valid session token found");
+          displayCalendarWithToken(sessionToken);
         } else {
-          console.error('Logout failed');
+          if (typeof liff !== 'undefined') {
+            console.log('Initializing LIFF');
+            liff.init({
+              liffId: "2003779201-OwqpG72P"
+            }).then(() => {
+              console.log('LIFF initialized');
+              if (liff.isLoggedIn()) {
+                console.log('User is logged in');
+                const accessToken = liff.getAccessToken();
+                console.log("Access Token:", accessToken);
+                if (accessToken && isTokenValid(accessToken)) {
+                  setCookie("sessionToken", accessToken, 3650);
+                  displayCalendarWithToken(accessToken);
+                } else {
+                  console.error('Invalid or missing access token, re-logging in');
+                  setTimeout(() => {
+                    liff.login();
+                  }, 1000);
+                }
+              } else {
+                console.log("User is not logged in, initiating login");
+                liff.login();
+              }
+            }).catch((err) => {
+              console.error('LIFF initialization failed', err);
+              setTimeout(() => {
+                console.log('Retrying LIFF initialization');
+                liff.init({ liffId: "2003779201-OwqpG72P" });
+              }, 3000);
+            });
+          } else {
+            console.log("LIFF SDKが利用できません。Webブラウザ用の処理を実行します。");
+          }
         }
       });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const sessionToken = getCookie("sessionToken");
-
-      if (sessionToken && isTokenValid(sessionToken)) {
-        displayCalendarWithToken(sessionToken);
-      } else {
-        if (typeof liff !== 'undefined') {
-          liff.init({
-            liffId: "2003779201-OwqpG72P"
-          }).then(() => {
-            if (liff.isLoggedIn()) {
-              const accessToken = liff.getAccessToken();
-              setCookie("sessionToken", accessToken, 3650);
-              displayCalendarWithToken(accessToken);
-            } else {
-              liff.login();
-            }
-          }).catch((err) => {
-            console.error('LIFF failed', err);
-          });
-        } else {
-          console.log("LIFF SDKが利用できません。Webブラウザ用の処理を実行します。");
-        }
-      }
-    });
-  </script>
+    </script>
   </body>
 </html>
