@@ -56,6 +56,13 @@
       document.cookie = name + '=; Max-Age=-99999999;';
     }
 
+    const base64Decode = (str) => {
+      return decodeURIComponent(Array.prototype.map.call(window.atob(str), function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    };
+
+
     function isTokenValid(token) {
       try {
         const tokenParts = token.split('.');
@@ -65,16 +72,21 @@
         }
         const base64Url = tokenParts[1];
         console.log('Base64Url part:', base64Url);
+
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         console.log('Base64 part:', base64);
+
         const paddedBase64 = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
         console.log('Padded Base64 part:', paddedBase64);
-        const decodedString = atob(paddedBase64);
+
+        const decodedString = base64Decode(paddedBase64);
         console.log('Decoded string:', decodedString);
         console.log('Decoded string start:', decodedString.slice(0, 20));
         console.log('Decoded string end:', decodedString.slice(-20));
+
         const tokenData = JSON.parse(decodedString);
         console.log('Decoded token data:', tokenData);
+
         const expiryTime = tokenData.exp * 1000;
         const currentTime = new Date().getTime();
         return currentTime < expiryTime;
