@@ -57,10 +57,20 @@
     }
 
     function isTokenValid(token) {
-      const tokenData = JSON.parse(atob(token.split('.')[1]));
-      const expiryTime = tokenData.exp * 1000;
-      const currentTime = new Date().getTime();
-      return currentTime < expiryTime;
+      try {
+        const tokenParts = token.split('.');
+        if (tokenParts.length !== 3) {
+          console.error('Invalid token format');
+          return false;
+        }
+        const tokenData = JSON.parse(atob(tokenParts[1]));
+        const expiryTime = tokenData.exp * 1000;
+        const currentTime = new Date().getTime();
+        return currentTime < expiryTime;
+      } catch (e) {
+        console.error('Invalid token format', e);
+        return false;
+      }
     }
 
     function displayCalendarWithToken(token) {
