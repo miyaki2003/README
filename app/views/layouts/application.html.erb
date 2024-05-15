@@ -64,9 +64,13 @@
           return false;
         }
         const base64Url = tokenParts[1];
+        console.log('Base64Url part:', base64Url);
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        console.log('Base64 part:', base64);
         const paddedBase64 = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+        console.log('Padded Base64 part:', paddedBase64);
         const tokenData = JSON.parse(atob(base64));
+        console.log('Decoded token data:', tokenData);
         const expiryTime = tokenData.exp * 1000;
         const currentTime = new Date().getTime();
         return currentTime < expiryTime;
