@@ -63,7 +63,9 @@
           console.error('Invalid token format');
           return false;
         }
-        const tokenData = JSON.parse(atob(tokenParts[1].replace(/-/g, '+').replace(/_/g, '/')));
+        const base64Url = tokenParts[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const tokenData = JSON.parse(atob(base64));
         const expiryTime = tokenData.exp * 1000;
         const currentTime = new Date().getTime();
         return currentTime < expiryTime;
