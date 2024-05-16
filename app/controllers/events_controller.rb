@@ -49,11 +49,13 @@ class EventsController < ApplicationController
     set_datetime_params
 
     if @event.notification_job_id.present?
+      Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
       NotificationJob.cancel(@event.notification_job_id)
     end
     
     if @event.save
       schedule_line_notification if @event.line_notify
+      Rails.logger.info "New job scheduled with ID: #{@event.notification_job_id}"
       render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
