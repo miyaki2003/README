@@ -90,7 +90,7 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :line_notify, :event_date, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time, :memo)
+    params.require(:event).permit(:title, :line_notify, :event_date, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time, :memo, :notification_job_id)
   end
 
   def set_datetime_params
