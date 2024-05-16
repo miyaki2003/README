@@ -48,9 +48,13 @@ class EventsController < ApplicationController
     @event.assign_attributes(event_params)
     set_datetime_params
 
+    Rails.logger.info "Event before saving: #{@event.inspect}"
+
     if @event.notification_job_id.present?
       Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
       NotificationJob.cancel(@event.notification_job_id)
+    else
+      Rails.logger.info "キャンセル"
     end
     
     if @event.save
