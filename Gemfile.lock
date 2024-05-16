@@ -317,11 +317,8 @@ GEM
     rake (13.1.0)
     rdoc (6.6.2)
       psych (>= 4.0.0)
-<<<<<<< HEAD
     redis-client (0.22.1)
       connection_pool
-=======
->>>>>>> f2a13269111d035125e27e5e42031aed350380c0
     regexp_parser (2.9.0)
     reline (0.4.2)
       io-console (~> 0.5)
