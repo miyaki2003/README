@@ -36,10 +36,6 @@ gem 'sassc-rails'
 
 gem 'jwt'
 
-gem 'sidekiq'
-
-gem "redis"
-
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
   gem 'dotenv-rails'
