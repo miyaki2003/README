@@ -1,3 +1,4 @@
+require 'sidekiq/api'
 class NotificationJob < ApplicationJob
   queue_as :default
 
