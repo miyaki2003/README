@@ -16,7 +16,8 @@ class NotificationJob < ApplicationJob
 
   def self.cancel(job_id)
     Rails.logger.info "Attempting to cancel job with ID: #{job_id}"
-    job = Sidekiq::ScheduledSet.new.find_job(job_id)
+    scheduled_set = Sidekiq::ScheduledSet.new
+    job = scheduled_set.find { |j| j.jid == job_id }
     if job
       job.delete
       Rails.logger.info "Job with ID: #{job_id} cancelled successfully"
