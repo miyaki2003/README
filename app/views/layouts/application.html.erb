@@ -60,7 +60,7 @@
       try {
         return decodeURIComponent(escape(window.atob(str)));
       } catch (e) {
-        console.error('Base64 decoding error:', e);
+        console.error('Base64 decoding error:', e, 'for string:', str);
         return null;
       }
     }
