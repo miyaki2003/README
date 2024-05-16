@@ -32,7 +32,7 @@ class EventsController < ApplicationController
 
     if @event.valid?
       if @event.save
-        schedule_line_notification if params[:event][:line_notify] == "1"
+        schedule_line_notification if @event.line_notify
         render json: @event, status: :created
       else
         render json: @event.errors, status: :unprocessable_entity
@@ -53,7 +53,7 @@ class EventsController < ApplicationController
     end
     
     if @event.save
-      schedule_line_notification if params[:event][:line_notify] == "1"
+      schedule_line_notification if @event.line_notify
       render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
