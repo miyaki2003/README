@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get 'reminders/index'
-
+  
   root "staticpages#top"
 
   get '/auth/line/callback', to: 'oauths#callback'
