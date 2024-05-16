@@ -47,6 +47,11 @@ class EventsController < ApplicationController
     #@event = Event.find(params[:id])
     @event.assign_attributes(event_params)
     set_datetime_params
+
+    if @event.notification_job_id.present?
+      NotificationJob.cancel(@event.notification_job_id)
+    end
+    
     if @event.save
       schedule_line_notification if params[:event][:line_notify] == "1"
       render json: @event, status: :ok
@@ -114,7 +119,8 @@ class EventsController < ApplicationController
   end
 
   def schedule_line_notification
-    NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
+    job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
+    @event.update(notification_job_id: job.job_id)
   end
   
   def calculate_notification_time(start_time, notify_before_str)
