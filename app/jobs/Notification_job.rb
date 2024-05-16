@@ -7,4 +7,8 @@ class NotificationJob < ApplicationJob
     message_text = "「#{event.title}」のリマインドです"
     LineNotifyService.send_message(event.user.line_user_id, message_text)
   end
+
+  def self.cancel(job_id)
+    Sidekiq::ScheduledSet.new.find_job(job_id).try(:delete)
+  end
 end
