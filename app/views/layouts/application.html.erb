@@ -58,7 +58,12 @@
 
     function base64Decode(str) {
       try {
-        return decodeURIComponent(escape(window.atob(str)));
+        return decodeURIComponent(
+          atob(str)
+            .split('')
+            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
       } catch (e) {
         console.error('Base64 decoding error:', e, 'for string:', str);
         return null;
