@@ -52,15 +52,13 @@ class EventsController < ApplicationController
     Rails.logger.info "Attempting to cancel job with ID: #{@event.notification_job_id}"
 
     if @event.notification_job_id
-      job = Sidekiq::ScheduledSet.new.find_job(@event.notification_job_id)
-      if job
-        job.delete
-        Rails.logger.info "Job with ID: #{@event.notification_job_id} cancelled"
+      if cancel_job(@event.notification_job_id)
+        Rails.logger.info "Old job with ID: #{@event.notification_job_id} successfully cancelled"
       else
-        Rails.logger.info "Job with ID: #{@event.notification_job_id} not found in ScheduledSet"
+        Rails.logger.warn "Old job with ID: #{@event.notification_job_id} could not be found"
       end
     else
-      Rails.logger.info "キャンセル"
+      Rails.logger.info "No previous job to cancel"
     end
     
     if @event.save
@@ -77,6 +75,20 @@ class EventsController < ApplicationController
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def cancel_job(job_id)
+    sets = [Sidekiq::ScheduledSet.new, Sidekiq::RetrySet.new, Sidekiq::Queue.new]
+    sets.each do |set|
+      job = set.find_job(job_id)
+      if job
+        job.delete
+        Rails.logger.info "Job with ID: #{job_id} cancelled from #{set.name}"
+        return true
+      end
+    end
+    Rails.logger.info "Job with ID: #{job_id} not found in any set"
+    false
   end
 
   def details
