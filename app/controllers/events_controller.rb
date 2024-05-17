@@ -51,47 +51,20 @@ class EventsController < ApplicationController
     Rails.logger.info "Event before saving: #{@event.inspect}"
     Rails.logger.info "Attempting to cancel job with ID: #{@event.notification_job_id}"
 
-    if @event.notification_job_id
-      if cancel_job(@event.notification_job_id)
-        Rails.logger.info "Old job with ID: #{@event.notification_job_id} successfully cancelled"
-      else
-        Rails.logger.warn "Old job with ID: #{@event.notification_job_id} could not be found"
-      end
+    if @event.notification_job_id.present?
+      Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
+      NotificationJob.cancel(@event.notification_job_id)
     else
-      Rails.logger.info "No previous job to cancel"
+      Rails.logger.info "キャンセル"
     end
     
     if @event.save
-      if @event.line_notify
-        if schedule_line_notification
-          Rails.logger.info "New job scheduled with ID: #{@event.notification_job_id}"
-          render json: @event, status: :ok
-        else
-          render json: { error: 'Failed to schedule notification' }, status: :unprocessable_entity
-        end
-      else
-        render json: @event, status: :ok
-      end
+      schedule_line_notification if @event.line_notify
+      Rails.logger.info "New job scheduled with ID: #{@event.notification_job_id}"
+      render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
-  end
-
-  def cancel_job(job_id)
-    sets = [Sidekiq::ScheduledSet.new, Sidekiq::RetrySet.new, Sidekiq::Queue.new]
-    sets.each do |set|
-      set.each do |job|
-        Rails.logger.debug "Checking job ID: #{job.jid} in #{set.name}"
-      end
-      job = set.find_job(job_id)
-      if job
-        job.delete
-        Rails.logger.info "Job with ID: #{job_id} cancelled from #{set.name}"
-        return true
-      end
-    end
-    Rails.logger.info "Job with ID: #{job_id} not found in any set"
-    false
   end
 
   def details
@@ -155,12 +128,7 @@ class EventsController < ApplicationController
   def schedule_line_notification
     job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
     Rails.logger.info "Scheduled new job with ID: #{job.job_id} for event ID: #{@event.id}"
-    if @event.update(notification_job_id: job.job_id)
-      true
-    else
-      Rails.logger.error "Failed to update event with new job ID"
-      false
-    end
+    @event.update(notification_job_id: job.job_id)
   end
   
   def calculate_notification_time(start_time, notify_before_str)
