@@ -80,6 +80,9 @@ class EventsController < ApplicationController
   def cancel_job(job_id)
     sets = [Sidekiq::ScheduledSet.new, Sidekiq::RetrySet.new, Sidekiq::Queue.new]
     sets.each do |set|
+      set.each do |job|
+        Rails.logger.debug "Checking job ID: #{job.jid} in #{set.name}"
+      end
       job = set.find_job(job_id)
       if job
         job.delete
