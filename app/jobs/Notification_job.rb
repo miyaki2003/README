@@ -15,7 +15,7 @@ class NotificationJob < ApplicationJob
     Rails.logger.info "Attempting to cancel job with ID: #{job_id}"
     scheduled_set = Sidekiq::ScheduledSet.new
     scheduled_set.each do |job|
-      puts "Job ID: #{job.jid}, Class: #{job.klass}, Args: #{job.args}, At: #{Time.at(job.at)}"
+      Rails.logger.info "Job ID: #{job.jid}, Class: #{job.klass}, Args: #{job.args}, At: #{Time.at(job.at)}"
     end
     job = scheduled_set.find { |j| j.jid == job_id }
     if job
