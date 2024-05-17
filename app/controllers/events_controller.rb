@@ -53,9 +53,14 @@ class EventsController < ApplicationController
 
     if @event.notification_job_id.present?
       Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
-      NotificationJob.cancel(@event.notification_job_id)
+      cancel_result = NotificationJob.cancel(@event.notification_job_id)
+      if cancel_result
+        Rails.logger.info "Job with ID: #{@event.notification_job_id} successfully cancelled"
+      else
+        Rails.logger.warn "Job with ID: #{@event.notification_job_id} could not be cancelled"
+      end
     else
-      Rails.logger.info "キャンセル"
+      Rails.logger.info "No job to cancel"
     end
     
     if @event.save
@@ -127,7 +132,7 @@ class EventsController < ApplicationController
 
   def schedule_line_notification
     job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
-    Rails.logger.info "Scheduled new job with ID: #{job.job_id} for event ID: #{@event.id}"
+    Rails.logger.info "Scheduled new job with ID: #{job.job_id} for event ID: #{@event.id} at #{Time.now}"
     @event.update(notification_job_id: job.job_id)
   end
   
