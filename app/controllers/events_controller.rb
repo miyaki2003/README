@@ -49,6 +49,7 @@ class EventsController < ApplicationController
     set_datetime_params
 
     Rails.logger.info "Event before saving: #{@event.inspect}"
+    Rails.logger.info "Attempting to cancel job with ID: #{@event.notification_job_id}"
 
     if @event.notification_job_id.present?
       Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
@@ -126,6 +127,7 @@ class EventsController < ApplicationController
 
   def schedule_line_notification
     job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
+    Rails.logger.info "Scheduled new job with ID: #{job.job_id} for event ID: #{@event.id}"
     @event.update(notification_job_id: job.job_id)
   end
   
