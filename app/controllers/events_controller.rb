@@ -51,17 +51,29 @@ class EventsController < ApplicationController
     Rails.logger.info "Event before saving: #{@event.inspect}"
     Rails.logger.info "Attempting to cancel job with ID: #{@event.notification_job_id}"
 
-    if @event.notification_job_id.present?
-      Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
-      NotificationJob.cancel(@event.notification_job_id)
+    if @event.notification_job_id
+      job = Sidekiq::ScheduledSet.new.find_job(@event.notification_job_id)
+      if job
+        job.delete
+        Rails.logger.info "Job with ID: #{@event.notification_job_id} cancelled"
+      else
+        Rails.logger.info "Job with ID: #{@event.notification_job_id} not found in ScheduledSet"
+      end
     else
       Rails.logger.info "キャンセル"
     end
     
     if @event.save
-      schedule_line_notification if @event.line_notify
-      Rails.logger.info "New job scheduled with ID: #{@event.notification_job_id}"
-      render json: @event, status: :ok
+      if @event.line_notify
+        if schedule_line_notification
+          Rails.logger.info "New job scheduled with ID: #{@event.notification_job_id}"
+          render json: @event, status: :ok
+        else
+          render json: { error: 'Failed to schedule notification' }, status: :unprocessable_entity
+        end
+      else
+        render json: @event, status: :ok
+      end
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
     end
@@ -128,7 +140,12 @@ class EventsController < ApplicationController
   def schedule_line_notification
     job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
     Rails.logger.info "Scheduled new job with ID: #{job.job_id} for event ID: #{@event.id}"
-    @event.update(notification_job_id: job.job_id)
+    if @event.update(notification_job_id: job.job_id)
+      true
+    else
+      Rails.logger.error "Failed to update event with new job ID"
+      false
+    end
   end
   
   def calculate_notification_time(start_time, notify_before_str)
