@@ -1,6 +1,6 @@
 class ReminderListsController < ApplicationController
   def index
-    @reminders = Reminder.where(user_id: current_user.id, is_active: true).order(reminder_time: :asc)
+    @reminders = current_user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc)
   end
 
   def destroy
