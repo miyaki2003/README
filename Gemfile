@@ -30,11 +30,11 @@ gem 'cssbundling-rails'
 
 gem 'jsbundling-rails'
 
-gem "google-cloud-language"
-
 gem 'sassc-rails'
 
 gem 'jwt'
+
+gem 'sidekiq'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]

@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   get 'reminders/index'
-  
   root "staticpages#top"
 
   get '/auth/line/callback', to: 'oauths#callback'
@@ -22,6 +21,9 @@ Rails.application.routes.draw do
       get 'details'
     end
   end
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   resources :reminders, only: %i[index destroy]
 end

@@ -32,7 +32,7 @@ class EventsController < ApplicationController
 
     if @event.valid?
       if @event.save
-        schedule_line_notification if params[:event][:line_notify] == "1"
+        schedule_line_notification if @event.line_notify
         render json: @event, status: :created
       else
         render json: @event.errors, status: :unprocessable_entity
@@ -47,8 +47,11 @@ class EventsController < ApplicationController
     #@event = Event.find(params[:id])
     @event.assign_attributes(event_params)
     set_datetime_params
+    if @event.notification_job_id.present?
+      NotificationJob.cancel(@event.notification_job_id)
+    end
     if @event.save
-      schedule_line_notification if params[:event][:line_notify] == "1"
+      schedule_line_notification if @event.line_notify
       render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
@@ -85,7 +88,7 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(:event).permit(:title, :line_notify, :event_date, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time, :memo)
+    params.require(:event).permit(:title, :line_notify, :event_date, :start_date, :start_time, :end_date, :end_time, :notify_date, :notify_time, :memo, :notification_job_id)
   end
 
   def set_datetime_params
@@ -114,7 +117,8 @@ class EventsController < ApplicationController
   end
 
   def schedule_line_notification
-    NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
+    job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
+    @event.update(notification_job_id: job.job_id)
   end
   
   def calculate_notification_time(start_time, notify_before_str)
