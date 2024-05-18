@@ -12,12 +12,13 @@ class NotificationJob < ApplicationJob
   end
 
   def self.cancel(job_id)
-  scheduled_set = Sidekiq::ScheduledSet.new
-  job = scheduled_set.find { |j| j.jid == job_id }
-  if job
-    job.delete
-    Rails.logger.info "ジョブがキャンセルされました: #{job_id}"
-  else
-    Rails.logger.error "ジョブが見つかりませんでした: #{job_id}"
-  end
+    scheduled_set = Sidekiq::ScheduledSet.new
+    job = scheduled_set.find { |j| j.jid == job_id }
+    unless job
+      Rails.logger.error "ジョブが見つかりませんでした"
+    end
+    if job
+      job.delete
+    end
+  end  
 end
