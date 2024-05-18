@@ -25,5 +25,9 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
-  resources :reminder_lists, only: [:index, :destroy]
+  resources :reminder_lists, only: [:index] do
+    member do
+      patch :deactivate
+    end
+  end
 end
