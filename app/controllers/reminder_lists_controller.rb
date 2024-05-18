@@ -3,9 +3,12 @@ class ReminderListsController < ApplicationController
     @reminders = current_user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc)
   end
 
-  def destroy
-    @reminder = Reminder.find(params[:id])
-    @reminder.update(is_active: false)
-    redirect_to reminder_lists_path, notice: 'リマインドが削除されました'
+  def deactivate
+    @reminder = current_user.reminders.find(params[:id])
+    if @reminder.update(is_active: false)
+      redirect_to reminders_path
+    else
+      redirect_to reminders_path
+    end
   end
 end
