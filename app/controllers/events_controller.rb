@@ -47,25 +47,11 @@ class EventsController < ApplicationController
     #@event = Event.find(params[:id])
     @event.assign_attributes(event_params)
     set_datetime_params
-
-    Rails.logger.info "Event before saving: #{@event.inspect}"
-    Rails.logger.info "Attempting to cancel job with ID: #{@event.notification_job_id}"
-
     if @event.notification_job_id.present?
-      Rails.logger.info "Cancelling job with ID: #{@event.notification_job_id}"
-      cancel_result = NotificationJob.cancel(@event.notification_job_id)
-      if cancel_result
-        Rails.logger.info "Job with ID: #{@event.notification_job_id} successfully cancelled"
-      else
-        Rails.logger.warn "Job with ID: #{@event.notification_job_id} could not be cancelled"
-      end
-    else
-      Rails.logger.info "No job to cancel"
+      NotificationJob.cancel(@event.notification_job_id)
     end
-    
     if @event.save
       schedule_line_notification if @event.line_notify
-      Rails.logger.info "New job scheduled with ID: #{@event.notification_job_id}"
       render json: @event, status: :ok
     else
       render json: { errors: @event.errors.full_messages }, status: :unprocessable_entity
@@ -132,7 +118,6 @@ class EventsController < ApplicationController
 
   def schedule_line_notification
     job = NotificationJob.set(wait_until: @event.notify_time).perform_later(@event.id)
-    Rails.logger.info "Scheduled new job with ID: #{job.job_id} for event ID: #{@event.id} at #{Time.now}"
     @event.update(notification_job_id: job.job_id)
   end
   
