@@ -14,27 +14,30 @@ class WeatherService
       lon: longitude,
       appid: api_key,
       units: 'metric',
-      lang: 'ja'
+      lang: 'ja',
     })
 
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
 
-    Rails.logger.debug "OpenWeatherMap API response: #{data}"
+    current_weather = {
+      weather: data['list'][0]['weather'][0]['description'],
+      temperature: data['list'][0]['main']['temp'],
+      rainfall: data['list'][0].dig('rain', '1h') || 0
+    }
 
-    if data['weather'].nil? || data['main'].nil?
-      Rails.logger.error "Unexpected API response: #{data}"
-      return { error: 'データを取得できませんでした' }
+    forecasts = (1..6).map do |i|
+      forecast_index = i * 2
+      {
+        weather: data['list'][i]['weather'][0]['description'],
+        temperature: data['list'][i]['main']['temp'],
+        rainfall: data['list'][i].dig('rain', '3h') || 0
+      }
     end
 
-    weather_description = data['weather'][0]['description']
-    temperature = data['main']['temp']
-    rainfall = data.dig('rain', '1h') || 0
-
     {
-      weather: weather_description,
-      temperature: temperature,
-      rainfall: rainfall
+      current: current_weather,
+      forecasts: forecasts
     }
   end
 end

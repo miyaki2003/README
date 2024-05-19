@@ -241,22 +241,86 @@ class LineBotController < ApplicationController
   end
 
   def handle_location_message(event)
-    Rails.logger.debug "handle_location_message called"
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
     latitude = event.message['latitude']
     longitude = event.message['longitude']
-    Rails.logger.debug "Latitude: #{latitude}, Longitude: #{longitude}"
     weather_info = WeatherService.get_weather_info(latitude, longitude)
-    Rails.logger.debug "Weather Info: #{weather_info}"
-    if weather_info[:error]
-      client.reply_message(event['replyToken'], { type: 'text', text: weather_info[:error] })
-    else
-      reply_weather_info(event['replyToken'], weather_info)
+    reply_weather_info(event['replyToken'], weather_info)
+  end
+
+  def weather_emoji(description)
+    case description
+    when /clear/i
+      "☀️"
+    when /clouds/i
+      "☁️"
+    when /rain/i
+      "🌧️"
+    when /snow/i
+      "❄️"
+    when /thunderstorm/i
+      "⛈️"
     end
   end
 
   def reply_weather_info(reply_token, weather_info)
+    current_weather_contents = [
+      {
+        type: 'text',
+        text: '現在の天気',
+        weight: 'bold',
+        size: 'lg'
+      },
+      {
+        type: 'text',
+        text: "天気: #{weather_info[:current][:weather]} #{weather_emoji(weather_info[:current][:weather])}",
+        size: 'md'
+      },
+      {
+        type: 'text',
+        text: "気温: #{weather_info[:current][:temperature]}°C",
+        size: 'md'
+      },
+      {
+        type: 'text',
+        text: "降水量: #{weather_info[:current][:rainfall]} mm",
+        size: 'md'
+      }
+    ]
+  
+    forecast_contents = weather_info[:forecasts].each_with_index.map do |forecast, index|
+      [
+        {
+          type: 'separator',
+          margin: 'lg'
+        },
+        {
+          type: 'text',
+          text: "#{(index + 1) * 2}時間後の天気",
+          weight: 'bold',
+          size: 'lg'
+        },
+        {
+          type: 'text',
+          text: "天気: #{forecast[:weather]} #{weather_emoji(forecast[:weather])}",
+          size: 'md'
+        },
+        {
+          type: 'text',
+          text: "気温: #{forecast[:temperature]}°C",
+          size: 'md'
+        },
+        {
+          type: 'text',
+          text: "降水量: #{forecast[:rainfall]} mm",
+          size: 'md'
+        }
+      ]
+    end.flatten
+  
+    contents = current_weather_contents + forecast_contents
+  
     message = {
       type: 'flex',
       altText: '天気情報',
@@ -265,32 +329,11 @@ class LineBotController < ApplicationController
         body: {
           type: 'box',
           layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: '現在の天気',
-              weight: 'bold',
-              size: 'lg'
-            },
-            {
-              type: 'text',
-              text: "天気: #{weather_info[:weather]}",
-              size: 'md'
-            },
-            {
-              type: 'text',
-              text: "気温: #{weather_info[:temperature]}°C",
-              size: 'md'
-            },
-            {
-              type: 'text',
-              text: "降水量: #{weather_info[:rainfall]} mm",
-              size: 'md'
-            }
-          ]
+          contents: contents
         }
       }
     }
+  
     client.reply_message(reply_token, message)
   end
 
