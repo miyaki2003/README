@@ -333,7 +333,8 @@ class LineBotController < ApplicationController
         }
       }
     }
-  
+
+    puts "Reply message: #{message.inspect}"
     client.reply_message(reply_token, message)
   end
 
