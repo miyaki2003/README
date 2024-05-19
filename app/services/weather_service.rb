@@ -20,6 +20,13 @@ class WeatherService
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
 
+    Rails.logger.debug "OpenWeatherMap API response: #{data}"
+
+    if data['weather'].nil? || data['main'].nil?
+      Rails.logger.error "Unexpected API response: #{data}"
+      return { error: 'データを取得できませんでした' }
+    end
+
     weather_description = data['weather'][0]['description']
     temperature = data['main']['temp']
     rainfall = data.dig('rain', '1h') || 0

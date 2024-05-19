@@ -249,7 +249,11 @@ class LineBotController < ApplicationController
     Rails.logger.debug "Latitude: #{latitude}, Longitude: #{longitude}"
     weather_info = WeatherService.get_weather_info(latitude, longitude)
     Rails.logger.debug "Weather Info: #{weather_info}"
-    reply_weather_info(event['replyToken'], weather_info)
+    if weather_info[:error]
+      client.reply_message(event['replyToken'], { type: 'text', text: weather_info[:error] })
+    else
+      reply_weather_info(event['replyToken'], weather_info)
+    end
   end
 
   def reply_weather_info(reply_token, weather_info)
