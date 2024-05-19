@@ -40,6 +40,8 @@ class LineBotController < ApplicationController
       send_calendar_link(event['replyToken'])
     when '詳細'
       send_details_link(event['replyToken'])
+    when '天気'
+      send_weather_quick_reply(event['replyToken'])
     else
       if user.status == 'awaiting_time'
         process_user_message(user, user_message, event['replyToken'])
@@ -210,6 +212,72 @@ class LineBotController < ApplicationController
             }
           }
         ]
+      }
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def send_weather_quick_reply(reply_token)
+    message = {
+      type: 'text',
+      text: '場所を選択してください',
+      quickReply: {
+        items: [
+          {
+            type: 'action',
+            action: {
+              type: 'location',
+              label: '現在地を送信'
+            }
+          }
+        ]
+      }
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def handle_location_message(event)
+    user_id = event['source']['userId']
+    user = User.find_or_create_by(line_user_id: user_id)
+    latitude = event.message['latitude']
+    longitude = event.message['longitude']
+    weather_info = WeatherService.get_weather_info(latitude, longitude)
+    reply_weather_info(event['replyToken'], weather_info)
+  end
+
+  def reply_weather_info(reply_token, weather_info)
+    message = {
+      type: 'flex',
+      altText: '天気情報',
+      contents: {
+        type: 'bubble',
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: '現在の天気',
+              weight: 'bold',
+              size: 'lg'
+            },
+            {
+              type: 'text',
+              text: "天気: #{weather_info[:weather]}",
+              size: 'md'
+            },
+            {
+              type: 'text',
+              text: "気温: #{weather_info[:temperature]}°C",
+              size: 'md'
+            },
+            {
+              type: 'text',
+              text: "降水量: #{weather_info[:rainfall]} mm",
+              size: 'md'
+            }
+          ]
+        }
       }
     }
     client.reply_message(reply_token, message)
