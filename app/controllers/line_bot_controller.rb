@@ -297,7 +297,7 @@ class LineBotController < ApplicationController
         },
         {
           type: 'text',
-          text: "#{(index + 1) * 2}時間後の天気",
+          text: "#{(index + 1) * 3}時間後の天気",
           weight: 'bold',
           size: 'lg'
         },
