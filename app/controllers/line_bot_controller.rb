@@ -13,10 +13,14 @@ class LineBotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each do |event|
-      if event.type == Line::Bot::Event::MessageType::Text
+      case event.type
+      when Line::Bot::Event::MessageType::Text
         handle_text_message(event)
+      when Line::Bot::Event::MessageType::Location
+        handle_location_message(event)
       end
     end
+    
     head :ok
   end
 
@@ -227,7 +231,7 @@ class LineBotController < ApplicationController
             type: 'action',
             action: {
               type: 'location',
-              label: '現在地を送信'
+              label: '位置情報を指定'
             }
           }
         ]
@@ -237,11 +241,14 @@ class LineBotController < ApplicationController
   end
 
   def handle_location_message(event)
+    Rails.logger.debug "handle_location_message called"
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
     latitude = event.message['latitude']
     longitude = event.message['longitude']
+    Rails.logger.debug "Latitude: #{latitude}, Longitude: #{longitude}"
     weather_info = WeatherService.get_weather_info(latitude, longitude)
+    Rails.logger.debug "Weather Info: #{weather_info}"
     reply_weather_info(event['replyToken'], weather_info)
   end
 
