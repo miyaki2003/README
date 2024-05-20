@@ -13,6 +13,8 @@ class WeatherService
       return { error: 'APIキーが設定されていません' }
     end
 
+    puts "Using API Key: #{api_key}"
+
     uri = URI(API_URL)
     uri.query = URI.encode_www_form({
       lat: latitude,
@@ -51,6 +53,7 @@ class WeatherService
           forecasts: forecasts
         }
       else
+        puts "Error: Unexpected data format: #{data}"
         { error: 'データを取得できませんでした' }
       end
     rescue => e
