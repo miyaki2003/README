@@ -3,7 +3,7 @@ require 'uri'
 require 'json'
 
 class WeatherService
-  API_URL = 'http://api.openweathermap.org/data/2.5/onecall'.freeze
+  API_URL = 'https://api.openweathermap.org/data/3.0/onecall'.freeze
 
   def self.get_weather_info(latitude, longitude)
     api_key = ENV['OPENWEATHERMAP_API_KEY']
@@ -29,6 +29,7 @@ class WeatherService
       response = Net::HTTP.get(uri)
       data = JSON.parse(response)
 
+      puts "Using API Key: #{api_key}"
       puts "Request URL: #{uri}"
       puts "Response data: #{data}"
 
@@ -62,3 +63,4 @@ class WeatherService
     end
   end
 end
+puts WeatherService.get_weather_info(34.80989872118366, 137.06781125046908)
