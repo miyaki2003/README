@@ -250,22 +250,23 @@ class LineBotController < ApplicationController
   end
 
   def weather_emoji(description)
-    case description
-    when /clear/i
+    case description.downcase
+    when /clear/
       "☀️"
-    when /clouds/i
+    when /clouds/
       "☁️"
-    when /rain/i
+    when /rain/
       "🌧️"
-    when /snow/i
+    when /snow/
       "❄️"
-    when /thunderstorm/i
+    when /thunderstorm/
       "⛈️"
+    else
+      "❓"
     end
   end
 
   def reply_weather_info(reply_token, weather_info)
-    puts "Weather info: #{weather_info.inspect}"
 
     if weather_info[:error]
     message = {
@@ -349,7 +350,6 @@ class LineBotController < ApplicationController
         }
       end
     end
-    puts "Reply message: #{message.inspect}"
     client.reply_message(reply_token, message)
   end
 
