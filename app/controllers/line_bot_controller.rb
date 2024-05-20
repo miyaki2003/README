@@ -265,75 +265,90 @@ class LineBotController < ApplicationController
   end
 
   def reply_weather_info(reply_token, weather_info)
-    current_weather_contents = [
-      {
-        type: 'text',
-        text: '現在の天気',
-        weight: 'bold',
-        size: 'lg'
-      },
-      {
-        type: 'text',
-        text: "天気: #{weather_info[:current][:weather]} #{weather_emoji(weather_info[:current][:weather])}",
-        size: 'md'
-      },
-      {
-        type: 'text',
-        text: "気温: #{weather_info[:current][:temperature]}°C",
-        size: 'md'
-      },
-      {
-        type: 'text',
-        text: "降水量: #{weather_info[:current][:rainfall]} mm",
-        size: 'md'
-      }
-    ]
-  
-    forecast_contents = weather_info[:forecasts].each_with_index.map do |forecast, index|
-      [
-        {
-          type: 'separator',
-          margin: 'lg'
-        },
-        {
-          type: 'text',
-          text: "#{(index + 1) * 3}時間後の天気",
-          weight: 'bold',
-          size: 'lg'
-        },
-        {
-          type: 'text',
-          text: "天気: #{forecast[:weather]} #{weather_emoji(forecast[:weather])}",
-          size: 'md'
-        },
-        {
-          type: 'text',
-          text: "気温: #{forecast[:temperature]}°C",
-          size: 'md'
-        },
-        {
-          type: 'text',
-          text: "降水量: #{forecast[:rainfall]} mm",
-          size: 'md'
-        }
-      ]
-    end.flatten
-  
-    contents = current_weather_contents + forecast_contents
-  
-    message = {
-      type: 'flex',
-      altText: '天気情報',
-      contents: {
-        type: 'bubble',
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          contents: contents
-        }
-      }
-    }
+    puts "Weather info: #{weather_info.inspect}"
 
+    if weather_info[:error]
+    message = {
+      type: 'text',
+      text: weather_info[:error]
+    }
+    else
+      if weather_info[:current].nil? || weather_info[:current][:weather].nil?
+        message = {
+          type: 'text',
+          text: '現在の天気情報が取得できませんでした。'
+        }
+      else
+        current_weather_contents = [
+          {
+            type: 'text',
+            text: '現在の天気',
+            weight: 'bold',
+            size: 'lg'
+          },
+          {
+            type: 'text',
+            text: "天気: #{weather_info[:current][:weather]} #{weather_emoji(weather_info[:current][:weather])}",
+            size: 'md'
+          },
+          {
+            type: 'text',
+            text: "気温: #{weather_info[:current][:temperature]}°C",
+            size: 'md'
+          },
+          {
+            type: 'text',
+            text: "降水量: #{weather_info[:current][:rainfall]} mm",
+            size: 'md'
+          }
+        ]
+  
+        forecast_contents = weather_info[:forecasts].each_with_index.map do |forecast, index|
+          [
+            {
+              type: 'separator',
+              margin: 'lg'
+            },
+            {
+              type: 'text',
+              text: "#{(index + 1) * 3}時間後の天気",
+              weight: 'bold',
+              size: 'lg'
+            },
+            {
+              type: 'text',
+              text: "天気: #{forecast[:weather]} #{weather_emoji(forecast[:weather])}",
+              size: 'md'
+            },
+            {
+              type: 'text',
+              text: "気温: #{forecast[:temperature]}°C",
+              size: 'md'
+            },
+            {
+              type: 'text',
+              text: "降水量: #{forecast[:rainfall]} mm",
+              size: 'md'
+            }
+          ]
+        end.flatten
+      
+        contents = current_weather_contents + forecast_contents
+      
+        message = {
+          type: 'flex',
+          altText: '天気情報',
+          contents: {
+            type: 'bubble',
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              contents: contents
+            }
+          }
+        }
+      end
+    end
     puts "Reply message: #{message.inspect}"
     client.reply_message(reply_token, message)
   end
