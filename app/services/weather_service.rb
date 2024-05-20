@@ -8,6 +8,11 @@ class WeatherService
   def self.get_weather_info(latitude, longitude)
     api_key = ENV['OPENWEATHERMAP_API_KEY']
 
+    unless api_key
+      puts "Error: OPENWEATHERMAP_API_KEY is not set."
+      return { error: 'APIキーが設定されていません' }
+    end
+
     uri = URI(API_URL)
     uri.query = URI.encode_www_form({
       lat: latitude,
@@ -21,6 +26,9 @@ class WeatherService
     begin
       response = Net::HTTP.get(uri)
       data = JSON.parse(response)
+
+      puts "Request URL: #{uri}"
+      puts "Response data: #{data}"
 
       if data['current'] && data['hourly']
         current_weather = {
