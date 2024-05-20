@@ -251,16 +251,18 @@ class LineBotController < ApplicationController
 
   def weather_emoji(description)
     case description.downcase
-    when /clear/
+    when /晴/
       "☀️"
-    when /clouds/
+    when /曇/
       "☁️"
-    when /rain/
+    when /雨/
       "🌧️"
-    when /snow/
+    when /雪/
       "❄️"
-    when /thunderstorm/
+    when /雷/
       "⛈️"
+    when /厚い雲/
+      "☁️"
     else
       "❓"
     end
@@ -317,8 +319,10 @@ class LineBotController < ApplicationController
         current_weather = weather_info[:current]
         bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature], current_weather[:rainfall])
 
+        current_time = Time.now
         weather_info[:forecasts].each_with_index do |forecast, index|
-          title = "#{(index + 1) * 3}時間後の天気"
+          forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
+          title = "#{forecast_time.strftime('%H:%M')} の天気"
           bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
         end
   
