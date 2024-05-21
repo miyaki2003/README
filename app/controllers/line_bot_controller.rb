@@ -322,7 +322,7 @@ class LineBotController < ApplicationController
         current_time = Time.now
         weather_info[:forecasts].each_with_index do |forecast, index|
           forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
-          title = "#{forecast_time.strftime('%-l:%M')} の天気"
+          title = "#{forecast_time.strftime('%-H:%M')} の天気"
           bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
         end
   
