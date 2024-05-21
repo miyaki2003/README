@@ -13,10 +13,14 @@ class LineBotController < ApplicationController
     events = client.parse_events_from(body)
 
     events.each do |event|
-      if event.type == Line::Bot::Event::MessageType::Text
+      case event.type
+      when Line::Bot::Event::MessageType::Text
         handle_text_message(event)
+      when Line::Bot::Event::MessageType::Location
+        handle_location_message(event)
       end
     end
+    
     head :ok
   end
 
@@ -38,6 +42,10 @@ class LineBotController < ApplicationController
       cancel_last_reminder(user, event['replyToken'])
     when 'カレンダー'
       send_calendar_link(event['replyToken'])
+    when '詳細'
+      send_details_link(event['replyToken'])
+    when '天気'
+      send_weather_quick_reply(event['replyToken'])
     else
       if user.status == 'awaiting_time'
         process_user_message(user, user_message, event['replyToken'])
@@ -192,6 +200,147 @@ class LineBotController < ApplicationController
     }
     client.reply_message(reply_token, message)
   end
+
+  def send_details_link(reply_token)
+    message = {
+      type: 'text',
+      text: '詳細を見るには以下のボタンをタップしてください',
+      quickReply: {
+        items: [
+          {
+            type: 'action',
+            action: {
+              type: 'uri',
+              label: '詳細を開く',
+              uri: 'https://liff.line.me/2003779201-yW3rm8DX'
+            }
+          }
+        ]
+      }
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def send_weather_quick_reply(reply_token)
+    message = {
+      type: 'text',
+      text: '場所を選択してください',
+      quickReply: {
+        items: [
+          {
+            type: 'action',
+            action: {
+              type: 'location',
+              label: '位置情報を指定'
+            }
+          }
+        ]
+      }
+    }
+    client.reply_message(reply_token, message)
+  end
+
+  def handle_location_message(event)
+    user_id = event['source']['userId']
+    user = User.find_or_create_by(line_user_id: user_id)
+    latitude = event.message['latitude']
+    longitude = event.message['longitude']
+    weather_info = WeatherService.get_weather_info(latitude, longitude)
+    reply_weather_info(event['replyToken'], weather_info)
+  end
+
+  def weather_emoji(description)
+    case description.downcase
+    when /晴/
+      "☀️"
+    when /曇/
+      "☁️"
+    when /雨/
+      "🌧️"
+    when /雪/
+      "❄️"
+    when /雷/
+      "⛈️"
+    when /雲/
+      "☁️"
+    else
+      "❓"
+    end
+  end
+
+  def create_weather_bubble(title, weather, temperature, rainfall)
+    {
+      type: 'bubble',
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'text',
+            text: title,
+            weight: 'bold',
+            size: 'lg'
+          },
+          {
+            type: 'text',
+            text: "天気: #{weather} #{weather_emoji(weather)}",
+            size: 'md'
+          },
+          {
+            type: 'text',
+            text: "気温: #{temperature}°C",
+            size: 'md'
+          },
+          {
+            type: 'text',
+            text: "降水量: #{rainfall} mm",
+            size: 'md'
+          }
+        ]
+      }
+    }
+  end
+
+  def reply_weather_info(reply_token, weather_info)
+    if weather_info[:error]
+      message = {
+        type: 'text',
+        text: weather_info[:error]
+      }
+    else
+      if weather_info[:current].nil? || weather_info[:current][:weather].nil?
+        message = {
+          type: 'text',
+          text: '現在の天気情報が取得できませんでした。'
+        }
+      else
+        bubbles = []
+  
+        current_weather = weather_info[:current]
+        bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature], current_weather[:rainfall])
+
+        current_time = Time.now
+        weather_info[:forecasts].each_with_index do |forecast, index|
+          forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
+          title = "#{forecast_time.strftime('%-H:%M')} の天気"
+          bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
+        end
+  
+        message = {
+          type: 'flex',
+          altText: '天気情報',
+          contents: {
+            type: 'carousel',
+            contents: bubbles
+          }
+        }
+      end
+    end
+  
+    client.reply_message(reply_token, message)
+  end
+
+  
 
   def parse_message(message)
     begin
