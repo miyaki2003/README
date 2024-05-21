@@ -559,7 +559,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     alert('Failed to load event details: ' + error.message);
   }
 
-  document.getElementById('logoutButton').addEventListener('click', function() {
+  document.getElementById('logoutButton').addEventListener('click', function(event) {
+    event.preventDefault();
     fetch('/logout', {
       method: 'DELETE',
       headers: {
