@@ -261,7 +261,7 @@ class LineBotController < ApplicationController
       "❄️"
     when /雷/
       "⛈️"
-    when /厚い雲/
+    when /雲/
       "☁️"
     else
       "❓"
