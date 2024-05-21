@@ -17,7 +17,6 @@ class OauthsController < ApplicationController
       return
     end
     
-
     token_response = fetch_line_token(params[:code])
     if token_response[:access_token]
       line_id = decode_id_token(token_response[:id_token], ENV['LINE_SECRET'])
@@ -25,7 +24,7 @@ class OauthsController < ApplicationController
       reset_session
       auto_login(@user)
       if @user.persisted?
-        redirect_to events_path
+        redirect_to line_friends_url
       else
         redirect_to root_path
       end
