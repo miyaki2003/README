@@ -387,7 +387,16 @@ document.addEventListener('DOMContentLoaded', async function() {
       document.getElementById('edit-start_time').value = formatTimeToInputValue(startTimeText);
       document.getElementById('edit-end_time').value = formatTimeToInputValue(endTimeText);
     
-      document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
+      let titleText = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
+      let maxLength = 32;
+
+      if (titleText.length > maxLength) {
+        let firstPart = titleText.slice(0, maxLength);
+        let secondPart = titleText.slice(maxLength);
+        titleText = `${firstPart}\n    ${secondPart}`;
+      }
+      document.getElementById('edit-title').value = titleText;
+      
       let memoContent = document.getElementById('memoContent').textContent.trim();
       document.getElementById('edit-memo').value = memoContent;
     
