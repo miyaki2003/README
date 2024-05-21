@@ -3,4 +3,3 @@
 //= link staticpages/top.css
 //= link events/_form.css
 //= link calendar.css
-//= link reminders.js
