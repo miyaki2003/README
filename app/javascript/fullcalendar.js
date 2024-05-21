@@ -559,22 +559,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     alert('Failed to load event details: ' + error.message);
   }
 
-  document.getElementById('logoutButton').addEventListener('click', function(event) {
-    event.preventDefault();
-    fetch('/logout', {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-      }
-    }).then(response => {
-      if (response.ok) {
-        window.location.href = '/';
-      } else {
-        alert('ログアウトに失敗しました');
-      }
-    }).catch(error => {
-      console.error('Error:', error);
-      alert('エラーが発生しました');
-    });
-  });
+  // document.getElementById('logoutButton').addEventListener('click', function(event) {
+  //   event.preventDefault();
+  //   fetch('/logout', {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+  //     }
+  //   }).then(response => {
+  //     if (response.ok) {
+  //       window.location.href = '/';
+  //     } else {
+  //       alert('ログアウトに失敗しました');
+  //     }
+  //   }).catch(error => {
+  //     console.error('Error:', error);
+  //     alert('エラーが発生しました');
+  //   });
+  // });
 });
