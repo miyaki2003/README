@@ -10,11 +10,11 @@ Rails.application.routes.draw do
 
   post '/callback', to: 'line_bot#callback'
 
-  get 'liff', to: 'liff#index'
-
   get '/staticpages/privacy_policy', to: 'staticpages#privacy_policy'
 
   get '/staticpages/terms', to: 'staticpages#terms'
+
+  get '/line_friends', to: redirect('https://line.me/R/ti/p/%40083jbanw')
 
   resources :events do
     member do
