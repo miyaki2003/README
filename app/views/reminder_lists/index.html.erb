@@ -2,22 +2,17 @@
   <p>リマインド一覧がありません</p>
 <% else %>
   <table>
-    <thead>
-      <tr>
-        <th>時間</th>
-        <th>タイトル</th>
-      </tr>
-    </thead>
     <tbody>
       <% @reminders.each do |reminder| %>
-        <tr>
+        <tr id="reminder-<%= reminder.id %>">
           <td><%= reminder.reminder_time.strftime("%Y年%m月%d日 %H時%M分") %></td>
           <td><%= reminder.title %></td>
           <td>
-            <%= button_to '削除', deactivate_reminder_list_path(reminder), method: :patch, form: { data: { confirm: 'このリマインダーを削除しますか？' } }, class: "btn btn-danger" %>
+            <%= link_to '削除', deactivate_reminder_list_path(reminder), method: :patch, remote: true, class: "btn btn-danger delete-reminder-button", data: { reminder_id: reminder.id, confirm: 'このリマインダーを削除しますか？' } %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
 <% end %>
+<%= javascript_include_tag 'reminders', "data-turbo-track": "reload" %>

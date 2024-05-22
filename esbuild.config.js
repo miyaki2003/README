@@ -6,7 +6,7 @@ let buildOptions = {
   entryPoints: {
     application: 'app/javascript/application.js',
     fullcalendar: 'app/javascript/fullcalendar.js',
-    liff_init: 'app/javascript/liff_init.js',
+    reminders: 'app/javascript/reminders.js'
   },
   bundle: true,
   outdir: './app/assets/builds',

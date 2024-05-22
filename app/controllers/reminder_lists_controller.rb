@@ -6,9 +6,9 @@ class ReminderListsController < ApplicationController
   def deactivate
     @reminder = current_user.reminders.find(params[:id])
     if @reminder.update(is_active: false)
-      redirect_to reminder_lists_path
+      render json: { success: true }, status: :ok
     else
-      redirect_to reminder_lists_path
+      render json: { success: true }, status: :ok
     end
   end
 end
