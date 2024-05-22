@@ -14,16 +14,11 @@ class ReminderListsController < ApplicationController
 
   def deactivate
     @reminder = current_user.reminders.find(params[:id])
+    puts "Deactivating reminder with ID: #{params[:id]}"
     if @reminder.update(is_active: false)
-      respond_to do |format|
-        format.html { redirect_to reminder_lists_path }
-        format.js
-      end
+      render json: { success: true }, status: :ok
     else
-      respond_to do |format|
-        format.html { redirect_to reminder_lists_path }
-        format.js
-      end
+      render json: { success: true }, status: :ok
     end
   end
 end
