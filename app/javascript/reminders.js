@@ -5,8 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
     button.addEventListener('click', function(event) {
       event.preventDefault();
       const reminderId = this.getAttribute('data-reminder-id');
+      const url = `/reminder_lists/${reminderId}/deactivate`;
+      console.log(`Deleting reminder with ID: ${reminderId}`);
+      console.log(`Request URL: ${url}`);
 
-      fetch(`/reminder_lists/${reminderId}/deactivate`, {
+      fetch(url, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
