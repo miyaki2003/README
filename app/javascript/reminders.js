@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
       event.preventDefault();
       const reminderId = this.getAttribute('data-reminder-id');
       const url = `/reminder_lists/${reminderId}/deactivate`;
-      console.log(`Deleting reminder with ID: ${reminderId}`);
-      console.log(`Request URL: ${url}`);
 
       fetch(url, {
         method: 'PATCH',
