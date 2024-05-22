@@ -17,11 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         body: JSON.stringify({ is_active: false })
       })
-      .then(response => {
-        if (response.ok) {
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
           document.getElementById(`reminder-${reminderId}`).remove();
         } else {
-          console.error('Failed to delete reminder');
+          console.error('Failed to delete reminder:', data.error);
         }
       })
       .catch(error => {
