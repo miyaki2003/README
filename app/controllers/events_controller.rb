@@ -48,7 +48,7 @@ class EventsController < ApplicationController
     @event.assign_attributes(event_params)
     set_datetime_params
     if @event.notification_job_id.present?
-      NotificationJob.cancel(@event.notification_job_id)
+      NotificationJob.cancel(@event.notification_job_id, @event.id)
     end
     if @event.save
       schedule_line_notification if @event.line_notify
