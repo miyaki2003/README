@@ -19,6 +19,14 @@ class Event < ApplicationRecord
     end
   end
 
+  def self.delete_all_scheduled_jobs
+    scheduled_set = Sidekiq::ScheduledSet.new
+    scheduled_set.each do |job|
+      job.delete
+    end
+    puts "すべてのスケジュールされたジョブが削除されました。"
+  end
+
   def set_datetime_attributes
     self.start_time = Time.zone.parse("#{start_date} #{start_time_part}") if start_date.present? && start_time_part.present?
     self.end_time = Time.zone.parse("#{end_date} #{end_time_part}") if end_date.present? && end_time_part.present?
