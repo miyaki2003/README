@@ -11,14 +11,33 @@ class NotificationJob < ApplicationJob
     Rails.logger.info "LINE notification sent for event ID: #{event_id}"
   end
 
-  def self.cancel(job_id)
+  def self.cancel(job_id, event_id)
+
+    event = Event.find_by(id: event_id)
+    unless event
+      Rails.logger.error "イベントが見つかりませんでした: #{event_id}"
+      return
+    end
+
+    if event.notification_job_id != job_id
+      Rails.logger.error "データベースのジョブIDと渡されたジョブIDが一致しません: #{event.notification_job_id} != #{job_id}"
+      return
+    end
+
     scheduled_set = Sidekiq::ScheduledSet.new
+    Rails.logger.info "Scheduled jobs in Sidekiq:"
+    scheduled_set.each do |job|
+      Rails.logger.info "Job ID: #{job.jid}, Class: #{job.klass}, Args: #{job.args}, Enqueued At: #{Time.at(job.enqueued_at)}"
+    end
+    
     job = scheduled_set.find { |j| j.jid == job_id }
+
     unless job
       Rails.logger.error "ジョブが見つかりませんでした"
+      return
     end
-    if job
-      job.delete
-    end
-  end  
+
+    job.delete
+    Rails.logger.info "ジョブがキャンセルされました: #{job_id}"
+  end
 end
