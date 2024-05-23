@@ -27,7 +27,8 @@ class NotificationJob < ApplicationJob
     scheduled_set = Sidekiq::ScheduledSet.new
     Rails.logger.info "Scheduled jobs in Sidekiq:"
     scheduled_set.each do |job|
-      Rails.logger.info "Job ID: #{job.jid}, Class: #{job.klass}, Args: #{job.args}, Enqueued At: #{Time.at(job.enqueued_at)}"
+      enqueued_at = job.enqueued_at ? Time.at(job.enqueued_at) : 'nil'
+      Rails.logger.info "Job ID: #{job.jid}, Class: #{job.klass}, Args: #{job.args}, Enqueued At: #{enqueued_at}"
     end
     
     job = scheduled_set.find { |j| j.jid == job_id }
