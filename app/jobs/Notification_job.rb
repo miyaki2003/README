@@ -19,6 +19,8 @@ class NotificationJob < ApplicationJob
       return
     end
 
+    Rails.logger.info "データベースのジョブID: #{event.notification_job_id}, 渡されたジョブID: #{job_id}"
+
     if event.notification_job_id != job_id
       Rails.logger.error "データベースのジョブIDと渡されたジョブIDが一致しません: #{event.notification_job_id} != #{job_id}"
       return
@@ -32,6 +34,7 @@ class NotificationJob < ApplicationJob
     end
     
     job = scheduled_set.find { |j| j.jid == job_id }
+    Rails.logger.info "取得したジョブ: #{job.inspect}"
 
     unless job
       Rails.logger.error "ジョブが見つかりませんでした"
