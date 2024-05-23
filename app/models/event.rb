@@ -10,23 +10,6 @@ class Event < ApplicationRecord
 
   private
 
-  def self.list_scheduled_jobs
-    scheduled_set = Sidekiq::ScheduledSet.new
-    Rails.logger.info "Scheduled jobs in Sidekiq:"
-    scheduled_set.each do |job|
-      enqueued_at = job.enqueued_at ? Time.at(job.enqueued_at) : 'nil'
-      Rails.logger.info "Job ID: #{job.jid}, Class: #{job.klass}, Args: #{job.args}, Enqueued At: #{enqueued_at}"
-    end
-  end
-
-  def self.delete_all_scheduled_jobs
-    scheduled_set = Sidekiq::ScheduledSet.new
-    scheduled_set.each do |job|
-      job.delete
-    end
-    puts "すべてのスケジュールされたジョブが削除されました。"
-  end
-
   def set_datetime_attributes
     self.start_time = Time.zone.parse("#{start_date} #{start_time_part}") if start_date.present? && start_time_part.present?
     self.end_time = Time.zone.parse("#{end_date} #{end_time_part}") if end_date.present? && end_time_part.present?
