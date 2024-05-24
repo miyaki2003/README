@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   const originalContent = document.querySelector('#modal-content').innerHTML;
-  document.querySelector('a[href="/staticpages/privacy_policy"]').addEventListener('click', function(event) {
+  const privacyPolicyLink = document.querySelector('a[href="/staticpages/privacy_policy"]');
+  const settingEventModal = document.querySelector('#settingEventModal');
+  const modalContent = document.querySelector('#modal-content');
+  
+  privacyPolicyLink.addEventListener('click', function(event) {
     event.preventDefault();
     fetch('/staticpages/privacy_policy', {
       method: 'GET',
@@ -16,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
     .then(data => {
-      const modalContent = document.querySelector('#modal-content');
       modalContent.innerHTML = '';
       modalContent.innerHTML = data.html;
     })
@@ -24,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('There was a problem with the fetch operation:', error);
     });
   });
-  document.querySelector('#settingEventModal').addEventListener('hidden.bs.modal', function () {
-    document.querySelector('#modal-content').innerHTML = originalContent;
+
+  settingEventModal.addEventListener('hidden.bs.modal', function () {
+    modalContent.innerHTML = originalContent;
   });
 });
