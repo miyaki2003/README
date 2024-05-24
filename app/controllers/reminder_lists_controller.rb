@@ -1,4 +1,5 @@
 class ReminderListsController < ApplicationController
+  
   def index
     @reminders = current_user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc)
   end
