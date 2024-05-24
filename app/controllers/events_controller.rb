@@ -25,10 +25,10 @@ class EventsController < ApplicationController
         return
       end
 
-    #  if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
-    #    render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
-    #    return
-    #  end
+      # if Event.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
+      #   render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
+      #   return
+      # end
 
     if @event.valid?
       if @event.save
