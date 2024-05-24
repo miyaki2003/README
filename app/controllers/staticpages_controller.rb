@@ -1,5 +1,5 @@
 class StaticpagesController < ApplicationController
-  skip_before_action :require_login, only: %i[top]
+  skip_before_action :require_login, only: [:top, :terms, :privacy_policy]
   def top
   end
 
