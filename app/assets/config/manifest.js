@@ -5,3 +5,5 @@
 //= link calendar.css
 //= link staticpages/terms.css
 //= link staticpages/privacy_policy.css
+
+//= link privacy_policy.js
