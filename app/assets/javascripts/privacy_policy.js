@@ -16,7 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
     .then(data => {
-      document.querySelector('#modal-content').innerHTML = data.html;
+      const modalContent = document.querySelector('#modal-content');
+      modalContent.innerHTML = '';
+      modalContent.innerHTML = data.html;
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
