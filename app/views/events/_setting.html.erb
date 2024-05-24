@@ -4,12 +4,12 @@
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="modal-content">
         <ul class="list-group list-group-flush">
           <li class="list-group-item"><a href="/">TOPページへ</a></li>
           <li class="list-group-item"><a href="https://line.me/R/ti/p/%40083jbanw">LINEへ</a></li>
-          <li class="list-group-item"><a href="/staticpages/terms">利用規約</a></li>
-          <li class="list-group-item"><a href="/staticpages/privacy_policy">プライバシーポリシー</a></li>
+          <li class="list-group-item"><a href="/staticpages/terms" id="terms-link">利用規約</a></li>
+          <li class="list-group-item"><a href="/staticpages/privacy_policy" id="privacy-policy-link">プライバシーポリシー</a></li>
           <li class="list-group-item">
             <form action="/logout" method="post">
               <input type="hidden" name="_method" value="delete">
@@ -18,8 +18,8 @@
             </form>
           </li>
         </ul>
-        </nav>
       </div>
     </div>
   </div>
 </div>
+<%= javascript_include_tag 'setting', 'data-turbo-track': 'reload' %>
