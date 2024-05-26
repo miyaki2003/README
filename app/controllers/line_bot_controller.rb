@@ -1,7 +1,7 @@
 class LineBotController < ApplicationController
   require 'line/bot'
-  #skip_before_action :verify_authenticity_token, only: [:callback]
-  #skip_before_action :require_login
+  skip_before_action :verify_authenticity_token, only: [:callback]
+  skip_before_action :require_login
 
   def callback
     body = request.body.read
@@ -42,7 +42,7 @@ class LineBotController < ApplicationController
       cancel_last_reminder(user, event['replyToken'])
     when 'カレンダー'
       send_calendar_link(event['replyToken'])
-    when '詳細'
+    when 'リスト'
       send_details_link(event['replyToken'])
     when '天気'
       send_weather_quick_reply(event['replyToken'])
@@ -184,7 +184,7 @@ class LineBotController < ApplicationController
   def send_calendar_link(reply_token)
     message = {
       type: 'text',
-      text: 'カレンダーを見るには以下のボタンをタップしてください',
+      text: 'カレンダーを表示させるには\n以下のボタンをタップしてください',
       quickReply: {
         items: [
           {
@@ -204,14 +204,14 @@ class LineBotController < ApplicationController
   def send_details_link(reply_token)
     message = {
       type: 'text',
-      text: '詳細を見るには以下のボタンをタップしてください',
+      text: 'リストを表示させるには\n以下のボタンをタップしてください',
       quickReply: {
         items: [
           {
             type: 'action',
             action: {
               type: 'uri',
-              label: '詳細を開く',
+              label: 'リストを開く',
               uri: 'https://liff.line.me/2003779201-yW3rm8DX'
             }
           }
