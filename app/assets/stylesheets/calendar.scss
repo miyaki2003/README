@@ -133,8 +133,6 @@
   color: #4b5183;
 }
 
-
-
 .custom-swal .swal-button--confirm {
   background-color: #ff6666;
 }
@@ -143,6 +141,13 @@
 .fc .fc-list-event-dot {
   border-color: #94a1b2;
 }
+
+// カレンダー文字太さ
+// .fc-dayGridMonth-button,
+// .fc-today-button,
+// .fc-listMonth-button {
+//   font-weight: 600 !important;
+// }
 
 @media (max-width: 450px) {
   .fc-toolbar-chunk {
