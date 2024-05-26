@@ -331,8 +331,6 @@ class LineBotController < ApplicationController
         elsif minutes >= 45 && minutes < 60
           forecast_time += (45 - minutes) * 60 - forecast_time.sec
         end
-
-          forecast_time -= (forecast_time.min * 60 + forecast_time.sec)
           title = "#{forecast_time.strftime('%-H:%M')} の天気"
           bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
         end
