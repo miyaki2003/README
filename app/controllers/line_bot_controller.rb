@@ -319,6 +319,7 @@ class LineBotController < ApplicationController
 
         current_time = Time.now
         weather_info[:forecasts].each_with_index do |forecast, index|
+        forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
           
           # 15分ごとに切り捨て処理
           minutes = forecast_time.min
