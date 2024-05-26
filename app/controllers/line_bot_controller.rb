@@ -263,8 +263,6 @@ class LineBotController < ApplicationController
       "⛈️"
     when /雲/
       "☁️"
-    else
-      "❓"
     end
   end
 
@@ -321,7 +319,20 @@ class LineBotController < ApplicationController
 
         current_time = Time.now
         weather_info[:forecasts].each_with_index do |forecast, index|
-          forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
+          
+          # 15分ごとに切り捨て処理
+          minutes = forecast_time.min
+        if minutes >= 0 && minutes < 15
+          forecast_time -= (minutes * 60 + forecast_time.sec)
+        elsif minutes >= 15 && minutes < 30
+          forecast_time += (15 - minutes) * 60 - forecast_time.sec
+        elsif minutes >= 30 && minutes < 45
+          forecast_time += (30 - minutes) * 60 - forecast_time.sec
+        elsif minutes >= 45 && minutes < 60
+          forecast_time += (45 - minutes) * 60 - forecast_time.sec
+        end
+
+          forecast_time -= (forecast_time.min * 60 + forecast_time.sec)
           title = "#{forecast_time.strftime('%-H:%M')} の天気"
           bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
         end
