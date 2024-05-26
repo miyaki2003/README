@@ -184,7 +184,7 @@ class LineBotController < ApplicationController
   def send_calendar_link(reply_token)
     message = {
       type: 'text',
-      text: 'カレンダーを表示させるには\n以下のボタンをタップしてください',
+      text: "カレンダーを表示させるには\n以下のボタンをタップしてください"
       quickReply: {
         items: [
           {
@@ -204,7 +204,7 @@ class LineBotController < ApplicationController
   def send_details_link(reply_token)
     message = {
       type: 'text',
-      text: 'リストを表示させるには\n以下のボタンをタップしてください',
+      text: "リストを表示させるには\n以下のボタンをタップしてください",
       quickReply: {
         items: [
           {
