@@ -42,7 +42,7 @@ class LineBotController < ApplicationController
       cancel_last_reminder(user, event['replyToken'])
     when 'カレンダー'
       send_calendar_link(event['replyToken'])
-    when '詳細'
+    when 'リスト'
       send_details_link(event['replyToken'])
     when '天気'
       send_weather_quick_reply(event['replyToken'])
@@ -184,7 +184,7 @@ class LineBotController < ApplicationController
   def send_calendar_link(reply_token)
     message = {
       type: 'text',
-      text: 'カレンダーを見るには以下のボタンをタップしてください',
+      text: "カレンダーを表示させるには\n以下のボタンをタップしてください",
       quickReply: {
         items: [
           {
@@ -204,14 +204,14 @@ class LineBotController < ApplicationController
   def send_details_link(reply_token)
     message = {
       type: 'text',
-      text: '詳細を見るには以下のボタンをタップしてください',
+      text: "リストを表示させるには\n以下のボタンをタップしてください",
       quickReply: {
         items: [
           {
             type: 'action',
             action: {
               type: 'uri',
-              label: '詳細を開く',
+              label: 'リストを開く',
               uri: 'https://liff.line.me/2003779201-yW3rm8DX'
             }
           }
@@ -263,8 +263,6 @@ class LineBotController < ApplicationController
       "⛈️"
     when /雲/
       "☁️"
-    else
-      "❓"
     end
   end
 
@@ -321,7 +319,19 @@ class LineBotController < ApplicationController
 
         current_time = Time.now
         weather_info[:forecasts].each_with_index do |forecast, index|
-          forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
+        forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
+          
+          # 15分ごとに切り捨て処理
+          minutes = forecast_time.min
+        if minutes >= 0 && minutes < 15
+          forecast_time -= (minutes * 60 + forecast_time.sec)
+        elsif minutes >= 15 && minutes < 30
+          forecast_time += (15 - minutes) * 60 - forecast_time.sec
+        elsif minutes >= 30 && minutes < 45
+          forecast_time += (30 - minutes) * 60 - forecast_time.sec
+        elsif minutes >= 45 && minutes < 60
+          forecast_time += (45 - minutes) * 60 - forecast_time.sec
+        end
           title = "#{forecast_time.strftime('%-H:%M')} の天気"
           bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
         end
