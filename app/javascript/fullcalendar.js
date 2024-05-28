@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           return;
         }
         if (fullNotifyDateTime <= new Date()) {
-          alert('通知時間は現在時刻よりも後に設定してください');
+          alert('通知時間は現在時刻よりも後');
           return;
         }
         formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
