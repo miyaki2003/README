@@ -317,16 +317,20 @@ document.addEventListener('DOMContentLoaded', async function() {
       let eventDateAdd = document.getElementById('event_date-add').value;
       if (document.getElementById('line-notify-switch-add').checked) {
         const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
-        if (isNaN(fullNotifyDateTime.getTime())) {
-          alert('指定された通知時間が無効です');
-          return;
-        }
-        if (fullNotifyDateTime <= new Date()) {
+
+        const currentTime = new Date();
+        console.log(`currentTime: ${currentTime}`); // デバッグ用ログ
+
+        if (fullNotifyDateTime <= currentTime) {
           alert('通知時間は現在時刻よりも後');
           return;
         }
+
         formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
       }
+
+
+        
 
       fetch(addForm.action, {
         method: 'POST',
@@ -346,7 +350,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           alert('エラーが発生しました: ' + data.errors.join(', '));
         } else {
           calendar.refetchEvents(); 
-          this.reset(); 
+          addForm.reset();
           addEventModal.hide(); 
         }
       })
