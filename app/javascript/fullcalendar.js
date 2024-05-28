@@ -317,14 +317,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       let eventDateAdd = document.getElementById('event_date-add').value;
       let notifyTimeAdd = document.getElementById('notify_time-add').value;
 
-      if (document.getElementById('line-notify-switch-add').checked) {
+      if (notifySwitchAdd.checked) {
         const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
 
-        const currentTime = new Date();
-        console.log(`currentTime: ${currentTime}`);
-
-        if (fullNotifyDateTime <= currentTime) {
-          alert('通知時間は現在時刻よりも後');
+        if (fullNotifyDateTime <= new Date()) {
+          alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
         formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
