@@ -318,13 +318,15 @@ document.addEventListener('DOMContentLoaded', async function() {
       let notifyTimeAdd = document.getElementById('notify_time-add').value;
 
       if (notifySwitchAdd.checked) {
-        const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
+        let fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
+        console.log('Full Notify DateTime:', fullNotifyDateTime);
 
         if (fullNotifyDateTime <= new Date()) {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
-        formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
+        formData.set('event[notify_date]', eventDateAdd);
+        formData.set('event[notify_time]', notifyTimeAdd);
       }
 
       fetch(addForm.action, {
