@@ -7,6 +7,8 @@ class NotificationJob < ApplicationJob
     return unless event && event.user.line_user_id.present?
     message_text = "「#{event.title}」のリマインドです"
     LineNotifyService.send_message(event.user.line_user_id, message_text)
+    Rails.logger.info "NotificationJob executed at: #{Time.now}"
+    Rails.logger.info "NotificationJob: event_id=#{event_id}, user=#{event.user.id}, line_user_id=#{event.user.line_user_id}"
   end
 
   def self.cancel(job_id)
