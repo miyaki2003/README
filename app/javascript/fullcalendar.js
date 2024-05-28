@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   let notifySwitchAdd = document.getElementById('line-notify-switch-add');
   let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
-  let notifyTimeAdd = document.getElementById('notify_time-add').value;
+  let notifyTimeAdd = document.getElementById('notify_time-add');
 
 
   let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
