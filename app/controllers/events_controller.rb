@@ -20,8 +20,6 @@ class EventsController < ApplicationController
     @event.line_user_id = current_user.line_user_id
     set_datetime_params
 
-    Rails.logger.debug "Event notify_time: #{@event.notify_time}"
-
       if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
         render json: { error: "この日は既に4件のイベントが予定されています" }, status: :unprocessable_entity
         return
@@ -112,8 +110,6 @@ class EventsController < ApplicationController
     if params[:event][:notify_date].present? && params[:event][:notify_time].present?
       @event.notify_time = Time.zone.parse("#{params[:event][:notify_date]} #{params[:event][:notify_time]}")
     end
-
-    Rails.logger.debug "Set notify_time: #{@event.notify_time}"
   end
 
   def combine_date_and_time(date, time_str)
