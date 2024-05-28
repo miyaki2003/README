@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       event.preventDefault();
       let formData = new FormData(addForm);
       let eventDateAdd = document.getElementById('event_date-add').value;
-      let notifyTimeAdd = document.getElementById('notify_time-add');
+      let notifyTimeAdd = document.getElementById('notify_time-add').value;
 
       console.log(`eventDateAdd: ${eventDateAdd}`); // デバッグ用ログ
       console.log(`notifyTimeAdd: ${notifyTimeAdd}`);
