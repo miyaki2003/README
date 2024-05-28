@@ -7,6 +7,7 @@
       </div>
       <div class="modal-body">
         <%= form_with(model: event, url: events_path, id: "event-form-add", local: true) do |f| %>
+
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力が必須です">
@@ -14,6 +15,7 @@
             </span>
             <%= f.text_field :title, id: "title-add", class: "form-control" %>
           </div>
+          
           <div class="mb-3">
             <%= f.label :event_date, "イベント日" %>
             <%= f.date_field :event_date, id: "event_date-add", class: "form-control", value: Date.today.to_s %>
@@ -38,7 +40,6 @@
             </div>
           </div>
           
-          <%= f.hidden_field :notify_date, id: "notify_date-add" %>
           <div class="mb-3" id="notify-time-input-add" style="display:none;">
             <%= f.label :notify_time, "通知時間", class: "form-label" %>
             <%= f.time_field :notify_time, id: "notify_time-add", class: "form-control", value: "06:00" %>
