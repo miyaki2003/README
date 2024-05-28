@@ -32,6 +32,7 @@ class EventsController < ApplicationController
 
     if @event.valid?
       if @event.save
+        Rails.logger.info "Event created with notify_time: #{@event.notify_time}"
         schedule_line_notification if @event.line_notify
         render json: @event, status: :created
       else
