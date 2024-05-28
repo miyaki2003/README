@@ -317,6 +317,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       let eventDateAdd = document.getElementById('event_date-add').value;
       if (document.getElementById('line-notify-switch-add').checked) {
         const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
+        console.log(`fullNotifyDateTime: ${fullNotifyDateTime}`);
 
         const currentTime = new Date();
         console.log(`currentTime: ${currentTime}`); // デバッグ用ログ
@@ -328,10 +329,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
       }
-
-
-        
-
       fetch(addForm.action, {
         method: 'POST',
         body: formData,
