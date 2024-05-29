@@ -110,11 +110,11 @@
 }
 
 // カレンダー文字太さ
-// .fc-dayGridMonth-button,
-// .fc-today-button,
-// .fc-listMonth-button {
-//   font-weight: 600 !important;
-// }
+.fc-dayGridMonth-button,
+.fc-today-button,
+.fc-listMonth-button {
+  font-weight: 600 !important;
+}
 
 .fc-dayGridMonth-view .fc-event {
   white-space: nowrap;
@@ -190,7 +190,7 @@
   }
 
   .fc .fc-toolbar.fc-footer-toolbar {
-    margin-top: 18px;
+    margin-top: 30px;
   }
 
   .fc-daygrid-day-events{
