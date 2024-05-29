@@ -129,6 +129,13 @@
   margin-left: 1px;
 }
 
+// カレンダー文字太さ
+.fc-dayGridMonth-button,
+.fc-today-button,
+.fc-listMonth-button {
+  font-weight: 600 !important;
+}
+
 .fc-listMonth-view {
   color: #4b5183;
 }
@@ -141,13 +148,6 @@
 .fc .fc-list-event-dot {
   border-color: #94a1b2;
 }
-
-// カレンダー文字太さ
-// .fc-dayGridMonth-button,
-// .fc-today-button,
-// .fc-listMonth-button {
-//   font-weight: 600 !important;
-// }
 
 @media (max-width: 450px) {
   .fc-toolbar-chunk {
