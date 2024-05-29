@@ -168,13 +168,14 @@
   }
 
   .fc-CalendarButton-button {
-    width: 47px; 
-    height: 47px;
+    width: 45px; 
+    height: 45px;
   }
 
   .fc-today-button {
     margin-right: 60px;
-    height: 40px;
+    height: 42px;
+    width: 47px;
   }
 
   .holiday{
@@ -223,11 +224,12 @@
   .fc-today-button {
     margin-right: 60px;
     height: 42px;
+    width: 45px;
   }
 }
 
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .fc-toolbar-chunk {
     display: flex;
     justify-content: space-around;
@@ -254,7 +256,7 @@
   }
 
   .fc-today-button {
-    margin-right: 300px;
+    margin-right: 180px;
   }
 
   .fc-lineButton-button:hover {
