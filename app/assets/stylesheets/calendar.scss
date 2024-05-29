@@ -109,6 +109,13 @@
   color: #4b5183 !important;
 }
 
+// カレンダー文字太さ
+// .fc-dayGridMonth-button,
+// .fc-today-button,
+// .fc-listMonth-button {
+//   font-weight: 600 !important;
+// }
+
 .fc-dayGridMonth-view .fc-event {
   white-space: nowrap;
   overflow: hidden;
@@ -127,13 +134,6 @@
 
 .fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
   margin-left: 1px;
-}
-
-// カレンダー文字太さ
-.fc-dayGridMonth-button,
-.fc-today-button,
-.fc-listMonth-button {
-  font-weight: 600 !important;
 }
 
 .fc-listMonth-view {
