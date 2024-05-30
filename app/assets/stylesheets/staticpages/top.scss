@@ -4,13 +4,6 @@
   font-family: 'FontAwesome', sans-serif;
 }
 
-// * {
-//   box-sizing: border-box;
-//   &:before, &:after {
-//     box-sizing: border-box;
-//   }
-// }
-
 body {
   font-family: 'Sora', sans-serif;
   background: #000000;
@@ -27,37 +20,6 @@ body {
   padding: 0 2em;
   color: #2d334a;
 }
-
-// nav {
-//   position: fixed;
-//   width: 100%;
-//   margin: 0 auto;
-//   top: 0;
-//   z-index: 3;
-//   ul {
-//     padding: 0;
-//     margin: 0;
-//     list-style-type: none;
-//     float: right;
-//   }
-//   li {
-//     display: inline-block;
-//     padding: 2em;
-//     text-align: center;
-//     transition: all .2s;
-//     &:last-child {
-//       padding-right: 0;
-//     }
-//   }
-//   a {
-//     color: #FFF;
-//     text-decoration: none;
-//     transition: all .3s;
-//     &:hover {
-//       color: #DDD;
-//     }
-//   }
-// }
 
 .icon {
   display: inline-block;
@@ -129,31 +91,3 @@ header {
     color: #000000;
   }
 }
-
-
-
-
-
-// @media only screen and (max-width: 768px) {
-//   body {
-//     font-size: 14px;
-//   }
-
-//   nav ul {
-//     flex-direction: column;
-//   }
-
-//   .container {
-//     padding: 0 10px;
-//     min-width: auto;
-//   }
-
-//   header h1 {
-//     font-size: 2.5em;
-//   }
-
-//   .btn {
-//     padding: 12px 24px;
-//     font-size: 1em;
-//   }
-// }

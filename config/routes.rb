@@ -11,10 +11,6 @@ Rails.application.routes.draw do
 
   post '/callback', to: 'line_bot#callback'
 
-  get '/staticpages/privacy_policy', to: 'staticpages#privacy_policy'
-
-  get '/staticpages/terms', to: 'staticpages#terms'
-
   get '/privacy_policy', to: 'staticpages#privacy_policy'
 
   get '/terms', to: 'staticpages#terms'
