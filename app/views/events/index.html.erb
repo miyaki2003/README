@@ -1,13 +1,11 @@
 <%= stylesheet_link_tag 'calendar', media: 'all', 'data-turbolinks-track': 'reload' %>
-<turbo-frame id="calendar-container">
-  <div class="container">
-    <div id="calendar"></div>
-  </div>
+<div class="container">
+  <div id="calendar"></div>
+</div>
 
-  <%= render 'form', event: @event %>
-  <%= render 'show', event: @event %>
-  <%= render 'add', event: @event %>
-  <%= render 'setting', event: @event %>
+<%= render 'form', event: @event %>
+<%= render 'show', event: @event %>
+<%= render 'add', event: @event %>
+<%= render 'setting', event: @event %>
 
-  <%= javascript_include_tag 'fullcalendar', "data-turbo-track": "reload", type: "module" %>
-</turbo-frame>
+<%= javascript_include_tag 'fullcalendar', "data-turbo-track": "reload", type: "module" %>
