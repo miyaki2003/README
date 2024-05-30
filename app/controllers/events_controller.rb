@@ -10,12 +10,6 @@ class EventsController < ApplicationController
       @event = current_user.events.build
       #@events = Event.all
       #@event = Event.new
-
-      respond_to do |format|
-        format.html
-        format.json { render json: @events }
-        format.turbo_stream { render turbo_stream: turbo_stream.replace("calendar-container", partial: "events/index") }
-      end
     end
   end
 
