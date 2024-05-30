@@ -1,20 +1,11 @@
 <%= stylesheet_link_tag 'staticpages/top', media: 'all', 'data-turbolinks-track': 'reload' %>
-<nav>
-  <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-    <ul style="margin: 0; padding: 0; list-style: none; flex-grow: 1; display: flex; justify-content: flex-start;">
-      <li><a href="#">ReminderChat</a></li>
-    </ul>
-    <div style="flex-grow: 1; display: flex; justify-content: flex-end;">
-      <button class="btn custom-login-btn"><i class="fas fa-sign-in-alt fa-lg"></i> Login</button>
-    </div>
-  </div>
-</nav>
+
 <header>
-  <div class="container">
-    <h1>ReminderChat</h1>
+  <div style="flex-grow: 1; display: flex; justify-content: flex-end;">
+      <button class="btn custom-login-btn"><i class="fas fa-sign-in-alt fa-lg"></i> Login</button>
   </div>
 </header>
-<div id="nav-bg"></div>
+
 <section id="about">
   <div class="container">
     <p>
@@ -26,7 +17,7 @@
     </p>
   </div>
 
-<div id="carouselExampleIndicators" class="carousel slide">
+<!--<div id="carouselExampleIndicators" class="carousel slide">
   <div class="carousel-indicators">
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -51,46 +42,15 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
-</div>
+</div>-->
 
 </section>
 <div class="bg-custom-color text-text-color font-genjyuu w-full shadow-top-shadow">
   <footer class="flex flex-col items-center justify-center pb-6 pt-6">
     <ul class="flex justify-center mb-2">
-      <li class="p-2 cursor-pointer"><a href="/terms">利用規約</a></li>
-      <li class="p-2 cursor-pointer"><a href="/privacy_policy">プライバシーポリシー</a></li>
+      <li class="p-2 cursor-pointer"><a href="/terms" data-turbo="true">利用規約</a></li>
+      <li class="p-2 cursor-pointer"><a href="/staticpages/privacy_policy" class="async-link" data-target="content-container">プライバシーポリシー</a></li>
     </ul>
     <p class="text-sm">© 2024 ReminderChat</p>
   </footer>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      var header = $('header');
-      var range = 200;
-
-      $(window).on('scroll', function () {
-        var scrollTop = $(this).scrollTop(),
-            height = header.outerHeight(),
-            offset = height / 2,
-            calc = 1 - (scrollTop - offset + range) / range;
-
-        if (scrollTop <= 0) {
-          calc = 1;
-        } else if (calc > 1) {
-          calc = 1;
-        } else if (calc < 0) {
-          calc = 0;
-        }
-
-        header.css({ 'opacity': calc });
-
-        if (calc > 1) {
-          header.css({ 'opacity': 1 });
-        } else if ( calc < 0 ) {
-          header.css({ 'opacity': 0 });
-        }
-      });
-    });
-  </script>

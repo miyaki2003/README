@@ -7,16 +7,16 @@ class WeatherService
 
   def self.get_weather_info(latitude, longitude)
     api_key = ENV['OPENWEATHERMAP_API_KEY']
-    
+
     uri = URI(API_URL)
     uri.query = URI.encode_www_form({
-      lat: latitude,
-      lon: longitude,
-      appid: api_key,
-      units: 'metric',
-      lang: 'ja',
-      exclude: 'minutely,daily'
-    })
+                                      lat: latitude,
+                                      lon: longitude,
+                                      appid: api_key,
+                                      units: 'metric',
+                                      lang: 'ja',
+                                      exclude: 'minutely,daily'
+                                    })
 
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
@@ -39,7 +39,7 @@ class WeatherService
 
       {
         current: current_weather,
-        forecasts: forecasts
+        forecasts:
       }
     else
       { error: 'データを取得できませんでした' }
