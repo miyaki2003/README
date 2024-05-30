@@ -1,12 +1,14 @@
 class LineBotController < ApplicationController
   require 'line/bot'
-  # skip_before_action :verify_authenticity_token, only: [:callback]
-  # skip_before_action :require_login
+  skip_before_action :verify_authenticity_token, only: [:callback]
+  skip_before_action :require_login
 
   def callback
     body = request.body.read
     signature = request.env['HTTP_X_LINE_SIGNATURE']
-    head :bad_request unless client.validate_signature(body, signature)
+    unless client.validate_signature(body, signature)
+      head :bad_request
+    end
 
     events = client.parse_events_from(body)
 
@@ -18,7 +20,7 @@ class LineBotController < ApplicationController
         handle_location_message(event)
       end
     end
-
+    
     head :ok
   end
 
@@ -52,7 +54,7 @@ class LineBotController < ApplicationController
       end
     end
   end
-
+  
   def start_reminder_setting(user, text, reply_token)
     user.update(status: 'awaiting_time', temporary_data: text)
     ask_for_time(reply_token)
@@ -73,12 +75,12 @@ class LineBotController < ApplicationController
   end
 
   def set_and_confirm_reminder(user, title, reminder_time, reply_token)
-    reminder = ReminderService.create(user:, title:, reminder_time:)
-
+    reminder = ReminderService.create(user: user, title: title, reminder_time: reminder_time)
+    
     if reminder.persisted?
       confirm_reminder_set(reply_token, title, reminder.reminder_time)
     else
-      send_error_message(reply_token, 'リマインダーを設定できませんでした')
+      send_error_message(reply_token, "リマインダーを設定できませんでした")
     end
   end
 
@@ -89,7 +91,7 @@ class LineBotController < ApplicationController
     }
     client.reply_message(reply_token, message)
   end
-
+  
   def ask_for_time(reply_token)
     message = {
       type: 'text',
@@ -107,6 +109,7 @@ class LineBotController < ApplicationController
 
     date_str = "#{year}年#{month}月#{day}日#{hour}時#{minute}分"
 
+
     message = {
       type: 'text',
       text: "#{date_str}に「#{title}」をリマインドします"
@@ -123,20 +126,19 @@ class LineBotController < ApplicationController
   end
 
   def send_reminder_list(user, reply_token)
-    reminders = user.reminders.where('is_active = ? AND reminder_time > ?', true,
-                                     Time.now).order(reminder_time: :asc).limit(10)
+    reminders = user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc).limit(10)
     if reminders.empty?
-      message_text = 'リマインド一覧がありません'
+        message_text = "リマインド一覧がありません"
     else
       message_text = "リマインド一覧です\n\n"
-
+    
       reminders.each_with_index do |reminder, index|
         time = reminder.reminder_time
         message_text += "#{time.year}年#{time.month}月#{time.day}日#{time.hour}時#{time.min}分\n「#{reminder.title}」"
         message_text += "\n\n" unless index == reminders.size - 1
       end
     end
-
+  
     message = {
       type: 'text',
       text: message_text
@@ -145,7 +147,7 @@ class LineBotController < ApplicationController
   end
 
   def send_current_date_and_time(reply_token)
-    wdays = %w[日 月 火 水 木 金 土]
+    wdays = ["日", "月", "火", "水", "木", "金", "土"]
     current_time = Time.current
     wday_num = current_time.wday
 
@@ -162,8 +164,7 @@ class LineBotController < ApplicationController
   end
 
   def cancel_last_reminder(user, reply_token)
-    last_reminder = user.reminders.where(is_active: true).where('reminder_time > ?',
-                                                                Time.current).order(created_at: :desc).first
+    last_reminder = user.reminders.where(is_active: true).where("reminder_time > ?", Time.current).order(created_at: :desc).first
     if last_reminder
       reminder_title = last_reminder.title
       last_reminder.update(is_active: false)
@@ -251,17 +252,17 @@ class LineBotController < ApplicationController
   def weather_emoji(description)
     case description.downcase
     when /晴/
-      '☀️'
+      "☀️"
     when /曇/
-      '☁️'
+      "☁️"
     when /雨/
-      '🌧️'
+      "🌧️"
     when /雪/
-      '❄️'
+      "❄️"
     when /雷/
-      '⛈️'
+      "⛈️"
     when /雲/
-      '☁️'
+      "☁️"
     end
   end
 
@@ -304,24 +305,24 @@ class LineBotController < ApplicationController
         type: 'text',
         text: weather_info[:error]
       }
-    elsif weather_info[:current].nil? || weather_info[:current][:weather].nil?
-      message = {
-        type: 'text',
-        text: '現在の天気情報が取得できませんでした。'
-      }
     else
-      bubbles = []
+      if weather_info[:current].nil? || weather_info[:current][:weather].nil?
+        message = {
+          type: 'text',
+          text: '現在の天気情報が取得できませんでした。'
+        }
+      else
+        bubbles = []
+  
+        current_weather = weather_info[:current]
+        bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature], current_weather[:rainfall])
 
-      current_weather = weather_info[:current]
-      bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature],
-                                       current_weather[:rainfall])
-
-      current_time = Time.now
-      weather_info[:forecasts].each_with_index do |forecast, index|
+        current_time = Time.now
+        weather_info[:forecasts].each_with_index do |forecast, index|
         forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
-
-        # 15分ごとに切り捨て処理
-        minutes = forecast_time.min
+          
+          # 15分ごとに切り捨て処理
+          minutes = forecast_time.min
         if minutes >= 0 && minutes < 15
           forecast_time -= (minutes * 60 + forecast_time.sec)
         elsif minutes >= 15 && minutes < 30
@@ -331,37 +332,41 @@ class LineBotController < ApplicationController
         elsif minutes >= 45 && minutes < 60
           forecast_time += (45 - minutes) * 60 - forecast_time.sec
         end
-        title = "#{forecast_time.strftime('%-H:%M')} の天気"
-        bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
-      end
-
-      message = {
-        type: 'flex',
-        altText: '天気情報',
-        contents: {
-          type: 'carousel',
-          contents: bubbles
+          title = "#{forecast_time.strftime('%-H:%M')} の天気"
+          bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
+        end
+  
+        message = {
+          type: 'flex',
+          altText: '天気情報',
+          contents: {
+            type: 'carousel',
+            contents: bubbles
+          }
         }
-      }
+      end
     end
-
+  
     client.reply_message(reply_token, message)
   end
 
-  def parse_message(message)
-    formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
-    return nil if formatted_datetime.nil? || formatted_datetime.strip.empty?
+  
 
-    datetime = DateTime.parse(formatted_datetime)
-    datetime.strftime('%Y-%m-%d %H:%M:%S')
-  rescue ArgumentError
-    nil
+  def parse_message(message)
+    begin
+      formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
+      return nil if formatted_datetime.nil? || formatted_datetime.strip.empty?
+      datetime = DateTime.parse(formatted_datetime)
+      datetime.strftime('%Y-%m-%d %H:%M:%S')
+    rescue ArgumentError
+      nil
+    end
   end
 
   def client
-    @client ||= Line::Bot::Client.new do |config|
-      config.channel_secret = ENV['LINE_MESSAGING_CHANNEL_SECRET']
-      config.channel_token = ENV['LINE_CHANNEL_TOKEN']
-    end
+    @client ||= Line::Bot::Client.new { |config|
+      config.channel_secret = ENV["LINE_MESSAGING_CHANNEL_SECRET"]
+      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
+    }
   end
 end
