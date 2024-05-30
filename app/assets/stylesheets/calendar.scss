@@ -109,6 +109,13 @@
   color: #4b5183 !important;
 }
 
+// カレンダー文字太さ
+.fc-dayGridMonth-button,
+.fc-today-button,
+.fc-listMonth-button {
+  font-weight: 600 !important;
+}
+
 .fc-dayGridMonth-view .fc-event {
   white-space: nowrap;
   overflow: hidden;
@@ -142,13 +149,6 @@
   border-color: #94a1b2;
 }
 
-// カレンダー文字太さ
-// .fc-dayGridMonth-button,
-// .fc-today-button,
-// .fc-listMonth-button {
-//   font-weight: 600 !important;
-// }
-
 @media (max-width: 450px) {
   .fc-toolbar-chunk {
     display: flex;
@@ -168,13 +168,14 @@
   }
 
   .fc-CalendarButton-button {
-    width: 47px; 
-    height: 47px;
+    width: 45px; 
+    height: 45px;
   }
 
   .fc-today-button {
     margin-right: 60px;
-    height: 40px;
+    height: 42px;
+    width: 47px;
   }
 
   .holiday{
@@ -189,7 +190,7 @@
   }
 
   .fc .fc-toolbar.fc-footer-toolbar {
-    margin-top: 18px;
+    margin-top: 27px;
   }
 
   .fc-daygrid-day-events{
@@ -223,11 +224,12 @@
   .fc-today-button {
     margin-right: 60px;
     height: 42px;
+    width: 45px;
   }
 }
 
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .fc-toolbar-chunk {
     display: flex;
     justify-content: space-around;
@@ -254,7 +256,7 @@
   }
 
   .fc-today-button {
-    margin-right: 300px;
+    margin-right: 180px;
   }
 
   .fc-lineButton-button:hover {

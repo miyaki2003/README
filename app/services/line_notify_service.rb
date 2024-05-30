@@ -19,7 +19,7 @@ class LineNotifyService
     response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
       http.request(request)
     end
-  
+
     handle_response(response)
   end
 

@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   let notifySwitchAdd = document.getElementById('line-notify-switch-add');
   let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
-  let notifyTimeAdd = document.getElementById('notify_time-add').value;
+
 
 
   let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
@@ -315,17 +315,18 @@ document.addEventListener('DOMContentLoaded', async function() {
       event.preventDefault();
       let formData = new FormData(addForm);
       let eventDateAdd = document.getElementById('event_date-add').value;
-      if (document.getElementById('line-notify-switch-add').checked) {
-        const fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
-        if (isNaN(fullNotifyDateTime.getTime())) {
-          alert('指定された通知時間が無効です');
-          return;
-        }
+      let notifyTimeAdd = document.getElementById('notify_time-add').value;
+
+      if (notifySwitchAdd.checked) {
+        let fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
+        console.log('Full Notify DateTime:', fullNotifyDateTime);
+
         if (fullNotifyDateTime <= new Date()) {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
         }
-        formData.set('event[notify_time]', fullNotifyDateTime.toISOString());
+        formData.set('event[notify_date]', eventDateAdd);
+        formData.set('event[notify_time]', notifyTimeAdd);
       }
 
       fetch(addForm.action, {
@@ -558,23 +559,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.error('Error loading the event details:', error);
     alert('Failed to load event details: ' + error.message);
   }
-
-  // document.getElementById('logoutButton').addEventListener('click', function(event) {
-  //   event.preventDefault();
-  //   fetch('/logout', {
-  //     method: 'DELETE',
-  //     headers: {
-  //       'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-  //     }
-  //   }).then(response => {
-  //     if (response.ok) {
-  //       window.location.href = '/';
-  //     } else {
-  //       alert('ログアウトに失敗しました');
-  //     }
-  //   }).catch(error => {
-  //     console.error('Error:', error);
-  //     alert('エラーが発生しました');
-  //   });
-  // });
 });

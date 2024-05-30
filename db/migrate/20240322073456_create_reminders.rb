@@ -5,7 +5,7 @@ class CreateReminders < ActiveRecord::Migration[7.1]
       t.string :title
       t.text :message
       t.datetime :reminder_time
-    
+
       t.timestamps
     end
   end

@@ -4,12 +4,12 @@
   font-family: 'FontAwesome', sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-  &:before, &:after {
-    box-sizing: border-box;
-  }
-}
+// * {
+//   box-sizing: border-box;
+//   &:before, &:after {
+//     box-sizing: border-box;
+//   }
+// }
 
 body {
   font-family: 'Sora', sans-serif;
@@ -28,38 +28,38 @@ body {
   color: #2d334a;
 }
 
-nav {
-  position: fixed;
-  width: 100%;
-  margin: 0 auto;
-  top: 0;
-  z-index: 3;
-  ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-    float: right;
-  }
-  li {
-    display: inline-block;
-    padding: 2em;
-    text-align: center;
-    transition: all .2s;
-    &:last-child {
-      padding-right: 0;
-    }
-  }
-  a {
-    color: #FFF;
-    text-decoration: none;
-    transition: all .3s;
-    &:hover {
-      color: #DDD;
-    }
-  }
-}
+// nav {
+//   position: fixed;
+//   width: 100%;
+//   margin: 0 auto;
+//   top: 0;
+//   z-index: 3;
+//   ul {
+//     padding: 0;
+//     margin: 0;
+//     list-style-type: none;
+//     float: right;
+//   }
+//   li {
+//     display: inline-block;
+//     padding: 2em;
+//     text-align: center;
+//     transition: all .2s;
+//     &:last-child {
+//       padding-right: 0;
+//     }
+//   }
+//   a {
+//     color: #FFF;
+//     text-decoration: none;
+//     transition: all .3s;
+//     &:hover {
+//       color: #DDD;
+//     }
+//   }
+// }
 
-#icon {
+.icon {
   display: inline-block;
   padding-top: .7em;
   font-size: 2em;
@@ -67,7 +67,7 @@ nav {
   text-transform: uppercase;
 }
 
-#nav-bg {
+.nav-bg {
   backdrop-filter: blur(5px);
   background-color: rgba(186, 232, 232, 0.1); 
   position: fixed;
@@ -102,10 +102,8 @@ ul li a {
 }
 
 header {
-  position: relative;
-  background-color: #bae8e8;
-  padding: 10em 0 8em;
-  z-index: 2;
+  background-color: #E0FBFE;
+  padding: 30px;
   h1 {
     font-size: 4em;
     text-align: center;
@@ -113,7 +111,7 @@ header {
 }
 
 .bg-custom-color {
-  background-color: #bae8e8;
+  background-color: #E0FBFE;
 }
 
 .text-sm {
@@ -121,7 +119,7 @@ header {
 }
 
 #about {
-  background: #fffffe;
+  background: #ffffff;
   height: 70em;
   padding: 5em 0;
   p {
@@ -136,26 +134,26 @@ header {
 
 
 
-@media only screen and (max-width: 768px) {
-  body {
-    font-size: 14px;
-  }
+// @media only screen and (max-width: 768px) {
+//   body {
+//     font-size: 14px;
+//   }
 
-  nav ul {
-    flex-direction: column;
-  }
+//   nav ul {
+//     flex-direction: column;
+//   }
 
-  .container {
-    padding: 0 10px;
-    min-width: auto;
-  }
+//   .container {
+//     padding: 0 10px;
+//     min-width: auto;
+//   }
 
-  header h1 {
-    font-size: 2.5em;
-  }
+//   header h1 {
+//     font-size: 2.5em;
+//   }
 
-  .btn {
-    padding: 12px 24px;
-    font-size: 1em;
-  }
-}
+//   .btn {
+//     padding: 12px 24px;
+//     font-size: 1em;
+//   }
+// }

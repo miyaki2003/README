@@ -11,9 +11,13 @@ class Event < ApplicationRecord
   private
 
   def set_datetime_attributes
-    self.start_time = Time.zone.parse("#{start_date} #{start_time_part}") if start_date.present? && start_time_part.present?
+    if start_date.present? && start_time_part.present?
+      self.start_time = Time.zone.parse("#{start_date} #{start_time_part}")
+    end
     self.end_time = Time.zone.parse("#{end_date} #{end_time_part}") if end_date.present? && end_time_part.present?
-    self.notify_time = Time.zone.parse("#{notify_date} #{notify_time_part}") if notify_date.present? && notify_time_part.present?
+    return unless notify_date.present? && notify_time_part.present?
+
+    self.notify_time = Time.zone.parse("#{notify_date} #{notify_time_part}")
   end
 
   def start_must_be_before_end_time

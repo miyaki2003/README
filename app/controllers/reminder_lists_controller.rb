@@ -1,7 +1,7 @@
 class ReminderListsController < ApplicationController
-  skip_before_action :require_login, only: [:index, :deactive]
   def index
-    @reminders = current_user.reminders.where("is_active = ? AND reminder_time > ?", true, Time.now).order(reminder_time: :asc)
+    @reminders = current_user.reminders.where('is_active = ? AND reminder_time > ?', true,
+                                              Time.now).order(reminder_time: :asc)
   end
 
   def deactivate
