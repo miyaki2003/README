@@ -1,16 +1,12 @@
 <%= stylesheet_link_tag 'staticpages/top', media: 'all', 'data-turbolinks-track': 'reload' %>
 
-<header>
-  <div style="flex-grow: 1; display: flex; justify-content: flex-end;">
-      <button class="btn custom-login-btn"><i class="fas fa-sign-in-alt fa-lg"></i> Login</button>
-  </div>
-</header>
+<%= render 'shared/header' %>
 
 <section id="about">
   <div class="container">
     <p>
       <%= link_to 'ログイン', auth_at_provider_path(provider: :line) %>
-      <%= link_to 'カレンダー', events_path %>
+      <%= link_to 'カレンダー', events_path, data: { turbo_frame: 'calendar-container' } %>
       <%= form_with url: logout_path, method: :delete do %>
         <%= submit_tag 'ログアウト' %>
       <% end %>
@@ -45,12 +41,4 @@
 </div>-->
 
 </section>
-<div class="bg-custom-color text-text-color font-genjyuu w-full shadow-top-shadow">
-  <footer class="flex flex-col items-center justify-center pb-6 pt-6">
-    <ul class="flex justify-center mb-2">
-      <li class="p-2 cursor-pointer"><a href="/terms" data-turbo="true">利用規約</a></li>
-      <li class="p-2 cursor-pointer"><a href="/staticpages/privacy_policy" class="async-link" data-target="content-container">プライバシーポリシー</a></li>
-    </ul>
-    <p class="text-sm">© 2024 ReminderChat</p>
-  </footer>
-</div>
+<%= render 'shared/footer' %>
