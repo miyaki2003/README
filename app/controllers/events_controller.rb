@@ -14,10 +14,10 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = current_user.events.build(event_params)
+    #@event = current_user.events.build(event_params)
     #@event = Event.new(event_params)
 
-    @event.line_user_id = current_user.line_user_id
+    event.line_user_id = current_user.line_user_id
     set_datetime_params
 
     if current_user.events.where("DATE(start_time) = ?", @event.start_time.to_date).count >= 4
