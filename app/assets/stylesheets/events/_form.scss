@@ -2,5 +2,42 @@
   margin-right: 5px;
 }
 .tooltip-icon {
-  color: #4b5183;
+  color: #8190A4;
+}
+
+.modal-content {
+  background-color: #f8f9fa;
+  color: #40456F;
+  border-radius: 17px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+  background-color: #4b5183;
+  border-color: #4b5183;
+  color: #ffffff;
+  float: right;
+}
+
+.btn-primary:hover {
+  background-color: #969696;
+  border-color: #969696;
+}
+
+.btn-danger {
+  background-color: #ff5470;
+  border-color: #ff5470;
+  color: #ffffff;
+}
+
+.form-control {
+  color: #40456F;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 500;
+  flex-grow: 1;
+  text-align: center;
+  color: #4b5183 !important;
 }

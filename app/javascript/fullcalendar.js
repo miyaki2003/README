@@ -128,8 +128,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     notifyTimeInputEdit.style.display = notifySwitchEdit.checked ? 'block' : 'none';
   }
 
-
-
   // スイッチ切り替え
   document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
