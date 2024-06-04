@@ -11,17 +11,29 @@ let buildOptions = {
   bundle: true,
   outdir: './app/assets/builds',
   sourcemap: true,
-  plugins: [sassPlugin()],
+  plugins: [sassPlugin(), {
+    name: 'on-end',
+    setup(build) {
+      build.onEnd(result => {
+        if (result.errors.length > 0) {
+          console.error('Build failed:', result.errors);
+        } else {
+          console.log('Build succeeded:', result);
+        }
+      });
+    }
+  }],
   loader: { '.js': 'jsx' },
 };
 
-if (watchMode) {
-  buildOptions.watch = {
-    onRebuild(error, result) {
-      if (error) console.error('watch build failed:', error);
-      else console.log('watch build succeeded:', result);
-    },
-  };
+async function build() {
+  const context = await esbuild.context(buildOptions);
+  if (watchMode) {
+    await context.watch();
+    console.log('watching...');
+  } else {
+    await context.rebuild();
+  }
 }
 
-esbuild.build(buildOptions).catch(() => process.exit(1));
+build()
