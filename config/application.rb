@@ -18,7 +18,7 @@ module App
 
     config.autoload_paths += %W[#{config.root}/lib]
 
-    config.assets.enabled = false
+    config.assets.enabled = true
 
     # Configuration for the application, engines, and railties goes here.
     #
