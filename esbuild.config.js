@@ -21,7 +21,8 @@ async function build() {
 
     if (watchMode) {
       console.log('Entering watch mode...');
-      await esbuild.build({ ...buildOptions, watch: true });
+      const ctx = await esbuild.context(buildOptions);
+      await ctx.watch();
       console.log('watching...');
     } else {
       console.log('Rebuilding...');
