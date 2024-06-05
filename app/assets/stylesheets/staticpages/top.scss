@@ -1,93 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
-
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}
-
-body {
-  font-family: 'Sora', sans-serif;
-  background: #000000;
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 16px;
-  color: #000000;
-}
-
-.container {
-  max-width: 60em;
-  min-width: 45em;
-  margin: 0 auto;
-  padding: 0 2em;
-  color: #2d334a;
-}
-
-.icon {
-  display: inline-block;
-  padding-top: .7em;
-  font-size: 2em;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.nav-bg {
-  backdrop-filter: blur(5px);
-  background-color: rgba(186, 232, 232, 0.1); 
-  position: fixed;
-  height: 5em;
-  width: 100%;
-  top: 0;
-  z-index: 1;
-  border: 1px solid #000000;
-}
-
-ul li a {
-  color: #2d334a;
-}
-
-
-.btn.custom-login-btn {
-  color: #2d334a;
-}
-
-.btn.custom-login-btn .fas {
-  color: #2d334a;
+.header {
+  background-color: #E0FBFE !important;
+  height: 120px;
 }
 
 .custom-login-btn {
-  color: #2d334a;
-  margin: 5px;
-  padding: 5px 5px;
-  margin-bottom: 10px;
-}
-.custom-login-btn:hover {
-  font-size: 1.2em;
+  height: 110px;
 }
 
-header {
-  background-color: #E0FBFE;
-  padding: 30px;
-  h1 {
-    font-size: 4em;
-    text-align: center;
-  }
-}
-
-.bg-custom-color {
-  background-color: #E0FBFE;
-}
-
-.text-sm {
-  color: #2d334a;
-}
-
-#about {
-  background: #ffffff;
-  height: 70em;
-  padding: 5em 0;
-  p {
-    line-height: 2em;
-    font-size: 1.4em;
-    margin: 0;
-    color: #000000;
-  }
+.footer {
+  background-color: #E0FBFE !important;
+  height: 120px;
 }
