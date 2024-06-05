@@ -30,9 +30,6 @@
     "build:esbuild": "node esbuild.config.js",
     "build:watch": "node esbuild.config.js --watch"
   },
-  "browserslist": [
-    "defaults"
-  ],
   "devDependencies": {
     "esbuild": "^0.21.4",
     "esbuild-plugin-sass": "^1.0.1"
