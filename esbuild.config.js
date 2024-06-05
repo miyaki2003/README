@@ -2,6 +2,8 @@ const esbuild = require('esbuild');
 const sassPlugin = require('esbuild-plugin-sass');
 const watchMode = process.argv.includes('--watch');
 
+console.log('Starting esbuild...');
+
 let buildOptions = {
   entryPoints: {
     application: 'app/javascript/application.js',
@@ -27,13 +29,24 @@ let buildOptions = {
 };
 
 async function build() {
-  const context = await esbuild.context(buildOptions);
-  if (watchMode) {
-    await context.watch();
-    console.log('watching...');
-  } else {
-    await context.rebuild();
+  try {
+    const context = await esbuild.context(buildOptions);
+    if (watchMode) {
+      console.log('Entering watch mode...');
+      await context.watch();
+      console.log('Watching for changes...');
+    } else {
+      console.log('Rebuilding...');
+      await context.rebuild();
+      console.log('Rebuild complete.');
+    }
+  } catch (error) {
+    console.error('Build error:', error);
   }
 }
 
-build()
+build().then(() => {
+  console.log('Build script executed.');
+}).catch(error => {
+  console.error('Error during build execution:', error);
+});
