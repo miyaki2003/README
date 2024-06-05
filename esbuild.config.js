@@ -16,15 +16,25 @@ let buildOptions = {
 };
 
 async function build() {
-  const context = await esbuild.context(buildOptions);
+  try {
+    console.log('Starting build process...');
 
-  if (watchMode) {
-    context.watch();
-    console.log('watching...');
-  } else {
-    await context.rebuild();
-    console.log('Rebuild complete.');
+    if (watchMode) {
+      console.log('Entering watch mode...');
+      await esbuild.build({ ...buildOptions, watch: true });
+      console.log('watching...');
+    } else {
+      console.log('Rebuilding...');
+      await esbuild.build(buildOptions);
+      console.log('Rebuild complete.');
+    }
+  } catch (error) {
+    console.error('Build process failed:', error);
+    process.exit(1);
   }
 }
 
-build().catch(() => process.exit(1));
+build().catch((error) => {
+  console.error('Build script error:', error);
+  process.exit(1);
+});
