@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  # belongs_to :user
+  belongs_to :user
   attr_accessor :start_date, :start_time_part, :end_date, :end_time_part, :notify_date, :notify_time_part
 
   before_validation :set_datetime_attributes
