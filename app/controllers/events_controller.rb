@@ -8,14 +8,14 @@ class EventsController < ApplicationController
     else
       @events = current_user.events
       @event = current_user.events.build
-      #@events = Event.all
-      #@event = Event.new
+      # @events = Event.all
+      # @event = Event.new
     end
   end
 
   def create
     @event = current_user.events.build(event_params)
-    #@event = Event.new(event_params)
+    # @event = Event.new(event_params)
 
     @event.line_user_id = current_user.line_user_id
     set_datetime_params
@@ -45,7 +45,7 @@ class EventsController < ApplicationController
 
   def update
     @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
+    # @event = Event.find(params[:id])
     @event.assign_attributes(event_params)
     set_datetime_params
     NotificationJob.cancel(@event.notification_job_id) if @event.notification_job_id.present?
@@ -59,7 +59,7 @@ class EventsController < ApplicationController
 
   def details
     @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
+    # @event = Event.find(params[:id])
     render json: {
       id: @event.id,
       title: @event.title,
@@ -74,7 +74,7 @@ class EventsController < ApplicationController
 
   def destroy
     @event = current_user.events.find_by(id: params[:id])
-    #@event = Event.find(params[:id])
+    # @event = Event.find(params[:id])
     if @event.nil?
       render json: { error: 'Event not found.' }, status: :not_found
     elsif @event.destroy

@@ -8,8 +8,12 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
 && apt-get install -y build-essential libpq-dev nodejs yarn
 RUN mkdir /app
 WORKDIR /app
+COPY package.json /app
+COPY yarn.lock /app
 RUN gem install bundler
 COPY Gemfile /app/Gemfile
 COPY Gemfile.lock /app/Gemfile.lock
 RUN bundle install
 COPY . /app
+#パッケージjsonがドッカーコンテナ内に入っていない
+#ドッカーファイルにyarn.lockとパッケージ.jsonを入れる

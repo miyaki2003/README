@@ -13,15 +13,31 @@ let buildOptions = {
   sourcemap: true,
   plugins: [sassPlugin()],
   loader: { '.js': 'jsx' },
+  external: [
+    '@fullcalendar/core', 
+    '@fullcalendar/daygrid', 
+    '@fullcalendar/timegrid', 
+    '@fullcalendar/list', 
+    '@fullcalendar/bootstrap5', 
+    '@fullcalendar/interaction', 
+    'jquery', 
+    'bootstrap'
+  ],
 };
 
-if (watchMode) {
-  buildOptions.watch = {
-    onRebuild(error, result) {
-      if (error) console.error('watch build failed:', error);
-      else console.log('watch build succeeded:', result);
-    },
-  };
+async function build() {
+  try {
+    if (watchMode) {
+      const ctx = await esbuild.context(buildOptions);
+      await ctx.watch();
+    } else {
+      await esbuild.build(buildOptions);
+    }
+  } catch (error) {
+    process.exit(1);
+  }
 }
 
-esbuild.build(buildOptions).catch(() => process.exit(1));
+build().catch((error) => {
+  process.exit(1);
+});

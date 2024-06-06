@@ -8,7 +8,9 @@
           <td><%= reminder.reminder_time.strftime("%Y年%m月%d日 %H時%M分") %></td>
           <td><%= reminder.title %></td>
           <td>
-            <%= link_to '削除', deactivate_reminder_list_path(reminder), method: :patch, remote: true, class: "btn btn-danger delete-reminder-button", data: { reminder_id: reminder.id, confirm: 'このリマインダーを削除しますか？' } %>
+            <%= link_to deactivate_reminder_list_path(reminder), method: :patch, remote: true, class: "btn btn-danger delete-reminder-button", data: { reminder_id: reminder.id, confirm: 'このリマインダーを削除しますか？' } do %>
+              <i class="fa-solid fa-trash-can"></i>
+            <% end %>
           </td>
         </tr>
       <% end %>
