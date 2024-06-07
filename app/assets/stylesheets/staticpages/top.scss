@@ -16,7 +16,7 @@
 
 body {
   font-family: 'Sora', sans-serif;
-  background: #000000;
+  background: #ffffff;
   margin: 0;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
@@ -50,83 +50,7 @@ body {
   border: 1px solid #000000;
 }
 
-ul li a {
-  color: #2d334a;
-}
-
-
-.btn.custom-login-btn {
-  color: #2d334a;
-}
-
-.btn.custom-login-btn .fas {
-  color: #2d334a;
-}
-
-.custom-login-btn {
-  color: #2d334a;
-  margin: 5px;
-  padding: 5px 5px;
-  margin-bottom: 10px;
-}
-// ログインボタン拡大
-// .custom-login-btn:hover {
-//   font-size: 1.2em;
-// }
-
-
-
-body {
-  font-family: 'Sora', sans-serif;
-  background: #f0f0f0;
-  margin: 0;
-}
-
-// .btn.custom-login-btn {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   background-color: #969696;
-//   color: #ffffff;
-//   border: none;
-//   padding: 10px 20px;
-//   font-size: 1.2em;
-//   border-radius: 5px;
-//   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-//   transition: background-color 0.3s, transform 0.3s;
-// }
-
-// .btn.custom-login-btn i {
-//   margin-right: 8px;
-//   font-size: 1.5em;
-// }
-
-// .btn.custom-login-btn:hover {
-//   background-color: #5F5F5F;
-//   transform: translateY(-2px);
-// }
-
-
-// header {
-//   background-color: #E0FBFE;
-//   padding: 30px;
-//   h1 {
-//     font-size: 4em;
-//     text-align: center;
-//   }
-// }
-
-.bg-custom-color {
-  background-color: #E0FBFE;
-}
-
-.text-sm {
-  color: #2d334a;
-  margin: 0;
-}
-
 #about {
-  background: #ffffff;
   height: 70em;
   padding: 5em 0;
   p {
