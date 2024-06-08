@@ -1,12 +1,36 @@
-.bg-custom-color {
-  background-color: #E0FBFE;
-}
-
 .text-sm {
-  color: #2d334a;
+  color: #666666;
   margin: 0;
 }
 
 ul li a {
+  color: #666666;
+  text-decoration: none;
+}
+
+ul li a:hover {
   color: #2d334a;
+}
+
+.footer {
+  background-color: #E0FBFE;
+  padding: 20px;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.footer ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer ul li {
+  padding: 0 10px;
+}
+
+.footer p {
+  margin-top: 10px;
 }

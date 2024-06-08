@@ -87,3 +87,13 @@ body {
 //   background-color: #E0FBFE !important;
 //   height: 120px;
 // }
+
+#about .container {
+  text-align: center; /* テキストと画像を中央揃え */
+}
+
+.about-image {
+  max-width: 100%; /* 画像の最大幅をコンテナに収める */
+  height: auto; /* 画像の高さを自動調整 */
+  margin-top: 20px; /* ログアウトボタンと画像の間にスペースを追加 */
+}
