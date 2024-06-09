@@ -89,11 +89,30 @@ body {
 // }
 
 #about .container {
-  text-align: center; /* テキストと画像を中央揃え */
+  text-align: center;
 }
 
 .about-image {
-  max-width: 100%; /* 画像の最大幅をコンテナに収める */
-  height: auto; /* 画像の高さを自動調整 */
-  margin-top: 20px; /* ログアウトボタンと画像の間にスペースを追加 */
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.login-link {
+  display: inline-block;
+  position: relative;
+}
+
+.login-button {
+  position: relative;
+}
+
+.login-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #FFFFFF; /* テキストの色 */
+  font-size: 16px; /* 必要に応じて調整 */
+  font-weight: bold; /* 必要に応じて調整 */
 }
