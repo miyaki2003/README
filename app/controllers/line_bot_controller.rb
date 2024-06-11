@@ -322,7 +322,7 @@ class LineBotController < ApplicationController
         backgroundColor: '#ffffff',
         borderColor: '#dddddd',
         borderWidth: '2px',
-        cornerRadius: '10px'
+        cornerRadius: '0px'
       },
       styles: {
         hero: {
