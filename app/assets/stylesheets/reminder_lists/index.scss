@@ -17,7 +17,7 @@
   border-radius: 10px;
   background-color: #ffffff;
   width: 100%;
-  text-align: center;
+  text-align: start;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
 }
@@ -28,13 +28,13 @@
 }
 
 .reminder-title {
-  margin-top: 10px;
-  font-size: 30px;
+  margin-top: 5px;
+  font-size: 20px;
 }
 
 .delete-button-container {
   position: absolute;
-  top: 35px;
+  top: 40px;
   right: 20px;
   background-color: #ff5470;
 }
