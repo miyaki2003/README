@@ -112,39 +112,39 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.16.17.tgz#c5a1a4bfe1b57f0c3e61b29883525c6da3e5c091"
   integrity sha512-y+EHuSchhL7FjHgvQL/0fnnFmO4T1bhvWANX6gcnqTjtnKWbTvUMCpGnv2+t+31d7RzyEAYAd4u2fnIhHL6N/Q==
 
-"@fortawesome/fontawesome-free@^6.5.1":
+"@fortawesome/fontawesome-free@^6.5.2":
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-6.5.2.tgz#310fe90cb5a8dee9698833171b98e7835404293d"
   integrity sha512-hRILoInAx8GNT5IMkrtIt9blOdrqHOnPBH+k70aWUAqPZPgopb9G5EQJFpaBx/S8zp2fC+mPW349Bziuk1o28Q==
 
-"@fullcalendar/bootstrap5@^6.1.11":
+"@fullcalendar/bootstrap5@^6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/bootstrap5/-/bootstrap5-6.1.14.tgz#e8afd6f46cc54c76837dee82b2094d68937c1d81"
   integrity sha512-yJ+6WJoEqASAO2oMQhKCtgNzK1zQOCjiLvkUAyWu2Rg4rHkQJQqJMyr3glYGg27ZYntuFk59h4bDhQ0z7wJvVg==
 
-"@fullcalendar/core@^6.1.11", "@fullcalendar/core@~6.1.14":
+"@fullcalendar/core@^6.1.14", "@fullcalendar/core@~6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.1.14.tgz#75cd70ab28600dec630970e1015e4e7b59cd4a94"
   integrity sha512-hIPRBevm0aMc2aHy1hRIJgXmI1QTvQM1neQa9oxtuqUmF1+ApYC3oAdwcQMTuI7lHHw3pKJDyJFkKLPPnL6HXA==
   dependencies:
     preact "~10.12.1"
 
-"@fullcalendar/daygrid@^6.1.11", "@fullcalendar/daygrid@~6.1.14":
+"@fullcalendar/daygrid@^6.1.14", "@fullcalendar/daygrid@~6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/daygrid/-/daygrid-6.1.14.tgz#4afc48adbdd905b79777ff4c822c9ed0205df995"
   integrity sha512-DSyjiA1dEM8k3bOCrZpZOmAOZu71KGtH02ze+4QKuhxkmn/zQghmmLRdfzpOrcyJg6xGKkoB4pBcO+2lXar8XQ==
 
-"@fullcalendar/google-calendar@^6.1.11":
+"@fullcalendar/google-calendar@^6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/google-calendar/-/google-calendar-6.1.14.tgz#84d71f30d2bc5886d9c30292c28910c0d3e0d94c"
   integrity sha512-tzXd462N56Hxwuc3g9kiexm66hMiAHPStdXWWPd+dvfanmc3xWwLCGkp1nU7F3idakmwL51mQkswRUNKXSdl2g==
 
-"@fullcalendar/interaction@^6.1.11", "@fullcalendar/interaction@~6.1.14":
+"@fullcalendar/interaction@^6.1.14", "@fullcalendar/interaction@~6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/interaction/-/interaction-6.1.14.tgz#c758581419e324cf82b53a38e7941942f7f0dd14"
   integrity sha512-rXum5XCjq+WEPNctFeYL/JKZGeU2rlxrElygocdMegcrIBJQW5hnWWVE+i4/1dOmUKF80CbGVlXUyYXoqK2eFg==
 
-"@fullcalendar/list@^6.1.11", "@fullcalendar/list@~6.1.14":
+"@fullcalendar/list@^6.1.14", "@fullcalendar/list@~6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/list/-/list-6.1.14.tgz#526a8f9ce1d98457ab030c3e4ae47302afb92ebf"
   integrity sha512-eV0/6iCumYfvlPzIUTAONWH17/JlQCyCChUz8m06L4E/sOiNjkHGz8vlVTmZKqXzx9oWOOyV/Nm3pCtHmVZh+Q==
@@ -156,7 +156,7 @@
   dependencies:
     "@fullcalendar/daygrid" "~6.1.14"
 
-"@fullcalendar/timegrid@^6.1.11", "@fullcalendar/timegrid@~6.1.14":
+"@fullcalendar/timegrid@^6.1.14", "@fullcalendar/timegrid@~6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@fullcalendar/timegrid/-/timegrid-6.1.14.tgz#ff1849278b4991002ae1337d5435aaba3ae9aadc"
   integrity sha512-ZByc3BVAtxWSVfyaNedROLlg/Tb2NQ43+MZZAfBSrVwVm2xyfQ+Bsx3pJyCXsRsUh2TFFTO07q7nMWe0jet3KQ==
@@ -471,7 +471,7 @@ fsevents@~2.3.2:
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
-fullcalendar@^6.1.11:
+fullcalendar@^6.1.14:
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/fullcalendar/-/fullcalendar-6.1.14.tgz#64858d63afc341793fe363411798b0b9663cd968"
   integrity sha512-uGaJrhafNE50VwHRkIROxXMKDZUr7yXgCJ+8VZ561oL5kx2sSWaDsa9WrSYH/NedNJIklUP5XczhIVtcT3aiaQ==
