@@ -272,7 +272,7 @@ class LineBotController < ApplicationController
         type: 'image',
         url: image_url,
         size: 'full',
-        aspectRatio: '20:13',
+        aspectRatio: '3:4',
         aspectMode: 'cover'
       },
       body: {
@@ -283,7 +283,7 @@ class LineBotController < ApplicationController
             type: 'text',
             text: title,
             weight: 'bold',
-            size: 'xl',
+            size: '40px',
             align: 'center'
           },
           {
@@ -298,7 +298,7 @@ class LineBotController < ApplicationController
                 align: 'center'
               }
             ],
-            spacing: 'sm',
+            spacing: 'md',
             margin: 'md'
           },
           {
@@ -318,10 +318,10 @@ class LineBotController < ApplicationController
             margin: 'md'
           }
         ],
-        paddingAll: '40px',
+        paddingBottom: '40px',
         backgroundColor: '#ffffff',
         borderColor: '#dddddd',
-        borderWidth: '1px',
+        borderWidth: '1.5px',
         cornerRadius: '0px'
       },
       styles: {
