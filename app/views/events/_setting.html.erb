@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag 'events/_setting', media: 'all', 'data-turbolinks-track': 'reload' %>
 <div class="modal fade" id="settingEventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
@@ -6,7 +7,7 @@
       </div>
       <div class="modal-body" id="modal-content">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><a href="/">TOPページへ</a></li>
+          <li class="list-group-item"><a href="/" class="top-link">TOPページへ</a></li>
           <li class="list-group-item"><a href="https://line.me/R/ti/p/%40083jbanw">LINEへ</a></li>
           <li class="list-group-item">
             <%= link_to "利用規約", terms_path, data: { turbo_frame: "content-container" } %>

@@ -8,3 +8,5 @@
 
 //= link shared/_header.css
 //= link shared/_footer.css
+
+//= link events/_setting.css

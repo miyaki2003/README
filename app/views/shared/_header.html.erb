@@ -1,9 +1,16 @@
 <%= stylesheet_link_tag 'shared/_header', media: 'all', 'data-turbolinks-track': 'reload' %>
 <header class="header">
-  <div style="flex-grow: 1; display: flex; justify-content: flex-end;">
-    <%= link_to auth_at_provider_path(provider: :line), class: 'btn custom-login-btn btn-border-shadow btn-border-shadow--radius' do %>
-      <i class="fa-solid fa-right-to-bracket"></i>
-      <span>Login</span>
-    <% end %>
+  <div style="display: flex; align-items: center; width: 100%;">
+    <div style="flex-grow: 1;">
+      <%= link_to root_path, data: { turbo_frame: "content-container" } do %>
+        <%= image_tag 'logo-transparent.png', alt: 'Header Image', class: 'header-image' %>
+      <% end %>
+    </div>
+    <div style="flex-grow: 1; display: flex; justify-content: flex-end;">
+      <%= link_to auth_at_provider_path(provider: :line), class: 'btn custom-login-btn btn-border-shadow btn-border-shadow--radius' do %>
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span>Login</span>
+      <% end %>
+    </div>
   </div>
 </header>
