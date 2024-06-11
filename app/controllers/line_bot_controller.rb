@@ -238,7 +238,7 @@ class LineBotController < ApplicationController
     }
     client.reply_message(reply_token, message)
   end
-
+  
   def handle_location_message(event)
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
@@ -247,7 +247,7 @@ class LineBotController < ApplicationController
     weather_info = WeatherService.get_weather_info(latitude, longitude)
     reply_weather_info(event['replyToken'], weather_info)
   end
-
+  
   def weather_emoji(description)
     case description.downcase
     when /晴/
@@ -264,47 +264,13 @@ class LineBotController < ApplicationController
       '☁️'
     end
   end
-
-  # def create_weather_bubble(title, weather, temperature, rainfall)
-  #   {
-  #     type: 'bubble',
-  #     body: {
-  #       type: 'box',
-  #       layout: 'vertical',
-  #       contents: [
-  #         {
-  #           type: 'text',
-  #           text: title,
-  #           weight: 'bold',
-  #           size: 'lg'
-  #         },
-  #         {
-  #           type: 'text',
-  #           text: "天気: #{weather} #{weather_emoji(weather)}",
-  #           size: 'md'
-  #         },
-  #         {
-  #           type: 'text',
-  #           text: "気温: #{temperature}°C",
-  #           size: 'md'
-  #         },
-  #         {
-  #           type: 'text',
-  #           text: "降水量: #{rainfall} mm",
-  #           size: 'md'
-  #         }
-  #       ]
-  #     }
-  #   }
-  # end
-
-
+  
   def create_weather_bubble(title, weather, temperature, rainfall, image_url)
     {
       type: 'bubble',
       hero: {
         type: 'image',
-        url: "https://drive.google.com/uc?export=view&id=1zkyY3XUuBRC4qYzGJnTpqyLcKkDEpXkb",
+        url: image_url,
         size: 'full',
         aspectRatio: '20:13',
         aspectMode: 'cover'
@@ -368,11 +334,7 @@ class LineBotController < ApplicationController
       }
     }
   end
-
-
-
-
-
+  
   def reply_weather_info(reply_token, weather_info)
     if weather_info[:error]
       message = {
@@ -386,30 +348,31 @@ class LineBotController < ApplicationController
       }
     else
       bubbles = []
-
+  
       current_weather = weather_info[:current]
-      bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature],
-                                       current_weather[:rainfall])
-
+      current_image_url = get_weather_image_url(current_weather[:weather])
+      bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature], current_weather[:rainfall], current_image_url)
+  
       current_time = Time.now
       weather_info[:forecasts].each_with_index do |forecast, index|
         forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
-
+  
         # 15分ごとに切り捨て処理
         minutes = forecast_time.min
         if minutes >= 0 && minutes < 15
           forecast_time -= (minutes * 60 + forecast_time.sec)
         elsif minutes >= 15 && minutes < 30
-          forecast_time += (15 - minutes) * 60 - forecast_time.sec
+          forecast_time += (15 - minutes) * 60 - forecast時間.sec
         elsif minutes >= 30 && minutes < 45
           forecast_time += (30 - minutes) * 60 - forecast_time.sec
         elsif minutes >= 45 && minutes < 60
           forecast_time += (45 - minutes) * 60 - forecast_time.sec
         end
         title = "#{forecast_time.strftime('%-H:%M')} の天気"
-        bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
+        forecast_image_url = get_weather_image_url(forecast[:weather])
+        bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall], forecast_image_url)
       end
-
+  
       message = {
         type: 'flex',
         altText: '天気情報',
@@ -419,9 +382,21 @@ class LineBotController < ApplicationController
         }
       }
     end
-
+  
     client.reply_message(reply_token, message)
   end
+  
+  def get_weather_image_url(weather)
+    case weather
+    when /晴/
+      'https://drive.google.com/uc?export=view&id=17g6Th1ZOCO9lVMOTCF0c-8OAJzgFkT3y'
+    when /曇/
+      'https://drive.google.com/file/d/10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
+    else
+      'https://drive.google.com/uc?export=view&id=17g6Th1ZOCO9lVMOTCF0c-8OAJzgFkT3y'
+    end
+  end
+  
 
   def parse_message(message)
     formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
