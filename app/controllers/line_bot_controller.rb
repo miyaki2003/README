@@ -265,9 +265,50 @@ class LineBotController < ApplicationController
     end
   end
 
-  def create_weather_bubble(title, weather, temperature, rainfall)
+  # def create_weather_bubble(title, weather, temperature, rainfall)
+  #   {
+  #     type: 'bubble',
+  #     body: {
+  #       type: 'box',
+  #       layout: 'vertical',
+  #       contents: [
+  #         {
+  #           type: 'text',
+  #           text: title,
+  #           weight: 'bold',
+  #           size: 'lg'
+  #         },
+  #         {
+  #           type: 'text',
+  #           text: "天気: #{weather} #{weather_emoji(weather)}",
+  #           size: 'md'
+  #         },
+  #         {
+  #           type: 'text',
+  #           text: "気温: #{temperature}°C",
+  #           size: 'md'
+  #         },
+  #         {
+  #           type: 'text',
+  #           text: "降水量: #{rainfall} mm",
+  #           size: 'md'
+  #         }
+  #       ]
+  #     }
+  #   }
+  # end
+
+
+  def create_weather_bubble(title, weather, temperature, rainfall, image_url)
     {
       type: 'bubble',
+      hero: {
+        type: 'image',
+        url: "https://drive.google.com/uc?export=view&id=1zkyY3XUuBRC4qYzGJnTpqyLcKkDEpXkb",
+        size: 'full',
+        aspectRatio: '20:13',
+        aspectMode: 'cover'
+      },
       body: {
         type: 'box',
         layout: 'vertical',
@@ -276,27 +317,61 @@ class LineBotController < ApplicationController
             type: 'text',
             text: title,
             weight: 'bold',
-            size: 'lg'
+            size: 'xl',
+            align: 'center'
           },
           {
-            type: 'text',
-            text: "天気: #{weather} #{weather_emoji(weather)}",
-            size: 'md'
+            type: 'box',
+            layout: 'baseline',
+            contents: [
+              {
+                type: 'text',
+                text: "#{weather} #{weather_emoji(weather)}",
+                size: 'md',
+                color: '#111111',
+                align: 'center'
+              }
+            ],
+            spacing: 'sm',
+            margin: 'md'
           },
           {
             type: 'text',
             text: "気温: #{temperature}°C",
-            size: 'md'
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
           },
           {
             type: 'text',
             text: "降水量: #{rainfall} mm",
-            size: 'md'
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
           }
-        ]
+        ],
+        paddingAll: '20px',
+        backgroundColor: '#ffffff',
+        borderColor: '#dddddd',
+        borderWidth: '2px',
+        cornerRadius: '10px'
+      },
+      styles: {
+        hero: {
+          backgroundColor: '#f8f9fa'
+        },
+        body: {
+          backgroundColor: '#f0f4f8'
+        }
       }
     }
   end
+
+
+
+
 
   def reply_weather_info(reply_token, weather_info)
     if weather_info[:error]
