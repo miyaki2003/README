@@ -293,7 +293,7 @@ class LineBotController < ApplicationController
               {
                 type: 'text',
                 text: "#{weather} #{weather_emoji(weather)}",
-                size: 'md',
+                size: 'lg',
                 color: '#111111',
                 align: 'center'
               }
@@ -318,10 +318,8 @@ class LineBotController < ApplicationController
             margin: 'md'
           }
         ],
-        paddingAll: '20px',
+        paddingAll: '50px'
         backgroundColor: '#ffffff',
-        borderColor: '#dddddd',
-        borderWidth: '2px',
         cornerRadius: '0px'
       },
       styles: {
