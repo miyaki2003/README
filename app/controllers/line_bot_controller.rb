@@ -311,7 +311,31 @@ class LineBotController < ApplicationController
           },
           {
             type: 'text',
+            text: "降水確率: #{precipitation_probability}%",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
             text: "降水量: #{rainfall} mm",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "風速: #{wind_speed} m/s",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "湿度: #{humidity}%",
             size: 'md',
             color: '#555555',
             align: 'center',
@@ -351,7 +375,16 @@ class LineBotController < ApplicationController
   
       current_weather = weather_info[:current]
       current_image_url = get_weather_image_url(current_weather[:weather])
-      bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature], current_weather[:rainfall], current_image_url)
+      bubbles << create_weather_bubble(
+        '現在の天気', 
+        current_weather[:weather], 
+        current_weather[:temperature], 
+        current_weather[:precipitation_probability], 
+        current_weather[:rainfall], 
+        current_weather[:wind_speed], 
+        current_weather[:humidity], 
+        current_image_url
+      )
   
       current_time = Time.now
       weather_info[:forecasts].each_with_index do |forecast, index|
@@ -370,7 +403,16 @@ class LineBotController < ApplicationController
         end
         title = "#{forecast_time.strftime('%-H:%M')} の天気"
         forecast_image_url = get_weather_image_url(forecast[:weather])
-        bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall], forecast_image_url)
+        bubbles << create_weather_bubble(
+          title, 
+          forecast[:weather], 
+          forecast[:temperature], 
+          forecast[:precipitation_probability], 
+          forecast[:rainfall], 
+          forecast[:wind_speed], 
+          forecast[:humidity], 
+          forecast_image_url
+        )
       end
   
       message = {
