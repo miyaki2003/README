@@ -1,8 +1,25 @@
-.centered-text {
+table {
+  background-color: #F2F7FA;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.delete-reminder-button {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 2em;
+  justify-content: flex-end;
+}
+
+td:first-child {
+  padding-right: 20px;
+}
+
+p {
+  padding: 20px;
+  background-color: #F2F7FA;
   text-align: center;
 }
