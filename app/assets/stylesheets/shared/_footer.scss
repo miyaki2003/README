@@ -1,11 +1,13 @@
 .text-sm {
   color: #666666;
   margin: 0;
+  font-size: 12px;
 }
 
 ul li a {
   color: #666666;
   text-decoration: none;
+  font-size: 12px;
 }
 
 ul li a:hover {
@@ -17,6 +19,7 @@ ul li a:hover {
   padding: 20px;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+  font-size: 12px;
 }
 
 .footer ul {
@@ -25,12 +28,15 @@ ul li a:hover {
   list-style: none;
   padding: 0;
   margin: 0;
+  font-size: 12px;
 }
 
 .footer ul li {
   padding: 0 10px;
+  font-size: 12px;
 }
 
 .footer p {
   margin-top: 10px;
+  font-size: 12px;
 }
