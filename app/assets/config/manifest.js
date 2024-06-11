@@ -11,4 +11,4 @@
 
 //= link events/_setting.css
 
-//= link reminder_lists/index.scss
+//= link reminder_lists/index.css
