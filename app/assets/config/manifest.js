@@ -10,3 +10,5 @@
 //= link shared/_footer.css
 
 //= link events/_setting.css
+
+//= link reminder_lists/index.scss
