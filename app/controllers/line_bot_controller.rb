@@ -391,9 +391,9 @@ class LineBotController < ApplicationController
     when /晴/
       'https://drive.google.com/uc?export=view&id=17g6Th1ZOCO9lVMOTCF0c-8OAJzgFkT3y'
     when /曇/
-      'https://drive.google.com/file/d/10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
+      'https://drive.google.com/uc?export=view&id=10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
     when /雲/
-      'https://drive.google.com/file/d/10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
+      'https://drive.google.com/uc?export=view&id=10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
     else
       'https://drive.google.com/file/d/1LhThQPp4d0WBvWRUQDDQ4DPzmHw86DTe'
     end
