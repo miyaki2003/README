@@ -1,13 +1,122 @@
-.header {
-  background-color: #E0FBFE !important;
-  height: 120px;
+@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
+
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
 }
 
-.custom-login-btn {
-  height: 110px;
+.gif-container {
+  text-align: center;
+  margin-top: 20px;
 }
 
-.footer {
-  background-color: #E0FBFE !important;
-  height: 120px;
+.gif-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: #ffffff;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #000000;
+}
+
+.container {
+  max-width: 60em;
+  min-width: 45em;
+  margin: 0 auto;
+  padding: 0 2em;
+  color: #2d334a;
+}
+
+.icon {
+  display: inline-block;
+  padding-top: .7em;
+  font-size: 2em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.nav-bg {
+  backdrop-filter: blur(5px);
+  background-color: rgba(186, 232, 232, 0.1); 
+  position: fixed;
+  height: 5em;
+  width: 100%;
+  top: 0;
+  z-index: 1;
+  border: 1px solid #000000;
+}
+
+#about {
+  height: 70em;
+  padding: 1em 0;
+  p {
+    line-height: 2em;
+    font-size: 1.4em;
+    margin: 0;
+    color: #000000;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    min-width: 100%;
+    padding: 0 1em;
+  }
+
+  #about {
+    padding: 1em 0;
+    min-height: auto;
+  }
+}
+
+// .header {
+//   background-color: #E0FBFE !important;
+//   height: 120px;
+// }
+
+// .custom-login-btn {
+//   height: 110px;
+// }
+
+// .footer {
+//   background-color: #E0FBFE !important;
+//   height: 120px;
+// }
+
+#about .container {
+  text-align: center;
+}
+
+.about-image {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.login-link {
+  display: inline-block;
+  position: relative;
+}
+
+.login-button {
+  position: relative;
+}
+
+.login-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.about-image {
+  margin-top: 0px;
 }
