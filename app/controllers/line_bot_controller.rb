@@ -265,7 +265,7 @@ class LineBotController < ApplicationController
     end
   end
   
-  def create_weather_bubble(title, weather, temperature, rainfall, image_url)
+  def create_weather_bubble(title, weather, temperature, precipitation_probability, rainfall, wind_speed, humidity, image_url)
     {
       type: 'bubble',
       hero: {
