@@ -272,7 +272,7 @@ class LineBotController < ApplicationController
         type: 'image',
         url: image_url,
         size: 'full',
-        aspectRatio: '20:15',
+        aspectRatio: '5:4',
         aspectMode: 'cover'
       },
       body: {
@@ -283,7 +283,7 @@ class LineBotController < ApplicationController
             type: 'text',
             text: title,
             weight: 'bold',
-            size: '40px',
+            size: 'xl',
             align: 'center'
           },
           {
