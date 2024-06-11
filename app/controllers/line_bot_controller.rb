@@ -362,7 +362,7 @@ class LineBotController < ApplicationController
         if minutes >= 0 && minutes < 15
           forecast_time -= (minutes * 60 + forecast_time.sec)
         elsif minutes >= 15 && minutes < 30
-          forecast_time += (15 - minutes) * 60 - forecast時間.sec
+          forecast_time += (15 - minutes) * 60 - forecast_time.sec
         elsif minutes >= 30 && minutes < 45
           forecast_time += (30 - minutes) * 60 - forecast_time.sec
         elsif minutes >= 45 && minutes < 60
