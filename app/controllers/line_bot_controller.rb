@@ -318,7 +318,7 @@ class LineBotController < ApplicationController
             margin: 'md'
           }
         ],
-        paddingAll: '50px'
+        paddingAll: '50px',
         backgroundColor: '#ffffff',
         cornerRadius: '0px'
       },
