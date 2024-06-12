@@ -291,57 +291,55 @@ class LineBotController < ApplicationController
             layout: 'vertical',
             contents: [
               {
-                type: 'box',
-                layout: 'vertical',
-                contents: [
-                  {
-                    type: 'text',
-                    text: "#{weather} #{weather_emoji(weather)}",
-                    size: 'md',
-                    color: '#111111',
-                    align: 'start'
-                  },
-                  {
-                    type: 'text',
-                    text: "気温: #{temperature}°C",
-                    size: 'md',
-                    color: '#555555',
-                    align: 'start'
-                  },
-                  {
-                    type: 'text',
-                    text: "降水確率: #{precipitation_probability}%",
-                    size: 'md',
-                    color: '#555555',
-                    align: 'start'
-                  },
-                  {
-                    type: 'text',
-                    text: "降水量: #{rainfall} mm",
-                    size: 'md',
-                    color: '#555555',
-                    align: 'start'
-                  },
-                  {
-                    type: 'text',
-                    text: "風速: #{wind_speed} m/s",
-                    size: 'md',
-                    color: '#555555',
-                    align: 'start'
-                  },
-                  {
-                    type: 'text',
-                    text: "湿度: #{humidity}%",
-                    size: 'md',
-                    color: '#555555',
-                    align: 'start'
-                  }
-                ],
-                spacing: 'md'
+                type: 'text',
+                text: "#{weather} #{weather_emoji(weather)}",
+                size: 'md',
+                color: '#111111',
+                align: 'center'
               }
             ],
-            margin: 'md',
-            align: 'center'
+            spacing: 'md',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "気温: #{temperature}°C",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "降水確率: #{precipitation_probability}%",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "降水量: #{rainfall} mm",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "風速: #{wind_speed} m/s",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "湿度: #{humidity}%",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
           }
         ],
         paddingBottom: '20px',
@@ -360,7 +358,6 @@ class LineBotController < ApplicationController
       }
     }
   end
-  
   
   def reply_weather_info(reply_token, weather_info)
     if weather_info[:error]
