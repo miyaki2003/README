@@ -16,10 +16,13 @@
             <%= link_to "プライバシーポリシー", privacy_policy_path, data: { turbo_frame: "content-container" } %>
           </li>
           <li class="list-group-item">
+            <%= link_to "お問い合わせ", privacy_policy_path, data: { turbo_frame: "content-container" } %>
+          </li>
+          <li class="list-group-item">
             <form action="/logout" method="post">
               <input type="hidden" name="_method" value="delete">
               <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-              <button type="submit" class="btn btn-danger danger">
+              <button type="submit" class="btn btn-danger danger logout-button">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
               </button>
             </form>

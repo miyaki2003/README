@@ -1,8 +1,51 @@
-.centered-text {
+.reminders-container {
+  background-color: #F2F7FA;
+  padding: 20px;
+  border-radius: 10px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reminder-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  height: 100vh;
-  font-size: 2em;
+  padding: 20px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background-color: #ffffff;
+  width: 100%;
+  text-align: start;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.reminder-time {
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.reminder-title {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.delete-button-container {
+  position: absolute;
+  top: 35px;
+  right: 20px;
+  background-color: #ff5470;
+}
+
+.btn.btn-danger.delete-reminder-button {
+  padding: 0;
+  font-size: 20px;
+}
+
+.no-reminders-message {
+  padding: 20px;
+  background-color: #F2F7FA;
   text-align: center;
 }

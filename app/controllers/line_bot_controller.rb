@@ -238,7 +238,7 @@ class LineBotController < ApplicationController
     }
     client.reply_message(reply_token, message)
   end
-
+  
   def handle_location_message(event)
     user_id = event['source']['userId']
     user = User.find_or_create_by(line_user_id: user_id)
@@ -247,7 +247,7 @@ class LineBotController < ApplicationController
     weather_info = WeatherService.get_weather_info(latitude, longitude)
     reply_weather_info(event['replyToken'], weather_info)
   end
-
+  
   def weather_emoji(description)
     case description.downcase
     when /晴/
@@ -264,10 +264,17 @@ class LineBotController < ApplicationController
       '☁️'
     end
   end
-
-  def create_weather_bubble(title, weather, temperature, rainfall)
+  
+  def create_weather_bubble(title, weather, temperature, precipitation_probability, rainfall, wind_speed, humidity, image_url)
     {
       type: 'bubble',
+      hero: {
+        type: 'image',
+        url: image_url,
+        size: 'full',
+        aspectRatio: '20:13',
+        aspectMode: 'cover'
+      },
       body: {
         type: 'box',
         layout: 'vertical',
@@ -276,28 +283,82 @@ class LineBotController < ApplicationController
             type: 'text',
             text: title,
             weight: 'bold',
-            size: 'lg'
+            size: 'xl',
+            align: 'center'
           },
           {
-            type: 'text',
-            text: "天気: #{weather} #{weather_emoji(weather)}",
-            size: 'md'
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'text',
+                text: "#{weather} #{weather_emoji(weather)}",
+                size: 'md',
+                color: '#111111',
+                align: 'center'
+              }
+            ],
+            spacing: 'md',
+            margin: 'md'
           },
           {
             type: 'text',
             text: "気温: #{temperature}°C",
-            size: 'md'
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "降水確率: #{precipitation_probability}%",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
           },
           {
             type: 'text',
             text: "降水量: #{rainfall} mm",
-            size: 'md'
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "風速: #{wind_speed} m/s",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
+          },
+          {
+            type: 'text',
+            text: "湿度: #{humidity}%",
+            size: 'md',
+            color: '#555555',
+            align: 'center',
+            margin: 'md'
           }
-        ]
+        ],
+        paddingBottom: '20px',
+        backgroundColor: '#ffffff',
+        borderColor: '#dddddd',
+        borderWidth: '2px',
+        cornerRadius: '0px'
+      },
+      styles: {
+        hero: {
+          backgroundColor: '#f8f9fa'
+        },
+        body: {
+          backgroundColor: '#f0f4f8'
+        }
       }
     }
   end
-
+  
   def reply_weather_info(reply_token, weather_info)
     if weather_info[:error]
       message = {
@@ -311,15 +372,26 @@ class LineBotController < ApplicationController
       }
     else
       bubbles = []
-
+  
       current_weather = weather_info[:current]
-      bubbles << create_weather_bubble('現在の天気', current_weather[:weather], current_weather[:temperature],
-                                       current_weather[:rainfall])
-
+      current_image_url = get_weather_image_url(current_weather[:weather])
+      Rails.logger.info "Current Weather: #{current_weather}"
+      Rails.logger.info "Current Image URL: #{current_image_url}"
+      bubbles << create_weather_bubble(
+        '現在の天気', 
+        current_weather[:weather], 
+        current_weather[:temperature], 
+        current_weather[:precipitation_probability], 
+        current_weather[:rainfall], 
+        current_weather[:wind_speed], 
+        current_weather[:humidity], 
+        current_image_url
+      )
+  
       current_time = Time.now
       weather_info[:forecasts].each_with_index do |forecast, index|
         forecast_time = current_time + ((index + 1) * 3 * 60 * 60)
-
+  
         # 15分ごとに切り捨て処理
         minutes = forecast_time.min
         if minutes >= 0 && minutes < 15
@@ -332,9 +404,21 @@ class LineBotController < ApplicationController
           forecast_time += (45 - minutes) * 60 - forecast_time.sec
         end
         title = "#{forecast_time.strftime('%-H:%M')} の天気"
-        bubbles << create_weather_bubble(title, forecast[:weather], forecast[:temperature], forecast[:rainfall])
+        forecast_image_url = get_weather_image_url(forecast[:weather])
+        Rails.logger.info "Forecast Weather: #{forecast}" 
+        Rails.logger.info "Forecast Image URL: #{forecast_image_url}"
+        bubbles << create_weather_bubble(
+          title, 
+          forecast[:weather], 
+          forecast[:temperature], 
+          forecast[:precipitation_probability], 
+          forecast[:rainfall], 
+          forecast[:wind_speed], 
+          forecast[:humidity], 
+          forecast_image_url
+        )
       end
-
+  
       message = {
         type: 'flex',
         altText: '天気情報',
@@ -344,8 +428,25 @@ class LineBotController < ApplicationController
         }
       }
     end
-
+  
     client.reply_message(reply_token, message)
+  end
+  
+  def get_weather_image_url(weather)
+    case weather
+    when /晴/
+      'https://i.imgur.com/3Qfecz4.png'
+    when /曇/
+      'https://i.imgur.com/RCSLqYA.png'
+    when /雨/
+      'https://i.imgur.com/UZ2uJzs.png'
+    when /雪/
+      'https://i.imgur.com/J1xjguI.png'
+    when /雷/
+      'https://i.imgur.com/srA3Rp0.png'
+    when /雲/
+      'https://i.imgur.com/RCSLqYA.png'
+    end
   end
 
   def parse_message(message)

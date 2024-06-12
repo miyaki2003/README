@@ -20,12 +20,15 @@ class WeatherService
 
     response = Net::HTTP.get(uri)
     data = JSON.parse(response)
-
+      
     if data['current'] && data['hourly']
       current_weather = {
         weather: data['current']['weather'][0]['description'],
         temperature: data['current']['temp'],
-        rainfall: data['current'].dig('rain', '1h') || 0
+        precipitation_probability: data['hourly'][0]['pop'] * 100,
+        rainfall: data['current'].dig('rain', '1h') || 0,
+        wind_speed: data['current']['wind_speed'],
+        humidity: data['current']['humidity']
       }
 
       forecasts = (1..4).map do |i|
@@ -33,7 +36,10 @@ class WeatherService
         {
           weather: data['hourly'][forecast_index]['weather'][0]['description'],
           temperature: data['hourly'][forecast_index]['temp'],
-          rainfall: data['hourly'][forecast_index].dig('rain', '3h') || 0
+          precipitation_probability: data['hourly'][forecast_index]['pop'] * 100,
+          rainfall: data['hourly'][forecast_index].dig('rain', '3h') || 0,
+          wind_speed: data['hourly'][forecast_index]['wind_speed'],
+          humidity: data['hourly'][forecast_index]['humidity']
         }
       end
 
