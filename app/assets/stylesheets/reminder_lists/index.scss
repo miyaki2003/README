@@ -48,8 +48,20 @@ body {
   font-size: 20px;
 }
 
+.no-reminders-message-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  text-align: center;
+}
+
 .no-reminders-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #6D6D6D;
   padding: 20px;
   background-color: #F2F7FA;
-  text-align: center;
+  border: 2px solid #ddd;
+  border-radius: 10px;
 }
