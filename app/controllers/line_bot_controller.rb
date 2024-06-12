@@ -446,8 +446,8 @@ class LineBotController < ApplicationController
       ActionController::Base.helpers.asset_path('thunder.webp')
     when /雲/
       ActionController::Base.helpers.asset_path('cloudy.webp')
-    endtap do |url|
-      Rails.logger.info "Weather Image URL: #{url}"  # ログに画像URLを出力
+    end.tap do |url|
+      Rails.logger.info "Weather Image URL: #{url}"
     end
   end
 
