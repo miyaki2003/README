@@ -435,19 +435,17 @@ class LineBotController < ApplicationController
   def get_weather_image_url(weather)
     case weather
     when /晴/
-      ActionController::Base.helpers.asset_path('sunny.webp')
+      'https://i.imgur.com/3Qfecz4.png'
     when /曇/
-      ActionController::Base.helpers.asset_path('cloudy.webp')
+      'https://i.imgur.com/RCSLqYA.png'
     when /雨/
-      ActionController::Base.helpers.asset_path('rain.webp')
+      'https://i.imgur.com/UZ2uJzs.png'
     when /雪/
-      ActionController::Base.helpers.asset_path('snow.webp')
+      'https://i.imgur.com/J1xjguI.png'
     when /雷/
-      ActionController::Base.helpers.asset_path('thunder.webp')
+      'https://i.imgur.com/srA3Rp0.png'
     when /雲/
-      ActionController::Base.helpers.asset_path('cloudy.webp')
-    end.tap do |url|
-      Rails.logger.info "Weather Image URL: #{url}"
+      'https://i.imgur.com/RCSLqYA.png'
     end
   end
 
