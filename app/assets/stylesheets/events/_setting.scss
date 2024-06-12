@@ -21,10 +21,11 @@
 
 .list-group-item {
   text-align: center;
-  padding: 10px 0;
 }
 
 .list-group-item a {
+  display: block;
+  width: 100%;
   text-decoration: none;
   color: #6D6D6D;
   font-weight: 600;
@@ -43,12 +44,19 @@
 }
 
 .danger {
+  width: 100%;
   padding: 0px;
   background-color: #ffffff;
   border-color: #ffffff;
   color: #6D6D6D;
   font-weight: 600;
   font-size: 18px;
+}
+
+.danger:hover {
+  background-color: #ffffff;
+  color: #6D6D6D;
+  border-color: #ffffff;
 }
 
 .list-group-flush>.list-group-item:active,
