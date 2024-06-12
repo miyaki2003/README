@@ -375,6 +375,8 @@ class LineBotController < ApplicationController
   
       current_weather = weather_info[:current]
       current_image_url = get_weather_image_url(current_weather[:weather])
+      Rails.logger.info "Current Weather: #{current_weather}"
+      Rails.logger.info "Current Image URL: #{current_image_url}"
       bubbles << create_weather_bubble(
         '現在の天気', 
         current_weather[:weather], 
@@ -403,6 +405,8 @@ class LineBotController < ApplicationController
         end
         title = "#{forecast_time.strftime('%-H:%M')} の天気"
         forecast_image_url = get_weather_image_url(forecast[:weather])
+        Rails.logger.info "Forecast Weather: #{forecast}" 
+        Rails.logger.info "Forecast Image URL: #{forecast_image_url}"
         bubbles << create_weather_bubble(
           title, 
           forecast[:weather], 
@@ -442,6 +446,8 @@ class LineBotController < ApplicationController
       ActionController::Base.helpers.asset_path('thunder.webp')
     when /雲/
       ActionController::Base.helpers.asset_path('cloudy.webp')
+    endtap do |url|
+      Rails.logger.info "Weather Image URL: #{url}"  # ログに画像URLを出力
     end
   end
 
