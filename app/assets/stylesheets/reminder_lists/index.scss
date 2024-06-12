@@ -1,5 +1,10 @@
 body {
   background-color: #F2F7FA;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
 .reminders-container {
@@ -62,6 +67,5 @@ body {
   color: #6D6D6D;
   padding: 20px;
   background-color: #F2F7FA;
-  border: 2px solid #ddd;
-  border-radius: 10px;
+  text-align: center;
 }
