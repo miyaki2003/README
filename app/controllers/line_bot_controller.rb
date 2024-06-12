@@ -431,17 +431,17 @@ class LineBotController < ApplicationController
   def get_weather_image_url(weather)
     case weather
     when /晴/
-      'https://drive.google.com/uc?export=view&id=1MzrHHLYAzhR891oAG0PiPDch5hKKbPiV'
+      ActionController::Base.helpers.asset_path('sunny.webp')
     when /曇/
-      'https://drive.google.com/uc?export=view&id=10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
+      ActionController::Base.helpers.asset_path('cloudy.webp')
     when /雨/
-      'https://drive.google.com/uc?export=view&id=10ETOwpIZTF6BBpxBVGFb94PM91cox1OO'
+      ActionController::Base.helpers.asset_path('rain.webp')
     when /雪/
-      'https://drive.google.com/uc?export=view&id=14eD1gTPvFpxcpP1nqXL1F1nRTCLe5-9C'
+      ActionController::Base.helpers.asset_path('snow.webp')
     when /雷/
-      'https://drive.google.com/uc?export=view&id=1-r5p0aIsnoMdfWFZHKenpXgzUstEMnyT'
+      ActionController::Base.helpers.asset_path('thunder.webp')
     when /雲/
-      'https://drive.google.com/uc?export=view&id=10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
+      ActionController::Base.helpers.asset_path('cloudy.webp')
     end
   end
 
