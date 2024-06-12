@@ -431,16 +431,19 @@ class LineBotController < ApplicationController
   def get_weather_image_url(weather)
     case weather
     when /晴/
-      'https://drive.google.com/uc?export=view&id=17g6Th1ZOCO9lVMOTCF0c-8OAJzgFkT3y'
+      'https://drive.google.com/uc?export=view&id=1MzrHHLYAzhR891oAG0PiPDch5hKKbPiV'
     when /曇/
       'https://drive.google.com/uc?export=view&id=10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
+    when /雨/
+      'https://drive.google.com/uc?export=view&id=10ETOwpIZTF6BBpxBVGFb94PM91cox1OO'
+    when /雪/
+      'https://drive.google.com/uc?export=view&id=14eD1gTPvFpxcpP1nqXL1F1nRTCLe5-9C'
+    when /雷/
+      'https://drive.google.com/uc?export=view&id=1-r5p0aIsnoMdfWFZHKenpXgzUstEMnyT'
     when /雲/
       'https://drive.google.com/uc?export=view&id=10tk06lp__opjYfNNnVdH7fUPqYBK6_zO'
-    else
-      'https://drive.google.com/file/d/1LhThQPp4d0WBvWRUQDDQ4DPzmHw86DTe'
     end
   end
-  
 
   def parse_message(message)
     formatted_datetime = NaturalLanguageProcessor.parse_and_format_datetime(message)
