@@ -289,13 +289,14 @@ class LineBotController < ApplicationController
           {
             type: 'box',
             layout: 'vertical',
+            align: 'center',
             contents: [
               {
                 type: 'text',
                 text: "#{weather} #{weather_emoji(weather)}",
                 size: 'md',
                 color: '#111111',
-                align: 'center'
+                align: 'start'
               }
             ],
             spacing: 'md',
@@ -306,7 +307,7 @@ class LineBotController < ApplicationController
             text: "気温: #{temperature}°C",
             size: 'md',
             color: '#555555',
-            align: 'center',
+            align: 'start',
             margin: 'md'
           },
           {
@@ -314,7 +315,7 @@ class LineBotController < ApplicationController
             text: "降水確率: #{precipitation_probability}%",
             size: 'md',
             color: '#555555',
-            align: 'center',
+            align: 'start',
             margin: 'md'
           },
           {
@@ -322,7 +323,7 @@ class LineBotController < ApplicationController
             text: "降水量: #{rainfall} mm",
             size: 'md',
             color: '#555555',
-            align: 'center',
+            align: 'start',
             margin: 'md'
           },
           {
@@ -330,7 +331,7 @@ class LineBotController < ApplicationController
             text: "風速: #{wind_speed} m/s",
             size: 'md',
             color: '#555555',
-            align: 'center',
+            align: 'start',
             margin: 'md'
           },
           {
@@ -338,7 +339,7 @@ class LineBotController < ApplicationController
             text: "湿度: #{humidity}%",
             size: 'md',
             color: '#555555',
-            align: 'center',
+            align: 'start',
             margin: 'md'
           }
         ],
