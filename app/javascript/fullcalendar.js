@@ -7,23 +7,21 @@ import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import $ from 'jquery';
-import 'bootstrap';
 
 var selectedDate;
 
-$(document).ready(async function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // ツールチップ
   $('[data-bs-toggle="tooltip"]').tooltip();
 
   let lastClickedElement = null;
-  let calendarEl = $('#calendar')[0];
+  let calendarEl = document.getElementById('calendar');
 
-  let modal = new bootstrap.Modal($('#eventModal')[0], { keyboard: true });
-  let addEventModal = new bootstrap.Modal($('#addEventModal')[0], { keyboard: true });
-  let settingEventModal = new bootstrap.Modal($('#settingEventModal')[0], { keyboard: true });
-  let eventDetailsModal = new bootstrap.Modal($('#eventDetailsModal')[0], { keyboard: true });
-  let editEventModal = new bootstrap.Modal($('#editEventModal')[0], { keyboard: true });
+  let modal = new bootstrap.Modal(document.getElementById('eventModal'), { keyboard: true });
+  let addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'), { keyboard: true });
+  let settingEventModal = new bootstrap.Modal(document.getElementById('settingEventModal'), { keyboard: true });
+  let eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'), { keyboard: true });
+  let editEventModal = new bootstrap.Modal(document.getElementById('editEventModal'), { keyboard: true });
 
   // 祝日
   let holidays = {};
@@ -68,7 +66,7 @@ $(document).ready(async function() {
     $('#end_date').val('23:59');
     $('#notify_time').val('06:00');
     if ($('#line-notify-switch').prop('checked')) {
-      $('#line-notify-switch').click();
+      $('#line-notify-switch').trigger('click')
     }
   });
 
@@ -80,7 +78,7 @@ $(document).ready(async function() {
     $('#end_time-add').val('23:59');
     $('#notify_time-add').val('06:00');
     if ($('#line-notify-switch-add').prop('checked')) {
-      $('#line-notify-switch-add').click();
+      $('#line-notify-switch-add').trigger('click')
     }
   });
 
@@ -110,13 +108,13 @@ $(document).ready(async function() {
   }
 
   // スイッチ切り替え
-  notifySwitch.change(toggleNotifyTimeInput);
+  notifySwitch.on('change', toggleNotifyTimeInput)
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
-  notifySwitchAdd.change(toggleNotifyTimeInputAdd);
+  notifySwitchAdd.on('change', toggleNotifyTimeInputAdd)
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
 
-  notifySwitchEdit.change(toggleEditNotifyTimeInput);
+  notifySwitchEdit.on('change', toggleEditNotifyTimeInput)
   $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
 
   if (calendarEl) {
@@ -513,3 +511,4 @@ $(document).ready(async function() {
     alert('Failed to load event details: ' + error.message);
   }
 });
+
