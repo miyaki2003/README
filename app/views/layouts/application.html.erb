@@ -4,16 +4,20 @@
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReminderChat</title>
-
-    <!-- Google Fontsの読み込み -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     
     <meta name="description" content="Reminder Chatは、LINEで簡単にリマインダーを設定し、指定の時間に通知を受け取れるアプリです。さらに、LINE上で使えるカレンダー機能でスケジュール管理も可能です">
-    <!-- <meta property="og:url" content="https://reminder-chat.com"> -->
+
+    <meta property="og:url" content="https://reminderchat-line.com">
     <meta property="og:title" content="Reminder Chat">
     <meta property="og:description" content="Reminder Chatは、LINEで簡単にリマインダーを設定し、指定の時間に通知を受け取れるアプリです。さらに、LINE上で使えるカレンダー機能でスケジュール管理も可能です">
-    <!-- <meta property="og:image" content="">-->
+    <meta property="og:image" content="<%= asset_path 'ReminderChat.jpg' %>">
 
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@Miyaki2323">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="icon" type="image/png" href="<%= asset_path 'favicon.png' %>">
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
