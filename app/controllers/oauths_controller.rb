@@ -46,7 +46,7 @@ class OauthsController < ApplicationController
 
   def line_oauth_url
     client_id = ENV['LINE_KEY']
-    redirect_uri = 'https://reminder-chat-38cf4e1a3ae9.herokuapp.com/auth/line/callback'
+    redirect_uri = 'https://reminderchat-line.com/auth/line/callback'
     state = SecureRandom.hex(15)
     scope = 'openid profile'
     bot_prompt = 'aggressive'
