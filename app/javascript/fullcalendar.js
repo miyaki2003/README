@@ -6,64 +6,47 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import interactionPlugin from '@fullcalendar/interaction';
 
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap-icons/font/bootstrap-icons.css';
+import $ from 'jquery';
+import 'bootstrap';
 
 var selectedDate;
 
-document.addEventListener('DOMContentLoaded', async function() {
+$(document).ready(async function() {
   // ツールチップ
-  let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  let tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
+  $('[data-bs-toggle="tooltip"]').tooltip();
+
   let lastClickedElement = null;
-  let calendarEl = document.getElementById('calendar');
+  let calendarEl = $('#calendar')[0];
 
-  let modal = new bootstrap.Modal(document.getElementById('eventModal'), {
-    keyboard: true
-  });
+  let modal = new bootstrap.Modal($('#eventModal')[0], { keyboard: true });
+  let addEventModal = new bootstrap.Modal($('#addEventModal')[0], { keyboard: true });
+  let settingEventModal = new bootstrap.Modal($('#settingEventModal')[0], { keyboard: true });
+  let eventDetailsModal = new bootstrap.Modal($('#eventDetailsModal')[0], { keyboard: true });
+  let editEventModal = new bootstrap.Modal($('#editEventModal')[0], { keyboard: true });
 
-  let addEventModal = new bootstrap.Modal(document.getElementById('addEventModal'), {
-    keyboard: true
-  });
+  // 祝日
+  let holidays = {};
 
-  let settingEventModal = new bootstrap.Modal(document.getElementById('settingEventModal'), {
-    keyboard: true
-  });
+  async function fetchHolidays(year) {
+    let url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
+    try {
+      let response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch holidays');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {};
+    }
+  }
 
-  let eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'), {
-    keyboard: true
-  });
-
-  let editEventModal = new bootstrap.Modal(document.getElementById('editEventModal'), {
-    keyboard: true
-  });
-
-  
- // 祝日
- let holidays = {};
-  
- async function fetchHolidays(year) {
-   let url = `https://holidays-jp.github.io/api/v1/${year}/date.json`;
-   try {
-     let response = await fetch(url);
-     if (!response.ok) {
-       throw new Error('Failed to fetch holidays');
-     }
-     return await response.json();
-   } catch (error) {
-     console.error('Error fetching holidays:', error);
-     return {};
-   }
- }
-
- async function fetchAndStoreHolidays(startYear, endYear) {
-   for (let year = startYear; year <= endYear; year++) {
-       holidays[year] = await fetchHolidays(year);
-   }
- }
+  async function fetchAndStoreHolidays(startYear, endYear) {
+    for (let year = startYear; year <= endYear; year++) {
+      holidays[year] = await fetchHolidays(year);
+    }
+  }
 
   await fetchAndStoreHolidays(2015, 2029);
 
@@ -74,77 +57,73 @@ document.addEventListener('DOMContentLoaded', async function() {
     let day = date.getDate();
     return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
   }
+
   let today = new Date();
   let formattedDate = getFormattedDate(today);
 
-// モーダルを閉じた時のイベントリセット
-  document.getElementById('eventModal').addEventListener('hidden.bs.modal', function () {
-    document.getElementById('title').value = '';
-    document.getElementById('start_date').value = '18:00';
-    document.getElementById('end_date').value = '23:59'; 
-    document.getElementById('notify_time').value = '06:00';
-    if (document.getElementById('line-notify-switch').checked) {
-      document.getElementById('line-notify-switch').click();
-    }
-  });
-// イベントリセット
-  document.getElementById('addEventModal').addEventListener('hidden.bs.modal', function () {
-    document.getElementById('title-add').value = '';
-    document.getElementById('event_date-add').value = formattedDate;
-    document.getElementById('start_time-add').value = '18:00';
-    document.getElementById('end_time-add').value = '23:59'; 
-    document.getElementById('notify_time-add').value = '06:00';
-    if (document.getElementById('line-notify-switch-add').checked) {
-      document.getElementById('line-notify-switch-add').click();
+  // モーダルを閉じた時のイベントリセット
+  $('#eventModal').on('hidden.bs.modal', function() {
+    $('#title').val('');
+    $('#start_date').val('18:00');
+    $('#end_date').val('23:59');
+    $('#notify_time').val('06:00');
+    if ($('#line-notify-switch').prop('checked')) {
+      $('#line-notify-switch').click();
     }
   });
 
-  let form = document.getElementById('event-form');
-  let addForm = document.getElementById('event-form-add');
+  // イベントリセット
+  $('#addEventModal').on('hidden.bs.modal', function() {
+    $('#title-add').val('');
+    $('#event_date-add').val(formattedDate);
+    $('#start_time-add').val('18:00');
+    $('#end_time-add').val('23:59');
+    $('#notify_time-add').val('06:00');
+    if ($('#line-notify-switch-add').prop('checked')) {
+      $('#line-notify-switch-add').click();
+    }
+  });
 
-  let notifySwitch = document.getElementById('line-notify-switch');
-  let notifyTimeInput = document.getElementById('notify-time-input');
-  let notifyTime = document.getElementById('notify_time');
+  let form = $('#event-form');
+  let addForm = $('#event-form-add');
 
+  let notifySwitch = $('#line-notify-switch');
+  let notifyTimeInput = $('#notify-time-input');
+  let notifyTime = $('#notify_time');
 
-  let notifySwitchAdd = document.getElementById('line-notify-switch-add');
-  let notifyTimeInputAdd = document.getElementById('notify-time-input-add');
+  let notifySwitchAdd = $('#line-notify-switch-add');
+  let notifyTimeInputAdd = $('#notify-time-input-add');
 
-
-
-  let notifySwitchEdit = document.getElementById('edit-line-notify-switch');
-  let notifyTimeInputEdit = document.getElementById('edit-notify-time-input');
-  
+  let notifySwitchEdit = $('#edit-line-notify-switch');
+  let notifyTimeInputEdit = $('#edit-notify-time-input');
 
   function toggleNotifyTimeInput() {
-    notifyTimeInput.style.display = notifySwitch.checked ? 'block' : 'none';
+    notifyTimeInput.toggle(notifySwitch.prop('checked'));
   }
 
   function toggleNotifyTimeInputAdd() {
-    notifyTimeInputAdd.style.display = notifySwitchAdd.checked ? 'block' : 'none';
+    notifyTimeInputAdd.toggle(notifySwitchAdd.prop('checked'));
   }
 
   function toggleEditNotifyTimeInput() {
-    notifyTimeInputEdit.style.display = notifySwitchEdit.checked ? 'block' : 'none';
+    notifyTimeInputEdit.toggle(notifySwitchEdit.prop('checked'));
   }
 
   // スイッチ切り替え
-  document.getElementById('line-notify-switch').addEventListener('change', toggleNotifyTimeInput);
+  notifySwitch.change(toggleNotifyTimeInput);
   $('#eventModal').on('show.bs.modal', toggleNotifyTimeInput);
 
-  document.getElementById('line-notify-switch-add').addEventListener('change', toggleNotifyTimeInputAdd);
+  notifySwitchAdd.change(toggleNotifyTimeInputAdd);
   $('#addEventModal').on('show.bs.modal', toggleNotifyTimeInputAdd);
 
-
-  document.getElementById('edit-line-notify-switch').addEventListener('change', toggleEditNotifyTimeInput);
+  notifySwitchEdit.change(toggleEditNotifyTimeInput);
   $('#editEventModal').on('show.bs.modal', toggleEditNotifyTimeInput);
-  
 
   if (calendarEl) {
     let calendar = new Calendar(calendarEl, {
       timeZone: 'Asia/Tokyo',
       height: "auto",
-      plugins: [ interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin ],
+      plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
       themeSystem: 'bootstrap5',
       locale: 'ja',
       initialView: 'dayGridMonth',
@@ -161,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           click: function() {
             settingEventModal.show();
           }
-        },   
+        },
         CalendarButton: {
           click: function() {
             addEventModal.show();
@@ -176,58 +155,52 @@ document.addEventListener('DOMContentLoaded', async function() {
         let month = (date.getMonth() + 1).toString().padStart(2, '0');
         let day = date.getDate().toString().padStart(2, '0');
         let dateStr = `${year}-${month}-${day}`;
-    
+
         if (holidays[year] && holidays[year][dateStr]) {
-            let dayNumberLink = info.el.querySelector('.fc-daygrid-day-number');
-            if (dayNumberLink) {
-                dayNumberLink.classList.add('holiday-number');
-            }
+          let dayNumberLink = $(info.el).find('.fc-daygrid-day-number')[0];
+          if (dayNumberLink) {
+            dayNumberLink.classList.add('holiday-number');
+          }
         }
-    },
+      },
 
       eventContent: function(arg) {
         return { html: arg.event.title };
       },
-      
-      dayCellContent: function(arg){
+
+      dayCellContent: function(arg) {
         return arg.date.getDate();
       },
 
       dateClick: function(info) {
-        fetch(`/events?date=${info.dateStr}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(events => {
-          if (events.length >= 4) {
-            swal({
-              title: "予定の上限です",
-              text: "この日にはすでに4件のイベントが存在します",
-              icon: "error",
-              buttons: {
-                confirm: "OK"
-              },
-              dangerMode: true,
-              className: "custom-swal"
-            });
-          } else {
-            document.getElementById('start_date').value = info.dateStr;
-            document.getElementById('end_date').value = info.dateStr;
-            document.getElementById('notify_date').value = info.dateStr;
+        $.getJSON(`/events?date=${info.dateStr}`)
+          .done(events => {
+            if (events.length >= 4) {
+              swal({
+                title: "予定の上限です",
+                text: "この日にはすでに4件のイベントが存在します",
+                icon: "error",
+                buttons: {
+                  confirm: "OK"
+                },
+                dangerMode: true,
+                className: "custom-swal"
+              });
+            } else {
+              $('#start_date').val(info.dateStr);
+              $('#end_date').val(info.dateStr);
+              $('#notify_date').val(info.dateStr);
 
-            handleDateClick(info);
-          }
-        })
-        .catch(error => console.error('Error:', error));
+              handleDateClick(info);
+            }
+          })
+          .fail(error => console.error('Error:', error));
       },
 
       eventClick: function(info) {
         info.jsEvent.preventDefault();
         selectedDate = info.event.startStr.split('T')[0];
-        document.getElementById('selected-date-display').textContent = selectedDate;
+        $('#selected-date-display').text(selectedDate);
         if (lastClickedElement) {
           lastClickedElement.style.backgroundColor = '';
           lastClickedElement = null;
@@ -269,12 +242,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     calendar.render();
 
-    form.addEventListener('submit', function(event) {
+    form.on('submit', function(event) {
       event.preventDefault();
-      let formData = new FormData(form);
-  
-      if (notifySwitch.checked) {
-        let notifyDateTime = new Date(formData.get('notify_date') + 'T' + formData.get('notify_time'));
+      let formData = new FormData(this);
+
+      if (notifySwitch.prop('checked')) {
+        let notifyDateTime = new Date(`${formData.get('notify_date')}T${formData.get('notify_time')}`);
         if (notifyDateTime <= new Date()) {
           alert('通知時間は現在時刻よりも後に設定してください');
           return;
@@ -286,36 +259,37 @@ document.addEventListener('DOMContentLoaded', async function() {
         searchParams.append(pair[0], pair[1]);
       }
 
-      fetch(form.action, {
+      $.ajax({
+        url: form.attr('action'),
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
         },
-        body: searchParams
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.errors) {
-          alert('エラーが発生しました');
-        } else {
-          
-          calendar.refetchEvents();
-          form.reset();
-          modal.hide();
+        data: searchParams.toString(),
+        success: function(data) {
+          if (data.errors) {
+            alert('エラーが発生しました');
+          } else {
+            calendar.refetchEvents();
+            form[0].reset();
+            modal.hide();
+          }
+        },
+        error: function(error) {
+          console.error('Error:', error);
         }
-      })
-      .catch(error => console.error('Error:', error));
+      });
     });
 
     // 追加イベントフォームの送信処理
-    addForm.addEventListener('submit', function(event) {
+    addForm.on('submit', function(event) {
       event.preventDefault();
-      let formData = new FormData(addForm);
-      let eventDateAdd = document.getElementById('event_date-add').value;
-      let notifyTimeAdd = document.getElementById('notify_time-add').value;
+      let formData = new FormData(this);
+      let eventDateAdd = $('#event_date-add').val();
+      let notifyTimeAdd = $('#notify_time-add').val();
 
-      if (notifySwitchAdd.checked) {
+      if (notifySwitchAdd.prop('checked')) {
         let fullNotifyDateTime = new Date(`${eventDateAdd}T${notifyTimeAdd}`);
         console.log('Full Notify DateTime:', fullNotifyDateTime);
 
@@ -327,87 +301,84 @@ document.addEventListener('DOMContentLoaded', async function() {
         formData.set('event[notify_time]', notifyTimeAdd);
       }
 
-      fetch(addForm.action, {
+      $.ajax({
+        url: addForm.attr('action'),
         method: 'POST',
-        body: formData,
         headers: {
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
         },
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok.');
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          if (data.errors) {
+            alert('エラーが発生しました: ' + data.errors.join(', '));
+          } else {
+            calendar.refetchEvents();
+            addForm[0].reset();
+            addEventModal.hide();
+          }
+        },
+        error: function(error) {
+          console.error('Error:', error);
+          alert('通信エラーが発生しました');
         }
-        return response.json();
-      })
-      .then(data => {
-        if (data.errors) {
-          alert('エラーが発生しました: ' + data.errors.join(', '));
-        } else {
-          calendar.refetchEvents(); 
-          this.reset(); 
-          addEventModal.hide(); 
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('通信エラーが発生しました');
       });
     });
 
     // イベント削除
-    document.getElementById('delete-event').addEventListener('click', function() {
-      let eventId = this.getAttribute('data-event-id');
-        fetch(`/events/${eventId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-          }
-        }).then(response => {
-          if (response.ok) {
-            calendar.refetchEvents();
-          } else {
-            alert('イベントの削除に失敗しました');
-          }
-        }).catch(error => {
+    $('#delete-event').on('click', function() {
+      let eventId = $(this).data('event-id');
+      $.ajax({
+        url: `/events/${eventId}`,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function() {
+          calendar.refetchEvents();
+        },
+        error: function(error) {
+          alert('イベントの削除に失敗しました');
           console.error('Error:', error);
-        });
+        }
+      });
     });
 
     // 編集モーダル
-    document.getElementById('editEventBtn').addEventListener('click', function () {
-      let eventId = this.getAttribute('data-event-id');
-      let selectedDate = document.getElementById('selected-date-display').textContent;
-      let startTimeText = document.getElementById('eventDetailsStart').textContent.replace('開始時間： ', '');
-      let endTimeText = document.getElementById('eventDetailsEnd').textContent.replace('終了時間： ', '');
+    $('#editEventBtn').on('click', function() {
+      let eventId = $(this).data('event-id');
+      let selectedDate = $('#selected-date-display').text();
+      let startTimeText = $('#eventDetailsStart').text().replace('開始時間： ', '');
+      let endTimeText = $('#eventDetailsEnd').text().replace('終了時間： ', '');
 
-      document.getElementById('edit-event_date').value = selectedDate;
-      document.getElementById('edit-start_time').value = formatTimeToInputValue(startTimeText);
-      document.getElementById('edit-end_time').value = formatTimeToInputValue(endTimeText);
-    
-      document.getElementById('edit-title').value = document.getElementById('eventDetailsTitle').textContent.replace('タイトル： ', '');
-      let memoContent = document.getElementById('memoContent').textContent.trim();
-      document.getElementById('edit-memo').value = memoContent;
-    
-      let notifyTimeDisplay = document.getElementById('eventNotifyTime').style.display;
-      let notifyTimeField = document.getElementById('edit-notify_time');
-    
+      $('#edit-event_date').val(selectedDate);
+      $('#edit-start_time').val(formatTimeToInputValue(startTimeText));
+      $('#edit-end_time').val(formatTimeToInputValue(endTimeText));
+
+      $('#edit-title').val($('#eventDetailsTitle').text().replace('タイトル： ', ''));
+      let memoContent = $('#memoContent').text().trim();
+      $('#edit-memo').val(memoContent);
+
+      let notifyTimeDisplay = $('#eventNotifyTime').css('display');
+      let notifyTimeField = $('#edit-notify_time');
+
       if (notifyTimeDisplay !== 'none') {
-        let notifyTimeText = document.getElementById('eventNotifyTime').textContent.replace('通知時間： ', '');
-        notifyTimeField.value = formatTimeToInputValue(notifyTimeText);
+        let notifyTimeText = $('#eventNotifyTime').text().replace('通知時間： ', '');
+        notifyTimeField.val(formatTimeToInputValue(notifyTimeText));
       } else {
-        notifyTimeField.value = '06:00';
+        notifyTimeField.val('06:00');
       }
-      notifySwitchEdit.checked = notifyTimeDisplay !== 'none';
+      notifySwitchEdit.prop('checked', notifyTimeDisplay !== 'none');
       toggleEditNotifyTimeInput();
 
-      document.getElementById('save-event-button').setAttribute('data-event-id', eventId);
+      $('#save-event-button').data('event-id', eventId);
 
       eventDetailsModal.hide();
       editEventModal.show();
     });
-    
+
     function formatTimeToInputValue(timeText) {
       let [hours, minutes] = timeText.split(':');
       hours = hours.padStart(2, '0');
@@ -415,71 +386,61 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // update
-    document.getElementById('save-event-button').addEventListener('click', function () {
-      let eventId = this.getAttribute('data-event-id');
-      let form = document.getElementById('edit-event-form');
+    $('#save-event-button').on('click', function() {
+      let eventId = $(this).data('event-id');
+      let form = $('#edit-event-form')[0];
       let formData = new FormData(form);
-      
-      fetch(`/events/${eventId}`, {
+
+      $.ajax({
+        url: `/events/${eventId}`,
         method: 'PATCH',
-        body: formData,
         headers: {
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function() {
+          $('#editEventModal').modal('hide');
+          calendar.refetchEvents();
+        },
+        error: function(error) {
+          console.error('Error:', error);
+          alert('イベントの更新に失敗しました');
         }
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok.');
-        return response.json();
-      })
-      .then(data => {
-        $('#editEventModal').modal('hide');
-        calendar.refetchEvents();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('イベントの更新に失敗しました');
       });
     });
 
-
-    document.getElementById('eventDetailsModal').addEventListener('hidden.bs.modal', function () {
-      document.getElementById('memoContent').textContent = '';
+    $('#eventDetailsModal').on('hidden.bs.modal', function() {
+      $('#memoContent').text('');
     });
 
-  
-    let lineButtonEl = document.querySelector('.fc-lineButton-button');
-    if (lineButtonEl) {
-      let icon = document.createElement("i");
-      icon.className = "fa-brands fa-line";
-      icon.style.fontSize = '40px';
-      lineButtonEl.appendChild(icon);
+    let lineButtonEl = $('.fc-lineButton-button');
+    if (lineButtonEl.length) {
+      let icon = $('<i>', { class: 'fa-brands fa-line', style: 'font-size: 40px;' });
+      lineButtonEl.append(icon);
     }
 
-    let CustomButtonEl = document.querySelector('.fc-CustomButton-button');
-    if (CustomButtonEl) {
-      let icon = document.createElement("i");
-      icon.className = "fa-solid fa-gear";
-      icon.style.fontSize = '25px';
-      CustomButtonEl.appendChild(icon);
+    let CustomButtonEl = $('.fc-CustomButton-button');
+    if (CustomButtonEl.length) {
+      let icon = $('<i>', { class: 'fa-solid fa-gear', style: 'font-size: 25px;' });
+      CustomButtonEl.append(icon);
     }
 
-    let CalendarButtonEl = document.querySelector('.fc-CalendarButton-button');
-    if (CalendarButtonEl) {
-      let icon = document.createElement("i");
-      icon.className = "fa-regular fa-calendar-plus";
-      icon.style.fontSize = '25px';
-      CalendarButtonEl.appendChild(icon);
+    let CalendarButtonEl = $('.fc-CalendarButton-button');
+    if (CalendarButtonEl.length) {
+      let icon = $('<i>', { class: 'fa-regular fa-calendar-plus', style: 'font-size: 25px;' });
+      CalendarButtonEl.append(icon);
     }
   }
 
-  // datechlick
+  // dateclick
   function handleDateClick(info) {
     if (window.matchMedia("(pointer: coarse)").matches) {
       if (lastClickedElement === info.dayEl) {
-        
         modal.show();
-    
-        modal._element.addEventListener('hidden.bs.modal', function() {
+
+        $(modal._element).on('hidden.bs.modal', function() {
           info.dayEl.style.backgroundColor = '';
           lastClickedElement = null;
         });
@@ -491,7 +452,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       lastClickedElement = info.dayEl;
     }
   }
-  
+
   function updateDayElementBackground(info) {
     if (lastClickedElement) {
       lastClickedElement.style.backgroundColor = '';
@@ -500,59 +461,53 @@ document.addEventListener('DOMContentLoaded', async function() {
     lastClickedElement = info.dayEl;
   }
 
-// eventchlick
+  // eventclick
   function fetchEventDetails(eventId) {
-    fetch(`/events/${eventId}/details`)
-      .then(handleResponse)
-      .then(updateUIWithEventDetails)
-      .catch(handleEventError);
+    $.getJSON(`/events/${eventId}/details`)
+      .done(updateUIWithEventDetails)
+      .fail(handleEventError);
   }
-  
-  function handleResponse(response) {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  }
-  
+
   function updateUIWithEventDetails(data) {
-    document.getElementById('eventDetailsTitle').textContent = `タイトル： ${data.title}`;
-    document.getElementById('eventDetailsStart').textContent = `開始時間： ${formatTime(data.start)}`;
-    document.getElementById('eventDetailsEnd').textContent = `終了時間： ${formatTime(data.end)}`;
-    let memoElement = document.getElementById('eventMemo');
-    let memoContent = document.getElementById('memoContent');
+    $('#eventDetailsTitle').text(`タイトル： ${data.title}`);
+    $('#eventDetailsStart').text(`開始時間： ${formatTime(data.start)}`);
+    $('#eventDetailsEnd').text(`終了時間： ${formatTime(data.end)}`);
+    let memoElement = $('#eventMemo');
+    let memoContent = $('#memoContent');
     if (data.memo) {
-        memoElement.style.display = 'block';
-        memoContent.textContent = data.memo;
+      memoElement.show();
+      memoContent.text(data.memo);
     } else {
-        memoElement.style.display = 'none';
+      memoElement.hide();
     }
     updateNotificationTime(data);
     showModal(data);
   }
-  
+
   function formatTime(time) {
     return new Date(time).toLocaleTimeString('ja-JP', {
-      hour: 'numeric', minute: '2-digit', hour12: false
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: false
     });
   }
-  
+
   function updateNotificationTime(data) {
-    let notifyTimeElement = document.getElementById('eventNotifyTime');
+    let notifyTimeElement = $('#eventNotifyTime');
     if (data.line_notify) {
-      notifyTimeElement.style.display = 'block';
-      notifyTimeElement.textContent = `通知時間： ${formatTime(data.notify_time)}`;
+      notifyTimeElement.show();
+      notifyTimeElement.text(`通知時間： ${formatTime(data.notify_time)}`);
     } else {
-      notifyTimeElement.style.display = 'none';
+      notifyTimeElement.hide();
     }
   }
-  
+
   function showModal(data) {
     eventDetailsModal.show();
-    document.getElementById('delete-event').setAttribute('data-event-id', data.id);
-    document.getElementById('editEventBtn').setAttribute('data-event-id', data.id);
+    $('#delete-event').data('event-id', data.id);
+    $('#editEventBtn').data('event-id', data.id);
   }
-  
+
   function handleEventError(error) {
     console.error('Error loading the event details:', error);
     alert('Failed to load event details: ' + error.message);
