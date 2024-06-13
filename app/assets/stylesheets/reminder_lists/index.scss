@@ -1,3 +1,12 @@
+body {
+  background-color: #F2F7FA;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
 .reminders-container {
   background-color: #F2F7FA;
   padding: 20px;
@@ -44,7 +53,18 @@
   font-size: 20px;
 }
 
+.no-reminders-message-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  text-align: center;
+}
+
 .no-reminders-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: #6D6D6D;
   padding: 20px;
   background-color: #F2F7FA;
   text-align: center;
