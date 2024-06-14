@@ -40,19 +40,20 @@ class OauthsController < ApplicationController
         redirect_to root_path
       end
     else
-    token_response = fetch_line_token(params[:code])
-    if token_response[:access_token]
-      line_id = decode_id_token(token_response[:id_token], ENV['LINE_SECRET'])
-      @user = User.find_or_create_by(line_user_id: line_id)
-      reset_session
-      auto_login(@user)
-      if @user.persisted?
-        redirect_to line_friends_url
+      token_response = fetch_line_token(params[:code])
+      if token_response[:access_token]
+        line_id = decode_id_token(token_response[:id_token], ENV['LINE_SECRET'])
+        @user = User.find_or_create_by(line_user_id: line_id)
+        reset_session
+        auto_login(@user)
+        if @user.persisted?
+          redirect_to line_friends_url
+        else
+          redirect_to root_path
+        end
       else
         redirect_to root_path
       end
-    else
-      redirect_to root_path
     end
   end
 
