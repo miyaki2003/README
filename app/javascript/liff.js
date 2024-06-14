@@ -9,11 +9,19 @@ function initializeLiff() {
         liffId: '2003779201-OwqpG72P',
         withLoginOnExternalBrowser: true
     }).then(() => {
-        if (!liff.isLoggedIn()) {
-            liff.login();
-        } else {
-            handleLoggedInUser();
-        }
+        fetch('/get_id_token')
+            .then(response => response.json())
+            .then(data => {
+                if (data.id_token) {
+                    sendIdTokenToServer(data.id_token);
+                } else if (!liff.isLoggedIn()) {
+                    liff.login();
+                } else {
+                    handleLoggedInUser();
+                }
+            }).catch((err) => {
+                console.error('Failed to fetch ID token', err);
+            });
     }).catch((err) => {
         console.error('LIFF Initialization failed', err);
     });
@@ -44,5 +52,3 @@ function sendIdTokenToServer(idToken) {
           console.error('Error sending ID token to server:', error);
       });
 }
-
-
