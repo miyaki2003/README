@@ -1,7 +1,10 @@
 import liff from '@line/liff';
 
 document.addEventListener('DOMContentLoaded', function() {
-    initializeLiff();
+  document.getElementById('login-button').addEventListener('click', function(event) {
+      event.preventDefault();
+      initializeLiff();
+  });
 });
 
 function initializeLiff() {
