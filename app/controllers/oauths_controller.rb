@@ -1,4 +1,5 @@
 class OauthsController < ApplicationController
+  include HTTParty
   skip_before_action :require_login, only: [:oauth, :callback, :destroy, :liff_login]
 
   require 'net/http'
