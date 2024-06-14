@@ -7,10 +7,10 @@
       <% end %>
     </div>
     <div style="flex-grow: 1; display: flex; justify-content: flex-end;">
-      <button id="loginButton" class="btn custom-login-btn btn-border-shadow btn-border-shadow--radius">
+      <%= link_to auth_at_provider_path(provider: :line), class: 'btn custom-login-btn btn-border-shadow btn-border-shadow--radius' do %>
         <i class="fa-solid fa-right-to-bracket"></i>
         <span>Login</span>
-      </button>
+      <% end %>
     </div>
   </div>
 </header>

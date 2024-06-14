@@ -16,8 +16,6 @@ Rails.application.routes.draw do
   get '/terms', to: 'staticpages#terms'
 
   get '/line_friends', to: redirect('https://line.me/R/ti/p/%40083jbanw')
-  
-  post 'liff_login', to: 'oauths#liff_login'
 
   resources :events do
     member do
