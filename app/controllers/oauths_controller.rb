@@ -1,5 +1,5 @@
 class OauthsController < ApplicationController
-  skip_before_action :require_login, only: [:oauth, :callback, :destroy]
+  skip_before_action :require_login, only: [:oauth, :callback, :destroy, :liff_login]
 
   require 'net/http'
   require 'uri'
@@ -16,7 +16,30 @@ class OauthsController < ApplicationController
       redirect_to root_path
       return
     end
-
+    if params[:id_token]
+      id_token = params[:id_token]
+      response = HTTParty.get("https://api.line.me/oauth2/v2.1/verify", {
+        query: {
+          id_token: id_token,
+          client_id: ENV['LINE_KEY']
+        }
+      })
+  
+      if response.code == 200
+        user_info = JSON.parse(response.body)
+        line_user_id = user_info["sub"]
+  
+        user = User.find_or_create_by(line_user_id: line_user_id) do |u|
+          u.name = user_info["name"]
+          u.email = user_info["email"]
+        end
+  
+        auto_login(user)
+        redirect_to line_friends_url
+      else
+        redirect_to root_path
+      end
+    else
     token_response = fetch_line_token(params[:code])
     if token_response[:access_token]
       line_id = decode_id_token(token_response[:id_token], ENV['LINE_SECRET'])
@@ -36,6 +59,32 @@ class OauthsController < ApplicationController
   def destroy
     logout
     redirect_to root_path, status: :see_other
+  end
+
+  def liff_login
+    id_token = params[:id_token]
+    
+    response = HTTParty.get("https://api.line.me/oauth2/v2.1/verify", {
+      query: {
+        id_token: id_token,
+        client_id: ENV['LINE_KEY']
+      }
+    })
+
+    if response.code == 200
+      user_info = JSON.parse(response.body)
+      line_user_id = user_info["sub"]
+
+      user = User.find_or_create_by(line_user_id: line_user_id) do |u|
+        u.name = user_info["name"]
+        u.email = user_info["email"]
+      end
+
+      auto_login(user)
+      render json: { success: true }
+    else
+      render json: { success: false, message: "ID token verification failed" }, status: :unauthorized
+    end
   end
 
   private
