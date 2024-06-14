@@ -41,11 +41,12 @@ class OauthsController < ApplicationController
 
   def get_id_token
     if logged_in?
-      render json: { id_token: current_user.id_token }
+      render json: { id_token: current_user.id_token, logged_in: true }
     else
-      render json: { id_token: nil }
+      render json: { id_token: nil, logged_in: false }
     end
   end
+  
 
   private
 
