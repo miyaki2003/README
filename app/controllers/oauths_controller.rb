@@ -39,6 +39,14 @@ class OauthsController < ApplicationController
     redirect_to root_path, status: :see_other
   end
 
+  def get_id_token
+    if logged_in?
+      render json: { id_token: current_user.id_token }
+    else
+      render json: { id_token: nil }
+    end
+  end
+
   private
 
   def auth_params
