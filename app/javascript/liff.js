@@ -13,11 +13,9 @@ function initializeLiff() {
             .then(response => response.json())
             .then(data => {
                 if (data.id_token) {
-                    sendIdTokenToServer(data.id_token);
-                } else if (!liff.isLoggedIn()) {
-                    liff.login();
+                    handleLoggedInUser(data.id_token);
                 } else {
-                    handleLoggedInUser();
+                    console.error('No ID token available');
                 }
             }).catch((err) => {
                 console.error('Failed to fetch ID token', err);
@@ -27,13 +25,8 @@ function initializeLiff() {
     });
 }
 
-function handleLoggedInUser() {
-    const idToken = liff.getIDToken();
-    sendIdTokenToServer(idToken);
-}
-
-function sendIdTokenToServer(idToken) {
-    fetch('/liff_login', {
+function handleLoggedInUser(idToken) {
+    fetch('/auth/line/callback', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +37,7 @@ function sendIdTokenToServer(idToken) {
       .then(data => {
           if (data.success) {
               console.log('User authenticated with Sorcery');
-              window.location.href = `/auth/line/callback?id_token=${idToken}`;
+              window.location.href = '/events';
           } else {
               console.error('User authentication failed');
           }
