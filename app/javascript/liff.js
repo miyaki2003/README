@@ -25,7 +25,6 @@ function handleLoggedInUser() {
 }
 
 function sendIdTokenToServer(idToken) {
-    console.error('Error sending ID token to server:', error);
     fetch('/liff_login', {
         method: 'POST',
         headers: {
@@ -45,4 +44,5 @@ function sendIdTokenToServer(idToken) {
           console.error('Error sending ID token to server:', error);
       });
 }
+
 
