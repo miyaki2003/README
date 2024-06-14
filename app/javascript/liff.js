@@ -14,8 +14,10 @@ function initializeLiff() {
             .then(data => {
                 if (data.id_token) {
                     handleLoggedInUser(data.id_token);
+                } else if (data.logged_in) {
+                    window.location.href = '/';
                 } else {
-                    console.error('No ID token available');
+                    console.error('No ID token available and user not logged in');
                 }
             }).catch((err) => {
                 console.error('Failed to fetch ID token', err);
