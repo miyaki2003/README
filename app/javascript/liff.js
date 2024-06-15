@@ -1,13 +1,24 @@
 import liff from '@line/liff';
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('login-button').addEventListener('click', function(event) {
-      event.preventDefault();
-      initializeLiff();
-  });
+  
+  // URLにliffパラメータが存在する場合のみLIFFの初期化を実行
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('liff')) {
+      const redirectUrl = window.location.href; // URLを保存
+      initializeLiff(redirectUrl);
+  } else {
+      const loginButton = document.getElementById('login-button');
+      if (loginButton) {
+          loginButton.addEventListener('click', function(event) {
+              event.preventDefault();
+              initializeLiff(window.location.href);
+          });
+      }
+  }
 });
 
-function initializeLiff() {
+function initializeLiff(redirectUrl) {
     liff.init({
         liffId: '2003779201-OwqpG72P',
         withLoginOnExternalBrowser: true
@@ -16,7 +27,7 @@ function initializeLiff() {
             .then(response => response.json())
             .then(data => {
                 if (data.id_token) {
-                    handleLoggedInUser(data.id_token);
+                    handleLoggedInUser(data.id_token, redirectUrl);
                 } else if (data.logged_in) {
                     window.location.href = '/';
                 } else {
@@ -30,7 +41,7 @@ function initializeLiff() {
     });
 }
 
-function handleLoggedInUser(idToken) {
+function handleLoggedInUser(idToken, redirectUrl) {
     fetch('/auth/line/callback', {
         method: 'POST',
         headers: {
@@ -42,7 +53,7 @@ function handleLoggedInUser(idToken) {
       .then(data => {
           if (data.success) {
               console.log('User authenticated with Sorcery');
-              window.location.href = '/events';
+              window.location.href = redirectUrl; // 保存したURLにリダイレクト
           } else {
               console.error('User authentication failed');
           }

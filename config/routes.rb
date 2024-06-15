@@ -17,8 +17,6 @@ Rails.application.routes.draw do
 
   get '/line_friends', to: redirect('https://line.me/R/ti/p/%40083jbanw')
 
-  get '/get_id_token', to: 'oauths#get_id_token'
-
   resources :events do
     member do
       get 'details'
