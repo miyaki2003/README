@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // URLにliffパラメータが存在する場合のみLIFFの初期化を実行
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has('liff')) {
-      const redirectUrl = window.location.href; // URLを保存
+      const redirectUrl = window.location.href;
       initializeLiff(redirectUrl);
   } else {
       const loginButton = document.getElementById('login-button');
@@ -23,19 +23,16 @@ function initializeLiff(redirectUrl) {
         liffId: '2003779201-OwqpG72P',
         withLoginOnExternalBrowser: true
     }).then(() => {
-        fetch('/get_id_token')
-            .then(response => response.json())
-            .then(data => {
-                if (data.id_token) {
-                    handleLoggedInUser(data.id_token, redirectUrl);
-                } else if (data.logged_in) {
-                    window.location.href = '/';
-                } else {
-                    console.error('No ID token available and user not logged in');
-                }
+        if (liff.isLoggedIn()) {
+            liff.getProfile().then(profile => {
+                const idToken = liff.getIDToken();
+                handleLoggedInUser(idToken, redirectUrl);
             }).catch((err) => {
-                console.error('Failed to fetch ID token', err);
+                console.error('Failed to get profile', err);
             });
+        } else {
+            liff.login();
+        }
     }).catch((err) => {
         console.error('LIFF Initialization failed', err);
     });
@@ -53,7 +50,7 @@ function handleLoggedInUser(idToken, redirectUrl) {
       .then(data => {
           if (data.success) {
               console.log('User authenticated with Sorcery');
-              window.location.href = redirectUrl; // 保存したURLにリダイレクト
+              window.location.href = redirectUrl;
           } else {
               console.error('User authentication failed');
           }
@@ -61,3 +58,4 @@ function handleLoggedInUser(idToken, redirectUrl) {
           console.error('Error sending ID token to server:', error);
       });
 }
+
