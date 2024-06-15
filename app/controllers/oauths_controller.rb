@@ -1,5 +1,5 @@
 class OauthsController < ApplicationController
-  skip_before_action :require_login, only: [:oauth, :callback, :destroy]
+  skip_before_action :require_login, only: [:oauth, :callback, :destroy, :get_id_token]
 
   require 'net/http'
   require 'uri'
@@ -24,6 +24,7 @@ class OauthsController < ApplicationController
       reset_session
       auto_login(@user)
       if @user.persisted?
+        @user.update(id_token: token_response[:id_token])
         redirect_to line_friends_url
       else
         redirect_to root_path
@@ -37,6 +38,15 @@ class OauthsController < ApplicationController
     logout
     redirect_to root_path, status: :see_other
   end
+
+  def get_id_token
+    if logged_in?
+      render json: { id_token: current_user.id_token, logged_in: true }
+    else
+      render json: { id_token: nil, logged_in: false }
+    end
+  end
+  
 
   private
 

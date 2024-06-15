@@ -4,20 +4,25 @@
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReminderChat</title>
-
-    <!-- Google Fontsの読み込み -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     
-    <meta name="description" content="Reminder Chatは、LINEで簡単にリマインダーを設定し、指定の時間に通知を受け取れるアプリです。さらに、LINE上で使えるカレンダー機能でスケジュール管理も可能です">
-    <!-- <meta property="og:url" content="https://reminder-chat.com"> -->
-    <meta property="og:title" content="Reminder Chat">
-    <meta property="og:description" content="Reminder Chatは、LINEで簡単にリマインダーを設定し、指定の時間に通知を受け取れるアプリです。さらに、LINE上で使えるカレンダー機能でスケジュール管理も可能です">
-    <!-- <meta property="og:image" content="">-->
+    <meta name="description" content="Reminder Chatは、LINE上で予定を管理できるアプリです。リマインド設定やカレンダーの使用が可能です。">
 
+    <meta property="og:url" content="https://reminderchat-line.com">
+    <meta property="og:title" content="Reminder Chat">
+    <meta property="og:description" content="Reminder Chatは、LINE上で予定を管理できるアプリです。リマインド設定やカレンダーの使用が可能です。">
+
+    <meta property="og:image" content="<%= asset_path 'ReminderChat.icon.jpg' %>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@Miyaki2323">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="icon" type="image/png" href="<%= asset_path 'favicon.png' %>">
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", media: 'all', "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+    
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
@@ -31,7 +36,6 @@
       }
     </style>
     <title>ReminderChat</title>
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
