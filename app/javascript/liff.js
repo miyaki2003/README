@@ -31,7 +31,7 @@ function initializeLiff(redirectUrl) {
                 console.error('Failed to get profile', err);
             });
         } else {
-            liff.login();
+            liff.login({ redirectUri: redirectUrl });
         }
     }).catch((err) => {
         console.error('LIFF Initialization failed', err);
@@ -58,4 +58,3 @@ function handleLoggedInUser(idToken, redirectUrl) {
           console.error('Error sending ID token to server:', error);
       });
 }
-
