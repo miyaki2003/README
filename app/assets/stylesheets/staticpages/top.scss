@@ -51,7 +51,7 @@ body {
 }
 
 #about {
-  height: 70em;
+  height: auto;
   padding: 1em 0;
   p {
     line-height: 2em;
@@ -60,6 +60,13 @@ body {
     color: #000000;
   }
 }
+
+.custom-carousel {
+  border: 2px solid #f8f9fa;
+  padding: 15px;
+  background-color: #f8f9fa;
+}
+
 
 @media (max-width: 768px) {
   .container {

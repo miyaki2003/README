@@ -7,7 +7,7 @@ class ReminderJob < ApplicationJob
 
     message = {
       type: 'text',
-      text: "「#{reminder.title}」の時間です"
+      text: "「#{reminder.title}」のリマインドです"
     }
 
     client = Line::Bot::Client.new do |config|
