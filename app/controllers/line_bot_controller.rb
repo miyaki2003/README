@@ -368,7 +368,7 @@ class LineBotController < ApplicationController
     elsif weather_info[:current].nil? || weather_info[:current][:weather].nil?
       message = {
         type: 'text',
-        text: '現在の天気情報が取得できませんでした。'
+        text: '現在の天気情報が取得できませんでした'
       }
     else
       bubbles = []

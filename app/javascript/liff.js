@@ -1,36 +1,44 @@
 import liff from '@line/liff';
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('login-button').addEventListener('click', function(event) {
-      event.preventDefault();
-      initializeLiff();
-  });
+  
+  // URLにliffパラメータが存在する場合のみLIFFの初期化を実行
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('liff')) {
+      const redirectUrl = window.location.href;
+      initializeLiff(redirectUrl);
+  } else {
+      const loginButton = document.getElementById('login-button');
+      if (loginButton) {
+          loginButton.addEventListener('click', function(event) {
+              event.preventDefault();
+              initializeLiff(window.location.href);
+          });
+      }
+  }
 });
 
-function initializeLiff() {
+function initializeLiff(redirectUrl) {
     liff.init({
         liffId: '2003779201-OwqpG72P',
         withLoginOnExternalBrowser: true
     }).then(() => {
-        fetch('/get_id_token')
-            .then(response => response.json())
-            .then(data => {
-                if (data.id_token) {
-                    handleLoggedInUser(data.id_token);
-                } else if (data.logged_in) {
-                    window.location.href = '/';
-                } else {
-                    console.error('No ID token available and user not logged in');
-                }
+        if (liff.isLoggedIn()) {
+            liff.getProfile().then(profile => {
+                const idToken = liff.getIDToken();
+                handleLoggedInUser(idToken, redirectUrl);
             }).catch((err) => {
-                console.error('Failed to fetch ID token', err);
+                console.error('Failed to get profile', err);
             });
+        } else {
+            liff.login({ redirectUri: redirectUrl });
+        }
     }).catch((err) => {
         console.error('LIFF Initialization failed', err);
     });
 }
 
-function handleLoggedInUser(idToken) {
+function handleLoggedInUser(idToken, redirectUrl) {
     fetch('/auth/line/callback', {
         method: 'POST',
         headers: {
@@ -42,7 +50,7 @@ function handleLoggedInUser(idToken) {
       .then(data => {
           if (data.success) {
               console.log('User authenticated with Sorcery');
-              window.location.href = '/events';
+              window.location.href = redirectUrl;
           } else {
               console.error('User authentication failed');
           }
