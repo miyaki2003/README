@@ -3,37 +3,37 @@
 }
 
 .tooltip-icon {
-  color: #8190A4;
+  color: #FF5974;
 }
 
-.tooltip .tooltip-inner {
-  background-color: #40456F;
-}
+// .tooltip .tooltip-inner {
+//   background-color: #FF5974;
+// }
 
-.tooltip.fade.show.bs-tooltip-end .tooltip-inner {
-  background-color: #40456F;
-  color:  #ffffff;
-}
+// .tooltip.fade.show.bs-tooltip-end .tooltip-inner {
+//   background-color: #FF5974;
+//   color:  #ffffff;
+// }
 
-.bs-tooltip-end .tooltip-arrow::before {
-  border-right-color: #40456F;
-}
+// .bs-tooltip-end .tooltip-arrow::before {
+//   border-right-color: #FF5974;
+// }
 
 .form-check-input:checked {
-  background-color: #4b5183;
-  border-color: #4b5183;
+  background-color: #5293BC;
+  border-color: #5293BC;
 }
 
 .modal-content {
   background-color: #f8f9fa;
-  color: #40456F;
+  color: #666666;
   border-radius: 17px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .btn-primary {
-  background-color: #4b5183;
-  border-color: #4b5183;
+  background-color: #5293BC;
+  border-color: #5293BC;
   color: #ffffff;
   float: right;
 }
@@ -43,14 +43,19 @@
   border-color: #969696;
 }
 
+.btn-primary:active {
+  background-color: #969696 !important;
+  border-color: #969696 !important;
+}
+
 .btn-danger {
-  background-color: #ff5470;
-  border-color: #ff5470;
+  background-color: #FF5974;
+  border-color: #FF5974;
   color: #ffffff;
 }
 
 .form-control {
-  color: #40456F;
+  color: #666666;
 }
 
 .modal-title {
@@ -58,5 +63,5 @@
   font-weight: 550;
   flex-grow: 1;
   text-align: center;
-  color: #4b5183;
+  color: #666666;
 }
