@@ -62,11 +62,32 @@ body {
 }
 
 .custom-carousel {
-  border: 2px solid #f8f9fa;
+  border: 2px solid #ffffff;
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
 }
 
+.carousel-caption-below {
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  color: #666666;
+}
+
+.carousel-caption-below p {
+  font-size: 15px !important;
+  color: #666666 !important;
+}
+
+.carousel-caption-below h2 {
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.button-container {
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
 
 @media (max-width: 768px) {
   .container {
