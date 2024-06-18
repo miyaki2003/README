@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (lastClickedElement) {
       lastClickedElement.style.backgroundColor = '';
     }
-    info.dayEl.style.backgroundColor = '#DBE8F1';
+    info.dayEl.style.backgroundColor = '#F2F7FA';
     lastClickedElement = info.dayEl;
   }
 
