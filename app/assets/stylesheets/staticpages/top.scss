@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
-
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 
 .gif-container {
   text-align: center;
@@ -77,44 +74,19 @@ body {
 .carousel-caption-below p {
   font-size: 15px !important;
   color: #666666 !important;
+  font-family: 'Sora', 'Noto Sans JP', sans-serif;
 }
 
 .carousel-caption-below h2 {
   font-weight: 700;
   margin-top: 15px;
+  font-family: 'Sora', 'Noto Sans JP', sans-serif;
 }
 
 .button-container {
   margin-top: 30px;
   margin-bottom: 40px;
 }
-
-@media (max-width: 768px) {
-  .container {
-    max-width: 100%;
-    min-width: 100%;
-    padding: 0 1em;
-  }
-
-  #about {
-    padding: 1em 0;
-    min-height: auto;
-  }
-}
-
-// .header {
-//   background-color: #E0FBFE !important;
-//   height: 120px;
-// }
-
-// .custom-login-btn {
-//   height: 110px;
-// }
-
-// .footer {
-//   background-color: #E0FBFE !important;
-//   height: 120px;
-// }
 
 #about .container {
   text-align: center;
@@ -147,4 +119,32 @@ body {
 
 .about-image {
   margin-top: 0px;
+}
+
+.app-description h2 {
+  color: #666666;
+  margin-bottom: 60px;
+  font-size: 20px;
+  font-family: 'Sora', 'Noto Sans JP', sans-serif;
+}
+
+.carousel-control-prev, .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background-color: #969696;
+  border-radius: 50%;
+  top: 50%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    min-width: 100%;
+    padding: 0 1em;
+  }
+
+  #about {
+    padding: 1em 0;
+    min-height: auto;
+  }
 }
