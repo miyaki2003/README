@@ -5,58 +5,52 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  font-family: Arial, sans-serif;
 }
 
 .reminders-container {
-  background-color: #FFFFFF;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #F2F7FA;
+  padding: 20px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 600px;
 }
 
 .reminder-item {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   padding: 20px;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 10px;
   background-color: #ffffff;
   width: 100%;
   text-align: start;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
 .reminder-time {
   margin-top: 5px;
   font-size: 14px;
-  color: #888;
 }
 
 .reminder-title {
   margin-top: 5px;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 20px;
 }
 
 .delete-button-container {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: transparent;
+  top: 35px;
+  right: 20px;
+  background-color: #ff5470;
 }
 
 .btn.btn-danger.delete-reminder-button {
-  padding: 5px;
-  font-size: 16px;
-  color: #ff5470;
+  padding: 0;
+  font-size: 20px;
 }
 
 .no-reminders-message-container {
@@ -72,7 +66,6 @@ body {
   font-weight: bold;
   color: #6D6D6D;
   padding: 20px;
-  background-color: #FFFFFF;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #F2F7FA;
+  text-align: center;
 }
