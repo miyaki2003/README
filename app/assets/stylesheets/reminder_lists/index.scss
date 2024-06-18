@@ -15,8 +15,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 90%;
-  max-width: 1500px;
+  width: 100%;
+  max-width: 2000px;
 }
 
 .reminder-item {
@@ -49,7 +49,7 @@ body {
 .delete-button-container {
   position: absolute;
   top: 35px;
-  right: 20px;
+  right: 10px;
   background-color: #FF5974;
   border-radius: 30px;
 }
