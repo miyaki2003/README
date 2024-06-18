@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
-
 .switch-container {
   margin-right: 5px;
 }
@@ -67,17 +64,4 @@
   flex-grow: 1;
   text-align: center;
   color: #666666;
-  font-family: 'Sora', 'Noto Sans JP', sans-serif;
-}
-
-.event_title,
-.event_event_date,
-.event_start_time,
-.event_end_time,
-.form-check-label,
-.event_memo,
-.eventDetailsTitle,
-.eventDetailsStart,
-.eventDetailsEnd {
-  font-family: 'Sora', 'Noto Sans JP', sans-serif;
 }
