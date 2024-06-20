@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
-
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 
 .gif-container {
   text-align: center;
@@ -62,38 +59,34 @@ body {
 }
 
 .custom-carousel {
-  border: 2px solid #f8f9fa;
+  border: 2px solid #ffffff;
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
 }
 
-
-@media (max-width: 768px) {
-  .container {
-    max-width: 100%;
-    min-width: 100%;
-    padding: 0 1em;
-  }
-
-  #about {
-    padding: 1em 0;
-    min-height: auto;
-  }
+.carousel-caption-below {
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  color: #666666;
 }
 
-// .header {
-//   background-color: #E0FBFE !important;
-//   height: 120px;
-// }
+.carousel-caption-below p {
+  font-size: 15px !important;
+  color: #666666 !important;
+  font-family: 'Sora', 'Noto Sans JP', sans-serif;
+}
 
-// .custom-login-btn {
-//   height: 110px;
-// }
+.carousel-caption-below h2 {
+  font-weight: 700;
+  margin-top: 15px;
+  font-family: 'Sora', 'Noto Sans JP', sans-serif;
+}
 
-// .footer {
-//   background-color: #E0FBFE !important;
-//   height: 120px;
-// }
+.button-container {
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
 
 #about .container {
   text-align: center;
@@ -126,4 +119,42 @@ body {
 
 .about-image {
   margin-top: 0px;
+}
+
+.app-description h2 {
+  color: #666666;
+  margin-bottom: 60px;
+  font-size: 20px;
+  font-family: 'Sora', 'Noto Sans JP', sans-serif;
+}
+
+.carousel-control-prev, .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background-color: #969696;
+  border-radius: 50%;
+  top: 50%;
+}
+
+.carousel-indicators {
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
+}
+
+.custom-indicators button.a {
+  background-color: #969696;
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    min-width: 100%;
+    padding: 0 1em;
+  }
+
+  #about {
+    padding: 1em 0;
+    min-height: auto;
+  }
 }

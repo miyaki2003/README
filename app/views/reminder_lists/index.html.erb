@@ -5,7 +5,7 @@
   <div class="reminders-container">
     <% @reminders.each do |reminder| %>
       <div class="reminder-item" id="reminder-<%= reminder.id %>">
-        <span class="reminder-time"><%= reminder.reminder_time.strftime("%Y年%m月%d日 %H時%M分") %></span>
+        <span class="reminder-time"><%= reminder.reminder_time.strftime("%Y年%-m月%-d日 %-H時%-M分") %></span>
         <span class="reminder-title"><%= reminder.title %></span>
         <span class="delete-button-container">
           <%= link_to deactivate_reminder_list_path(reminder), method: :patch, remote: true, class: "btn btn-danger delete-reminder-button", data: { reminder_id: reminder.id } do %>

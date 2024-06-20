@@ -7,41 +7,65 @@
       <div class="image-container mb-6">
         <%= image_tag 'ReminderChat.jpg', alt: 'ReminderChat Logo', class: 'about-image' %>
       </div>
+      <div class="app-description">
+        <h2>LINEで予定を管理できるアプリです</h2>
+      </div>
 
-      <div id="carouselExample" class="carousel slide custom-carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      <div id="carouselExampleIndicators" class="carousel slide custom-carousel">
+        <div class="carousel-indicators custom-indicators">
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active a" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="active a" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="active a" aria-label="Slide 3"></button>
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
             <%= image_tag 'message.image.png', class: 'd-block w-100', alt: 'First slide' %>
+            <div class="carousel-caption-below">
+              <h2>メッセージ</h2>
+              <p>忘れ物対策でリマインド設定しましょう</p>
+              <p>「明日の午後3時半」「来週の水曜日」<br>などの様々な日時表現を使用できます</p>
+            </div>
           </div>
           <div class="carousel-item">
             <%= image_tag 'message.image.png', class: 'd-block w-100', alt: 'Second slide' %>
+            <div class="carousel-caption-below">
+              <h2>コマンド</h2>
+              <p>コマンドを使用して操作しましょう</p>
+              <p>
+                今日
+                使い方
+                キャンセル
+                取り消し<br>
+                一覧
+                リスト
+                カレンダー
+                天気
+              </p>
+            </div>
           </div>
           <div class="carousel-item">
-            <%= image_tag 'message.image.png', class: 'd-block w-100', alt: 'Third slide' %>
+            <%= image_tag 'calendar2.jpg', class: 'd-block w-100', alt: 'Third slide' %>
+            <div class="carousel-caption-below">
+              <h2>カレンダー</h2>
+              <p>予定はカレンダーで管理しましょう</p>
+              <p>予定の追加、編集、削除<br>LINE通知の設定ができます</p>
+            </div>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
       </div>
+      <div class="button-container">
+        <%= link_to auth_at_provider_path(provider: :line), data: { turbo: false } do %>
+          <%= image_tag 'btn_login_base.png', alt: 'ログイン', class: 'login-button' %>
+        <% end %>
+      </div>
     </section>
   </turbo-frame>
 <%= render 'shared/footer' %>
-
-  <!--<div>
-    <%= link_to 'ログイン', auth_at_provider_path(provider: :line) %>
-    <%= link_to 'カレンダー', events_path, data: { turbo_frame: 'calendar-container' } %>
-    <%= form_with url: logout_path, method: :delete do %>
-      <%= submit_tag 'ログアウト' %>
-    <% end %>
-  </div>-->
