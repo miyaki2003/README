@@ -158,3 +158,51 @@ body {
     min-height: auto;
   }
 }
+
+@media (min-width: 600px) {
+  .container {
+    max-width: 80em;
+    padding: 0 4em;
+    background-color: #ffffff;
+  }
+
+  .carousel-caption-below {
+    padding: 20px;
+    color: #666666;;
+  }
+
+  .about-image {
+    max-width: 50%;
+    margin: 20px auto;
+  }
+
+  .app-description h2 {
+    font-size: 24px;
+    color: #666666;;
+  }
+
+  .button-container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .custom-carousel {
+    max-width: 70%;
+    margin: 0 auto;
+  }
+
+  .custom-carousel img {
+    max-height: 800px;
+  }
+}
+
+@media (min-width: 1031px) {
+  .custom-carousel {
+    max-width: 35%;
+    margin: 0 auto;
+  }
+
+  .custom-carousel img {
+    max-height: 700px;
+  }
+}
