@@ -45,9 +45,12 @@ class LineBotController < ApplicationController
     when '天気'
       send_weather_quick_reply(event['replyToken'])
     when '使い方'
-       user.update(status: nil)
+      user.update(status: nil)
        return
     when 'ヘルプ'
+      user.update(status: nil)
+      return
+    when 'ありがとうございます'
       user.update(status: nil)
       return
     else
