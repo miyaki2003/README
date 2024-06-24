@@ -10,9 +10,7 @@
 
           <div class="mb-3">
             <%= f.label :title, "タイトル" %>
-            <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力が必須です">
-              <i class="fa-solid fa-circle-exclamation tooltip-icon"></i>
-            </span>
+            <i class="fa-solid fa-asterisk tooltip-icon"></i>
             <%= f.text_field :title, id: "edit-title", class: "form-control" %>
           </div>
 
