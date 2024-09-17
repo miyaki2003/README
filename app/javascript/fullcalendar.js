@@ -247,7 +247,18 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (notifySwitch.prop('checked')) {
         let notifyDateTime = new Date(`${formData.get('notify_date')}T${formData.get('notify_time')}`);
         if (notifyDateTime <= new Date()) {
-          alert('通知時間は現在時刻よりも後に設定してください');
+          Swal.fire({
+            icon: 'error',
+            title: "通知時間は現在時刻よりも後に設定してください",
+            color: "#33333",
+            timer: 1200,
+            timerProgressBar: true,
+            willOpen: (popup) => {
+              popup.style.borderRadius = '15px';
+              const confirmButton = popup.querySelector('.swal2-confirm');
+              confirmButton.style.borderRadius = '10px';
+            }
+          });
           return;
         }
       }
@@ -292,7 +303,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Full Notify DateTime:', fullNotifyDateTime);
 
         if (fullNotifyDateTime <= new Date()) {
-          alert('通知時間は現在時刻よりも後に設定してください');
+          Swal.fire({
+            icon: 'error',
+            title: "通知時間は現在時刻よりも後に設定してください",
+            color: "#33333",
+            timer: 1200,
+            timerProgressBar: true,
+            willOpen: (popup) => {
+              popup.style.borderRadius = '15px';
+              const confirmButton = popup.querySelector('.swal2-confirm');
+              confirmButton.style.borderRadius = '10px';
+            }
+          });
           return;
         }
         formData.set('event[notify_date]', eventDateAdd);
@@ -319,7 +341,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         },
         error: function(error) {
           console.error('Error:', error);
-          alert('通信エラーが発生しました');
+          Swal.fire({
+            icon: 'error',
+            title: "タイトルを入力してください",
+            color: "#33333",
+            timer: 1200,
+            timerProgressBar: true,
+            willOpen: (popup) => {
+              popup.style.borderRadius = '15px';
+              const confirmButton = popup.querySelector('.swal2-confirm');
+              confirmButton.style.borderRadius = '10px';
+            }
+          });
         }
       });
     });
