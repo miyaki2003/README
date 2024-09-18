@@ -208,9 +208,15 @@ body {
   }
 }
 
-@media (min-width: 1031px) {
+@media (min-width: 1000px) {
+  
+  .about-image {
+    max-width: 40%;
+    margin: 20px auto;
+  }
+
   .custom-carousel {
-    max-width: 35%;
+    max-width: 30%;
     margin: 0 auto;
   }
 
